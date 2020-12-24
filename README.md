@@ -9,6 +9,7 @@ struct Car: Papyrus
     let model: String
     let manufacturer: String
 }
+
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
 let store = try PapyrusStore()
 store.save(car)
