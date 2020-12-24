@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Classes  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Section/Classes" class="dashAnchor"></a>
+    <a title="Classes  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html"> Docs</a> (71% documented)</p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html"> Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Classes  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/Logger.html">Logger</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Logger/LogLevel.html">– LogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PapyrusStore.html">PapyrusStore</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PapyrusStore/ObserverPublisher.html">– ObserverPublisher</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PapyrusStore/SetupError.html">– SetupError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/Papyrus.html">Papyrus</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Classes</h1>
+            <p>The following classes are available globally.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Papyrus6LoggerC"></a>
+                    <a name="//apple_ref/swift/Class/Logger" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus6LoggerC">Logger</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Classes/Logger.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Logger</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Papyrus0A5StoreC"></a>
+                    <a name="//apple_ref/swift/Class/PapyrusStore" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC">PapyrusStore</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A <code>PapyrusStore</code> is a data store for <code><a href="Protocols/Papyrus.html">Papyrus</a></code> conforming objects.</p>
+
+<p><code>PapyrusStore</code> aims to hit the sweet spot between saving raw API responses to the file system
+and a fully fledged database like Realm.</p>
+<h2 id='configuration' class='heading'>Configuration</h2>
+
+<p>Objects are stored to disk. Storage location can be configured via <code>public init(url: URL) throws</code>.
+By default the <code>PapyrusStore</code> will use a directory inside Application Support.</p>
+<h2 id='migration' class='heading'>Migration</h2>
+<h2 id='saving' class='heading'>Saving</h2>
+
+<p>Anything that conforms to the <code><a href="Protocols/Papyrus.html">Papyrus</a></code> protocol can be stored.
+When an object is added to the store, it is firstly added to the in-memory cache
+and then eventually written to the store.</p>
+<h3 id='example-a-basic-saving' class='heading'>Example A - Basic Saving</h3>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Car</span><span class="p">:</span> <span class="kt">Papyrus</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">model</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">manufacturer</span><span class="p">:</span> <span class="kt">String</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">car</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">model</span><span class="p">:</span> <span class="s">"Model S"</span><span class="p">,</span> <span class="nv">manufacturer</span><span class="p">:</span> <span class="s">"Tesla"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
+</code></pre>
+<h3 id='example-b-relationships' class='heading'>Example B - Relationships</h3>
+
+<p><code>PapyrusStore</code> also understands relationships.
+If we continue with our <code>Car</code> modelling&hellip;Let&rsquo;s imagine we have an
+app that fetches a list of car manufacturers and their cars.</p>
+
+<p>Our models could look like:</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Manufacturer</span><span class="p">:</span> <span class="kt">Papyrus</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">cars</span><span class="p">:</span> <span class="p">[</span><span class="kt">Car</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="kd">struct</span> <span class="kt">Car</span><span class="p">:</span> <span class="kt">Papyrus</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">model</span><span class="p">:</span> <span class="kt">String</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">modelS</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">model</span><span class="p">:</span> <span class="s">"Model S"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">tesla</span> <span class="o">=</span> <span class="kt">Manufacturer</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Tesla"</span><span class="p">,</span> <span class="nv">cars</span><span class="p">:</span> <span class="p">[</span><span class="n">modelS</span><span class="p">])</span>
+
+<span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="n">tesla</span><span class="p">)</span>
+</code></pre>
+
+<p>Because <code>Car</code> also conforms to <code><a href="Protocols/Papyrus.html">Papyrus</a></code>, <code>PapyrusStore</code> will also persist the cars
+when it saves the manufacturer.</p>
+<h2 id='fetching-by-id' class='heading'>Fetching by ID</h2>
+
+<p>Fetching objects has two forms:</p>
+
+<ul>
+<li>Fetch by id.</li>
+<li>Fetch collection.</li>
+</ul>
+<h3 id='example-a' class='heading'>Example A</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">tesla</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="nf">object</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+</code></pre>
+<h2 id='fetching-collections' class='heading'>Fetching collections</h2>
+
+<p>When fetching a collection of objects a Combine publisher is returned
+which will emit the collection of objects. Unless specified the publisher will
+continue to emit a collection objects whenever a change is detected.</p>
+
+<p>A change constitutes of:</p>
+
+<ul>
+<li>Addition of an object.</li>
+<li>Deletion of an object.</li>
+<li>Update of an object.</li>
+</ul>
+<h3 id='example-a' class='heading'>Example A</h3>
+<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+    <span class="o">.</span><span class="nf">subscribe</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">())</span>
+    <span class="o">.</span><span class="nf">receive</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sink</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="nf">updateUI</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
+    <span class="o">.</span><span class="nf">store</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">self</span><span class="o">.</span><span class="n">cancellables</span><span class="p">)</span>
+</code></pre>
+<h3 id='example-b-single-emission' class='heading'>Example B - Single emission</h3>
+<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+    <span class="o">.</span><span class="nf">subscribe</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">())</span>
+    <span class="o">.</span><span class="nf">first</span><span class="p">()</span>
+    <span class="o">.</span><span class="nf">receive</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sink</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="nf">updateUI</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
+    <span class="o">.</span><span class="nf">store</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">self</span><span class="o">.</span><span class="n">cancellables</span><span class="p">)</span>
+</code></pre>
+<h2 id='deleting' class='heading'>Deleting</h2>
+
+<p>There are several methods for deleting objects.</p>
+<h3 id='example-a' class='heading'>Example A</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">tesla</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="nf">object</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">tesla</span><span class="p">)</span>
+</code></pre>
+<h3 id='example-b' class='heading'>Example B</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+</code></pre>
+<h3 id='example-c' class='heading'>Example C</h3>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">tesla</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="nf">object</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">ford</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="nf">object</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"xyz..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="n">tesla</span><span class="p">,</span> <span class="n">ford</span><span class="p">])</span>
+</code></pre>
+
+                        <a href="Classes/PapyrusStore.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">PapyrusStore</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-12-24)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

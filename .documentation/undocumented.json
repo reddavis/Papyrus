@@ -1,0 +1,75 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 13,
+      "symbol": "Logger",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 64,
+      "symbol": "Logger",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 66,
+      "symbol": "Logger.LogLevel",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 68,
+      "symbol": "Logger.LogLevel.info",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 69,
+      "symbol": "Logger.LogLevel.debug",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 70,
+      "symbol": "Logger.LogLevel.error",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 71,
+      "symbol": "Logger.LogLevel.fault",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 72,
+      "symbol": "Logger.LogLevel.off",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
+      "line": 94,
+      "symbol": "Logger.LogLevel",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Observer/ObserverPublisher.swift",
+      "line": 14,
+      "symbol": "PapyrusStore.ObserverPublisher",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/reddavis/Documents/Projects/Papyrus"
+}
