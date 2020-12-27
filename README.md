@@ -30,6 +30,10 @@ dependencies: [
 ]
 ```
 
+## Documentation
+
+[API Reference](https://mystifying-bohr-b56ce9.netlify.app)
+
 ## Usage
 
 ### Saving
