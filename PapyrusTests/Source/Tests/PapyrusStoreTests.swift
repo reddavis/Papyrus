@@ -199,4 +199,29 @@ final class PapyrusStoreTests: XCTestCase
         
         self.waitForExpectations(timeout: 2.0)
     }
+    
+    // MARK: Intersect
+    
+    func testIntersecting() throws
+    {
+        let idA = UUID().uuidString
+        let objectA = ExampleB(id: idA)
+        
+        let idB = UUID().uuidString
+        let objectB = ExampleB(id: idB)
+        
+        let idC = UUID().uuidString
+        let objectC = ExampleB(id: idC)
+        
+        self.store.save(objects: [objectA, objectB, objectC])
+        
+        // Wait for data to be written
+        let objectCDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectC))).appendingPathComponent(idC)
+        self.expectToEventually(self.fileManager.fileExists(atPath: objectCDataFile.path))
+        
+        self.store.intersect(with: [objectA, objectB])
+        XCTAssertNotNil(self.store.object(id: idA, of: ExampleB.self))
+        XCTAssertNotNil(self.store.object(id: idB, of: ExampleB.self))
+        XCTAssertNil(self.store.object(id: idC, of: ExampleB.self))
+    }
 }
