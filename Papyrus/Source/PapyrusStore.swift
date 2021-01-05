@@ -359,13 +359,13 @@ public extension PapyrusStore
         self.object(id: id)
     }
     
-    /// A publisher that emits an array of objects each
-    /// time the collection changes.
-    /// - Parameter type: The type of objects to fetch and observe.
-    /// - Returns: A `ObserverPublisher<T>` instance.
-    func objects<T>(type: T.Type) -> ObserverPublisher<T>
+    /// Returns a `PapyrusCollection<T>` instance of all objects of
+    /// the given type.
+    /// - Parameter type: The type of objects to fetch.
+    /// - Returns: A `PapyrusCollection<T>` instance.
+    func objects<T>(type: T.Type) -> Query<T>
     {
-        ObserverPublisher(directoryURL: self.directoryURL(for: T.self))
+        Query(directoryURL: self.directoryURL(for: T.self))
     }
 }
 

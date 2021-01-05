@@ -9,13 +9,13 @@ import Combine
 import Foundation
 
 
-public extension PapyrusStore
+extension PapyrusStore
 {
     struct ObserverPublisher<T>: Publisher where T: Papyrus
     {
-        // Public
-        public typealias Output = [T]
-        public typealias Failure = Never
+        // Internal
+        typealias Output = [T]
+        typealias Failure = Never
         
         // Private
         private let directoryURL: URL
@@ -29,7 +29,7 @@ public extension PapyrusStore
         
         // MARK: Publisher
         
-        public func receive<S>(subscriber: S) where S: Subscriber, Self.Failure == S.Failure, Self.Output == S.Input
+        func receive<S>(subscriber: S) where S: Subscriber, Self.Failure == S.Failure, Self.Output == S.Input
         {
             let subscription = ObserverSubscription(directoryURL: self.directoryURL, subscriber: subscriber)
             subscriber.receive(subscription: subscription)

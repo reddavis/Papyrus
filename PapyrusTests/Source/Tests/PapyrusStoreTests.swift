@@ -128,6 +128,7 @@ final class PapyrusStoreTests: XCTestCase
         expectation.expectedFulfillmentCount = 2
         
         self.store.objects(type: ExampleB.self)
+            .observe()
             .subscribe(on: DispatchQueue.global())
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
@@ -187,6 +188,7 @@ final class PapyrusStoreTests: XCTestCase
         expectation.expectedFulfillmentCount = 3
         
         self.store.objects(type: ExampleB.self)
+            .observe()
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         
