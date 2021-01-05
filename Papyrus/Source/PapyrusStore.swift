@@ -307,7 +307,7 @@ public extension PapyrusStore
 
 public extension PapyrusStore
 {
-    func intersect<T>(with objects: [T]) where T: Papyrus
+    func merge<T>(with objects: [T]) where T: Papyrus
     {
         let objectIDs = objects.map(\.id)
         let objectsToDelete = self.objects(type: T.self)

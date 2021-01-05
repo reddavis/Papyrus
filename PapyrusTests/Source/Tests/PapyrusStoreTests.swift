@@ -200,9 +200,9 @@ final class PapyrusStoreTests: XCTestCase
         self.waitForExpectations(timeout: 2.0)
     }
     
-    // MARK: Intersect
+    // MARK: Merging
     
-    func testIntersecting() throws
+    func testMerging() throws
     {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
@@ -219,7 +219,7 @@ final class PapyrusStoreTests: XCTestCase
         let objectCDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectC))).appendingPathComponent(idC)
         self.expectToEventually(self.fileManager.fileExists(atPath: objectCDataFile.path))
         
-        self.store.intersect(with: [objectA, objectB])
+        self.store.merge(with: [objectA, objectB])
         XCTAssertNotNil(self.store.object(id: idA, of: ExampleB.self))
         XCTAssertNotNil(self.store.object(id: idB, of: ExampleB.self))
         XCTAssertNil(self.store.object(id: idC, of: ExampleB.self))

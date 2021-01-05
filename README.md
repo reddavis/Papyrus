@@ -83,7 +83,29 @@ store.save(tesla)
 
 Because `Car` also conforms to `Papyrus`, `PapyrusStore` will also persist the cars when it saves the manufacturer.
 
+#### Example C - Merge
+
+A common use case when dealing with API's is to fetch a collection of objects and the merge the results into your local collection.
+
+Papyrus provides a function for this:
+
+```swift
+let carA = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
+let carB = Car(id: "def...", model: "Model 3", manufacturer: "Tesla")
+let carC = Car(id: "ghi...", model: "Model X", manufacturer: "Tesla")
+
+let store = try PapyrusStore()
+store.save(objects: [carA, carB])
+
+store.merge(with: [carA, carC])
+store
+    .objects(type: Car.self)
+    .execute()
+// #=> [carA, carC]
+```
+
 ### Fetching by ID
+
 Fetching objects has two forms:
 - Fetch by id.
 - Fetch collection.
@@ -97,7 +119,35 @@ let tesla = store.object(id: "abc...", of: Manufacturer.self)
 
 ### Fetching collections
 
-When fetching a collection of objects a Combine publisher is returned which will emit the collection of objects. Unless specified the publisher will continue to emit a collection objects whenever a change is detected.
+Papryrus gives you the ability to fetch, filter and observe colletions of objects.
+
+#### Example A - Simple fetch
+
+```swift
+let manufacturers = self.store
+                        .objects(type: Manufacturer.self)
+                        .execute()
+```
+
+#### Example B - Filtering
+
+```swift
+let manufacturers = self.store
+                        .objects(type: Manufacturer.self)
+                        .filter { $0.name == "Tesla" }
+                        .execute()
+```
+
+#### Example C - Sorting
+
+```swift
+let manufacturers = self.store
+                        .objects(type: Manufacturer.self)
+                        .sort { $0.name < $1.name }
+                        .execute()
+```
+
+Calling `observe()` on a `PapryrusStore.Query` object will return a Combine publicher which will emit the collection of objects. Unless specified the publisher will continue to emit a collection objects whenever a change is detected.
 
 A change constitutes of:
 
@@ -105,22 +155,26 @@ A change constitutes of:
 - Deletion of an object.
 - Update of an object.
 
-#### Example A
+#### Example D - Observing changes
 
 ```swift
-self.store.objects(type: Manufacturer.self)
+self.store
+    .objects(type: Manufacturer.self)
+    .observe()
     .subscribe(on: DispatchQueue.global())
     .receive(on: DispatchQueue.main)
     .sink { self.updateUI(with: $0) }
     .store(in: &self.cancellables)
 ```
-
-#### Example B - Single emission
+#### Example E - All together
 
 ```swift
-self.store.objects(type: Manufacturer.self)
+self.store
+    .objects(type: Manufacturer.self)
+    .filter { $0.name == "Tesla" }
+    .sort { $0.name < $1.name }
+    .observe()
     .subscribe(on: DispatchQueue.global())
-    .first()
     .receive(on: DispatchQueue.main)
     .sink { self.updateUI(with: $0) }
     .store(in: &self.cancellables)
