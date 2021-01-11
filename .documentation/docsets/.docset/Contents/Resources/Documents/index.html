@@ -16,7 +16,7 @@
     <a title="  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html"> Docs</a> (71% documented)</p>
+        <p><a href="index.html"> Docs</a> (67% documented)</p>
         <p class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -47,7 +47,7 @@
                 <a href="Classes/PapyrusStore.html">PapyrusStore</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/PapyrusStore/ObserverPublisher.html">– ObserverPublisher</a>
+                <a href="Classes/PapyrusStore/Query.html">– Query</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/PapyrusStore/SetupError.html">– SetupError</a>
@@ -94,6 +94,9 @@
     <span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/reddavis/Papryrus"</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="s">"0.9.0"</span><span class="p">)</span>
 <span class="p">]</span>
 </code></pre>
+<h2 id='documentation' class='heading'>Documentation</h2>
+
+<p><a href="https://mystifying-bohr-b56ce9.netlify.app">API Reference</a></p>
 <h2 id='usage' class='heading'>Usage</h2>
 <h3 id='saving' class='heading'>Saving</h3>
 
@@ -135,6 +138,24 @@
 </code></pre>
 
 <p>Because <code>Car</code> also conforms to <code><a href="Protocols/Papyrus.html">Papyrus</a></code>, <code><a href="Classes/PapyrusStore.html">PapyrusStore</a></code> will also persist the cars when it saves the manufacturer.</p>
+<h4 id='example-c-merge' class='heading'>Example C - Merge</h4>
+
+<p>A common use case when dealing with API&rsquo;s is to fetch a collection of objects and the merge the results into your local collection.</p>
+
+<p>Papyrus provides a function for this:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">carA</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">model</span><span class="p">:</span> <span class="s">"Model S"</span><span class="p">,</span> <span class="nv">manufacturer</span><span class="p">:</span> <span class="s">"Tesla"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">carB</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"def..."</span><span class="p">,</span> <span class="nv">model</span><span class="p">:</span> <span class="s">"Model 3"</span><span class="p">,</span> <span class="nv">manufacturer</span><span class="p">:</span> <span class="s">"Tesla"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">carC</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"ghi..."</span><span class="p">,</span> <span class="nv">model</span><span class="p">:</span> <span class="s">"Model X"</span><span class="p">,</span> <span class="nv">manufacturer</span><span class="p">:</span> <span class="s">"Tesla"</span><span class="p">)</span>
+
+<span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="n">carA</span><span class="p">,</span> <span class="n">carB</span><span class="p">])</span>
+
+<span class="n">store</span><span class="o">.</span><span class="nf">merge</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="p">[</span><span class="n">carA</span><span class="p">,</span> <span class="n">carC</span><span class="p">])</span>
+<span class="n">store</span>
+    <span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Car</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+    <span class="o">.</span><span class="nf">execute</span><span class="p">()</span>
+<span class="c1">// #=&gt; [carA, carC]</span>
+</code></pre>
 <h3 id='fetching-by-id' class='heading'>Fetching by ID</h3>
 
 <p>Fetching objects has two forms:</p>
@@ -149,7 +170,26 @@
 </code></pre>
 <h3 id='fetching-collections' class='heading'>Fetching collections</h3>
 
-<p>When fetching a collection of objects a Combine publisher is returned which will emit the collection of objects. Unless specified the publisher will continue to emit a collection objects whenever a change is detected.</p>
+<p>Papryrus gives you the ability to fetch, filter and observe colletions of objects.</p>
+<h4 id='example-a-simple-fetch' class='heading'>Example A - Simple fetch</h4>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">manufacturers</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">store</span>
+                        <span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+                        <span class="o">.</span><span class="nf">execute</span><span class="p">()</span>
+</code></pre>
+<h4 id='example-b-filtering' class='heading'>Example B - Filtering</h4>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">manufacturers</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">store</span>
+                        <span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">"Tesla"</span> <span class="p">}</span>
+                        <span class="o">.</span><span class="nf">execute</span><span class="p">()</span>
+</code></pre>
+<h4 id='example-c-sorting' class='heading'>Example C - Sorting</h4>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">manufacturers</span> <span class="o">=</span> <span class="k">self</span><span class="o">.</span><span class="n">store</span>
+                        <span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">sort</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">name</span> <span class="o">&lt;</span> <span class="nv">$1</span><span class="o">.</span><span class="n">name</span> <span class="p">}</span>
+                        <span class="o">.</span><span class="nf">execute</span><span class="p">()</span>
+</code></pre>
+
+<p>Calling <code>observe()</code> on a <code>PapryrusStore.Query</code> object will return a Combine publicher which will emit the collection of objects. Unless specified the publisher will continue to emit a collection objects whenever a change is detected.</p>
 
 <p>A change constitutes of:</p>
 
@@ -158,17 +198,22 @@
 <li>Deletion of an object.</li>
 <li>Update of an object.</li>
 </ul>
-<h4 id='example-a' class='heading'>Example A</h4>
-<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<h4 id='example-d-observing-changes' class='heading'>Example D - Observing changes</h4>
+<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">store</span>
+    <span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+    <span class="o">.</span><span class="nf">observe</span><span class="p">()</span>
     <span class="o">.</span><span class="nf">subscribe</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">())</span>
     <span class="o">.</span><span class="nf">receive</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="p">)</span>
     <span class="o">.</span><span class="n">sink</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="nf">updateUI</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
     <span class="o">.</span><span class="nf">store</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">self</span><span class="o">.</span><span class="n">cancellables</span><span class="p">)</span>
 </code></pre>
-<h4 id='example-b-single-emission' class='heading'>Example B - Single emission</h4>
-<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<h4 id='example-e-all-together' class='heading'>Example E - All together</h4>
+<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="n">store</span>
+    <span class="o">.</span><span class="nf">objects</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">"Tesla"</span> <span class="p">}</span>
+    <span class="o">.</span><span class="n">sort</span> <span class="p">{</span> <span class="nv">$0</span><span class="o">.</span><span class="n">name</span> <span class="o">&lt;</span> <span class="nv">$1</span><span class="o">.</span><span class="n">name</span> <span class="p">}</span>
+    <span class="o">.</span><span class="nf">observe</span><span class="p">()</span>
     <span class="o">.</span><span class="nf">subscribe</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="nf">global</span><span class="p">())</span>
-    <span class="o">.</span><span class="nf">first</span><span class="p">()</span>
     <span class="o">.</span><span class="nf">receive</span><span class="p">(</span><span class="nv">on</span><span class="p">:</span> <span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="p">)</span>
     <span class="o">.</span><span class="n">sink</span> <span class="p">{</span> <span class="k">self</span><span class="o">.</span><span class="nf">updateUI</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="nv">$0</span><span class="p">)</span> <span class="p">}</span>
     <span class="o">.</span><span class="nf">store</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="o">&amp;</span><span class="k">self</span><span class="o">.</span><span class="n">cancellables</span><span class="p">)</span>
@@ -198,7 +243,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-12-24)</p>
+          <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2021-01-05)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

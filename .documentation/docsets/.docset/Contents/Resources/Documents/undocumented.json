@@ -64,31 +64,10 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/PapyrusStore.swift",
-      "line": 310,
-      "symbol": "PapyrusStore.merge(with:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Query.swift",
-      "line": 15,
-      "symbol": "PapyrusStore.Query",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Query.swift",
-      "line": 18,
-      "symbol": "PapyrusStore.Query.OnFilter",
-      "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Query.swift",
-      "line": 19,
-      "symbol": "PapyrusStore.Query.OnSort",
-      "symbol_kind": "source.lang.swift.decl.typealias",
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Observer/ObserverPublisher.swift",
+      "line": 14,
+      "symbol": "PapyrusStore.ObserverPublisher",
+      "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     }
   ],
