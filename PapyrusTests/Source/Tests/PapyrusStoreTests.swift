@@ -39,11 +39,11 @@ final class PapyrusStoreTests: XCTestCase
         
         // Object B's type directory created
         let objectTypeBDirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB)))
-        self.expectToEventually(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
         
         // Object B's data file created
         let objectBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB))).appendingPathComponent(idB)
-        self.expectToEventually(self.fileManager.fileExists(atPath: objectBDataFile.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
     func testHasOneRelationshipDirectoriesAndFilesAreCreated() throws
@@ -56,19 +56,19 @@ final class PapyrusStoreTests: XCTestCase
         
         // Object A's type directory created
         let objectTypeADirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectA)))
-        self.expectToEventually(self.fileManager.fileExists(atPath: objectTypeADirectory.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeADirectory.path))
         
         // Object A's data file created
         let objectADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectA))).appendingPathComponent(idA)
-        self.expectToEventually(self.fileManager.fileExists(atPath: objectADataFile.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: objectADataFile.path))
         
         // Object B's type directory created
         let objectTypeBDirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB)))
-        self.expectToEventually(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
         
         // Object B's data file created
         let objectBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB))).appendingPathComponent(idB)
-        self.expectToEventually(self.fileManager.fileExists(atPath: objectBDataFile.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
     func testHasManyRelationshipDirectoriesAndFilesAreCreated() throws
@@ -85,27 +85,27 @@ final class PapyrusStoreTests: XCTestCase
         
         // Parent's type directory created
         let parentDirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: parent)))
-        self.expectToEventually(self.fileManager.fileExists(atPath: parentDirectory.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: parentDirectory.path))
         
         // Parent's data file created
         let parentDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: parent))).appendingPathComponent(parentID)
-        self.expectToEventually(self.fileManager.fileExists(atPath: parentDataFile.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: parentDataFile.path))
         
         // Child A's type directory created
         let childADirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: childA)))
-        self.expectToEventually(self.fileManager.fileExists(atPath: childADirectory.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: childADirectory.path))
         
         // Child A's data file created
         let childADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childA))).appendingPathComponent(childAID)
-        self.expectToEventually(self.fileManager.fileExists(atPath: childADataFile.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: childADataFile.path))
         
         // Child B's type directory created
         let childBDirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: childB)))
-        self.expectToEventually(self.fileManager.fileExists(atPath: childBDirectory.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: childBDirectory.path))
         
         // Child B's data file created
         let childBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childB))).appendingPathComponent(childBID)
-        self.expectToEventually(self.fileManager.fileExists(atPath: childBDataFile.path))
+        XCTAssertTrue(self.fileManager.fileExists(atPath: childBDataFile.path))
     }
     
     func testSavingMultipleObjects() throws
@@ -134,8 +134,28 @@ final class PapyrusStoreTests: XCTestCase
             .store(in: &self.cancellables)
         
         self.store.save(ExampleB(id: UUID().uuidString))
-        
         self.waitForExpectations(timeout: 2.0)
+    }
+    
+    func testSavingEventually() throws
+    {
+        let idA = UUID().uuidString
+        let objectA = ExampleB(id: idA)
+        
+        self.store.saveEventually(objectA)
+        self.expectToEventually(self.store.object(id: idA, of: ExampleB.self) != nil)
+    }
+    
+    func testSavingObjectsEventually() throws
+    {
+        let idA = UUID().uuidString
+        let objectA = ExampleB(id: idA)
+        
+        let idB = UUID().uuidString
+        let objectB = ExampleB(id: idB)
+        
+        self.store.saveEventually(objects: [objectA, objectB])
+        self.expectToEventually(self.store.object(id: idA, of: ExampleB.self) != nil && self.store.object(id: idB, of: ExampleB.self) != nil)
     }
     
     // MARK: Fetching
@@ -164,6 +184,17 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertNil(self.store.object(id: id, of: ExampleB.self))
     }
     
+    func testDeletingEventuallyObject() throws
+    {
+        let id = UUID().uuidString
+        let object = ExampleB(id: id)
+        self.store.save(object)
+        
+        let fetchedObject: ExampleB = try XCTUnwrap(self.store.object(id: id))
+        self.store.deleteEventually(fetchedObject)
+        self.expectToEventually(self.store.object(id: id, of: ExampleB.self) == nil)
+    }
+    
     func testDeletingObjects() throws
     {
         let idA = UUID().uuidString
@@ -180,6 +211,22 @@ final class PapyrusStoreTests: XCTestCase
         
         XCTAssertNil(self.store.object(id: idA, of: ExampleB.self))
         XCTAssertNil(self.store.object(id: idB, of: ExampleB.self))
+    }
+    
+    func testDeletingObjectsEventually() throws
+    {
+        let idA = UUID().uuidString
+        let objectA = ExampleB(id: idA)
+        self.store.save(objectA)
+        
+        let idB = UUID().uuidString
+        let objectB = ExampleB(id: idB)
+        self.store.save(objectB)
+        
+        let fetchedObjectA: ExampleB = try XCTUnwrap(self.store.object(id: idA))
+        let fetchedObjectB: ExampleB = try XCTUnwrap(self.store.object(id: idB))
+        self.store.delete(objects: [fetchedObjectA, fetchedObjectB])
+        self.expectToEventually(self.store.object(id: idA, of: ExampleB.self) == nil && self.store.object(id: idB, of: ExampleB.self) == nil)
     }
     
     func testUpdatesReceivedOnDeleting() throws
@@ -214,14 +261,29 @@ final class PapyrusStoreTests: XCTestCase
         let objectC = ExampleB(id: idC)
         
         self.store.save(objects: [objectA, objectB, objectC])
-        
-        // Wait for data to be written
-        let objectCDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectC))).appendingPathComponent(idC)
-        self.expectToEventually(self.fileManager.fileExists(atPath: objectCDataFile.path))
-        
         self.store.merge(with: [objectA, objectB])
+        
         XCTAssertNotNil(self.store.object(id: idA, of: ExampleB.self))
         XCTAssertNotNil(self.store.object(id: idB, of: ExampleB.self))
         XCTAssertNil(self.store.object(id: idC, of: ExampleB.self))
+    }
+    
+    func testMergingEventually() throws
+    {
+        let idA = UUID().uuidString
+        let objectA = ExampleB(id: idA)
+        
+        let idB = UUID().uuidString
+        let objectB = ExampleB(id: idB)
+        
+        let idC = UUID().uuidString
+        let objectC = ExampleB(id: idC)
+        
+        self.store.save(objects: [objectA, objectB, objectC])
+        self.store.mergeEventually(with: [objectA, objectB])
+        
+        self.expectToEventually(self.store.object(id: idA, of: ExampleB.self) != nil)
+        self.expectToEventually(self.store.object(id: idB, of: ExampleB.self) != nil)
+        self.expectToEventually(self.store.object(id: idC, of: ExampleB.self) == nil)
     }
 }

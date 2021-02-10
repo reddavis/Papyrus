@@ -123,31 +123,39 @@ public extension PapyrusStore
     /// - Parameter object: The object to save.
     func save<T>(_ object: T) where T: Papyrus
     {
-        // Cache object. This will provide instance access via `object(id:)`
+        // Pre-warm cache
         self.cache(object)
         
+        // Write to file system
+        var touchedDirectories = Set([self.directoryURL(for: T.self)])
+        
+        let root = PapyrusEncodingWrapper(object)
+        self.save(root, id: object.id)
+        self.logger.debug("Saved: \(String(describing: type(of: object))) [\(object.id)]")
+        
+        // Store any Papyrus relationships.
+        Mirror.reflectProperties(of: object, matchingType: Papyrus.self, recursively: true) {
+            let encodable = PapyrusEncodingWrapper($0)
+            self.save(encodable, id: $0.id)
+            
+            touchedDirectories.insert(self.directoryURL(for: String(describing: type(of: $0))))
+        }
+        
+        // Touch all changed directories
+        self.logger.debug("Touching directories: \(touchedDirectories)")
+        
+        let now = Date()
+        touchedDirectories.forEach {
+            try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: $0.path)
+        }
+    }
+    
+    /// Eventually saves the object to the store.
+    /// - Parameter object: The object to save.
+    func saveEventually<T>(_ object: T) where T: Papyrus
+    {
         self.writeQueue.async {
-            var touchedDirectories = Set([self.directoryURL(for: T.self)])
-            
-            let root = PapyrusEncodingWrapper(object)
-            self.save(root, id: object.id)
-            self.logger.debug("Saved: \(String(describing: type(of: object))) [\(object.id)]")
-            
-            // Store any Papyrus relationships.
-            Mirror.reflectProperties(of: object, matchingType: Papyrus.self, recursively: true) {
-                let encodable = PapyrusEncodingWrapper($0)
-                self.save(encodable, id: $0.id)
-                
-                touchedDirectories.insert(self.directoryURL(for: String(describing: type(of: $0))))
-            }
-            
-            // Touch all changed directories
-            self.logger.debug("Touching directories: \(touchedDirectories)")
-            
-            let now = Date()
-            touchedDirectories.forEach {
-                try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: $0.path)
-            }
+            self.save(object)
         }
     }
     
@@ -155,11 +163,15 @@ public extension PapyrusStore
     /// - Parameter objects: An array of objects to add to the store.
     func save<T>(objects: [T]) where T: Papyrus
     {
-        // Cache objects.
-        objects.forEach { self.cache($0) }
-        
+        objects.forEach(self.save)
+    }
+    
+    /// Eventually saves all objects to the store.
+    /// - Parameter objects: An array of objects to add to the store.
+    func saveEventually<T>(objects: [T]) where T: Papyrus
+    {
         self.writeQueue.async {
-            objects.forEach { self.save($0) }
+            objects.forEach(self.save)
         }
     }
     
@@ -251,11 +263,31 @@ public extension PapyrusStore
         self.delete(objectIdentifiers: [id : type])
     }
     
+    /// Eventually deletes an object with `id` and of `type` from the store.
+    /// - Parameters:
+    ///   - id: The `id` of the object to be deleted.
+    ///   - type: The `type` of the object to be deleted.
+    func deleteEventually<T>(id: String, of type: T.Type) where T: Papyrus
+    {
+        self.writeQueue.async {
+            self.delete(id: id, of: type)
+        }
+    }
+    
     /// Deletes an object from the store.
     /// - Parameter object: The object to delete.
     func delete<T>(_ object: T) where T: Papyrus
     {
         self.delete(objectIdentifiers: [object.id : T.self])
+    }
+    
+    /// Eventually deletes an object from the store.
+    /// - Parameter object: The object to delete.
+    func deleteEventually<T>(_ object: T) where T: Papyrus
+    {
+        self.writeQueue.async {
+            self.delete(object)
+        }
     }
     
     /// Deletes an array of objects.
@@ -268,37 +300,36 @@ public extension PapyrusStore
         self.delete(objectIdentifiers: identifiers)
     }
     
+    /// Eventually deletes an array of objects.
+    /// - Parameter objects: An array of objects to delete.
+    func eventuallyDelete<T>(objects: [T]) where T: Papyrus
+    {
+        self.writeQueue.async {
+            self.delete(objects: objects)
+        }
+    }
+    
     private func delete<T>(objectIdentifiers: [String : T.Type]) where T: Papyrus
     {
-        let cacheKeys: [CacheKey] = objectIdentifiers.map {
+        objectIdentifiers.forEach {
             self.removeCachedObject(id: $0.key, type: $0.value)
-            return CacheKey(id: $0.key, type: $0.value)
         }
         
-        // Mark object has queued to be deleted.
-        // As the deletion happens on another queue we mark it as to be deleted
-        // in case the user requests an object before the deletion has been executed.
-        self.idsQueuedForDeletion.formUnion(cacheKeys)
+        let touchedDirectories = Set(objectIdentifiers.map {
+            self.directoryURL(for: $0.value)
+        })
         
-        self.writeQueue.async {
-            let touchedDirectories = Set(objectIdentifiers.map {
-                self.directoryURL(for: $0.value)
-            })
-            
-            objectIdentifiers.forEach {
-                let url = self.fileURL(for: String(describing: $0.value), id: $0.key)
-                try? self.fileManager.removeItem(at: url)
-            }
-            
-            self.idsQueuedForDeletion.subtract(cacheKeys)
-            
-            // Touch all changed directories
-            self.logger.debug("Touching directories: \(touchedDirectories)")
-            
-            let now = Date()
-            touchedDirectories.forEach {
-                try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: $0.path)
-            }
+        objectIdentifiers.forEach {
+            let url = self.fileURL(for: String(describing: $0.value), id: $0.key)
+            try? self.fileManager.removeItem(at: url)
+        }
+        
+        // Touch all changed directories
+        self.logger.debug("Touching directories: \(touchedDirectories)")
+        
+        let now = Date()
+        touchedDirectories.forEach {
+            try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: $0.path)
         }
     }
 }
@@ -316,6 +347,13 @@ public extension PapyrusStore
         
         self.delete(objects: objectsToDelete)
         self.save(objects: objects)
+    }
+    
+    func mergeEventually<T>(with objects: [T]) where T: Papyrus
+    {
+        self.writeQueue.async {
+            self.merge(with: objects)
+        }
     }
 }
 
