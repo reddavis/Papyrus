@@ -36,9 +36,11 @@ dependencies: [
 
 ## Usage
 
+All write functions are synchronous and have asynchonous counterparts. Variety is the spice of life after all.  
+
 ### Saving
 
-Anything that conforms to the `Papyrus` protocol can be stored. When an object is added to the store, it is firstly added to the in-memory cache and then eventually written to the store.
+Anything that conforms to the `Papyrus` protocol can be stored.
 
 #### Example A - Basic Saving
 
@@ -55,7 +57,22 @@ let store = try PapyrusStore()
 store.save(car)
 ```
 
-#### Example B - Relationships
+#### Example B - Eventual Saving
+
+```swift
+struct Car: Papyrus
+{
+    let id: String
+    let model: String
+    let manufacturer: String
+}
+
+let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
+let store = try PapyrusStore()
+store.saveEventually(car)
+```
+
+#### Example C - Relationships
 
 Papyrus also understands relationships. If we continue with our `Car` modelling...Let's imagine we have an app that fetches a list of car manufacturers and their cars.
 
@@ -83,9 +100,11 @@ store.save(tesla)
 
 Because `Car` also conforms to `Papyrus`, `PapyrusStore` will also persist the cars when it saves the manufacturer.
 
-#### Example C - Merge
+#### Example D - Merge
 
 A common use case when dealing with API's is to fetch a collection of objects and the merge the results into your local collection.
+
+Merge also has a async counterpart `mergeEventually(objects:)`.
 
 Papyrus provides a function for this:
 
@@ -196,10 +215,18 @@ store.delete(tesla)
 
 ```swift
 let store = try PapyrusStore()
-store.delete(id: "abc...", of: Manufacturer.self)
+let tesla = store.object(id: "abc...", of: Manufacturer.self)
+store.deleteEventually(tesla)
 ```
 
 #### Example C
+
+```swift
+let store = try PapyrusStore()
+store.delete(id: "abc...", of: Manufacturer.self)
+```
+
+#### Example D
 
 ```swift
 let store = try PapyrusStore()

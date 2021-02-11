@@ -16,7 +16,7 @@
     <a title="  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html"> Docs</a> (67% documented)</p>
+        <p><a href="index.html"> Docs</a> (69% documented)</p>
         <p class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -98,9 +98,11 @@
 
 <p><a href="https://mystifying-bohr-b56ce9.netlify.app">API Reference</a></p>
 <h2 id='usage' class='heading'>Usage</h2>
+
+<p>All write functions are synchronous and have asynchonous counterparts. Variety is the spice of life after all.  </p>
 <h3 id='saving' class='heading'>Saving</h3>
 
-<p>Anything that conforms to the <code><a href="Protocols/Papyrus.html">Papyrus</a></code> protocol can be stored. When an object is added to the store, it is firstly added to the in-memory cache and then eventually written to the store.</p>
+<p>Anything that conforms to the <code><a href="Protocols/Papyrus.html">Papyrus</a></code> protocol can be stored.</p>
 <h4 id='example-a-basic-saving' class='heading'>Example A - Basic Saving</h4>
 <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Car</span><span class="p">:</span> <span class="kt">Papyrus</span>
 <span class="p">{</span>
@@ -113,7 +115,19 @@
 <span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
 <span class="n">store</span><span class="o">.</span><span class="nf">save</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
 </code></pre>
-<h4 id='example-b-relationships' class='heading'>Example B - Relationships</h4>
+<h4 id='example-b-eventual-saving' class='heading'>Example B - Eventual Saving</h4>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">Car</span><span class="p">:</span> <span class="kt">Papyrus</span>
+<span class="p">{</span>
+    <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">model</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">manufacturer</span><span class="p">:</span> <span class="kt">String</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">car</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">model</span><span class="p">:</span> <span class="s">"Model S"</span><span class="p">,</span> <span class="nv">manufacturer</span><span class="p">:</span> <span class="s">"Tesla"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">saveEventually</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
+</code></pre>
+<h4 id='example-c-relationships' class='heading'>Example C - Relationships</h4>
 
 <p>Papyrus also understands relationships. If we continue with our <code>Car</code> modelling&hellip;Let&rsquo;s imagine we have an app that fetches a list of car manufacturers and their cars.</p>
 
@@ -138,9 +152,11 @@
 </code></pre>
 
 <p>Because <code>Car</code> also conforms to <code><a href="Protocols/Papyrus.html">Papyrus</a></code>, <code><a href="Classes/PapyrusStore.html">PapyrusStore</a></code> will also persist the cars when it saves the manufacturer.</p>
-<h4 id='example-c-merge' class='heading'>Example C - Merge</h4>
+<h4 id='example-d-merge' class='heading'>Example D - Merge</h4>
 
 <p>A common use case when dealing with API&rsquo;s is to fetch a collection of objects and the merge the results into your local collection.</p>
+
+<p>Merge also has a async counterpart <code>mergeEventually(objects:)</code>.</p>
 
 <p>Papyrus provides a function for this:</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">carA</span> <span class="o">=</span> <span class="kt">Car</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">model</span><span class="p">:</span> <span class="s">"Model S"</span><span class="p">,</span> <span class="nv">manufacturer</span><span class="p">:</span> <span class="s">"Tesla"</span><span class="p">)</span>
@@ -228,9 +244,14 @@
 </code></pre>
 <h4 id='example-b' class='heading'>Example B</h4>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
-<span class="n">store</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">tesla</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="nf">object</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">deleteEventually</span><span class="p">(</span><span class="n">tesla</span><span class="p">)</span>
 </code></pre>
 <h4 id='example-c' class='heading'>Example C</h4>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
+<span class="n">store</span><span class="o">.</span><span class="nf">delete</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
+</code></pre>
+<h4 id='example-d' class='heading'>Example D</h4>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">store</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">PapyrusStore</span><span class="p">()</span>
 <span class="k">let</span> <span class="nv">tesla</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="nf">object</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"abc..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
 <span class="k">let</span> <span class="nv">ford</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="nf">object</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="s">"xyz..."</span><span class="p">,</span> <span class="nv">of</span><span class="p">:</span> <span class="kt">Manufacturer</span><span class="o">.</span><span class="k">self</span><span class="p">)</span>
@@ -243,7 +264,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2021-01-05)</p>
+          <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2021-02-11)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
