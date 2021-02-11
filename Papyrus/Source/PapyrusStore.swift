@@ -297,7 +297,7 @@ public extension PapyrusStore
     
     /// Eventually deletes an array of objects.
     /// - Parameter objects: An array of objects to delete.
-    func eventuallyDelete<T>(objects: [T]) where T: Papyrus
+    func deleteEventually<T>(objects: [T]) where T: Papyrus
     {
         self.writeQueue.async {
             self.delete(objects: objects)
