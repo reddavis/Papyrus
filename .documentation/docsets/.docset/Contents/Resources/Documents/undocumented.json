@@ -65,8 +65,15 @@
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/PapyrusStore.swift",
-      "line": 310,
+      "line": 336,
       "symbol": "PapyrusStore.merge(with:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/PapyrusStore.swift",
+      "line": 347,
+      "symbol": "PapyrusStore.mergeEventually(with:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
