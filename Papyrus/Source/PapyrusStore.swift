@@ -28,7 +28,6 @@ public final class PapyrusStore
     private let cacheWriteQueue = DispatchQueue(label: "com.reddavis.Papyrus.cacheWriteQueue.\(UUID())", qos: .background)
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
-    private var idsQueuedForDeletion = Set<CacheKey>()
     
     private let memoryCache: NSCache<CacheKey, PapyrusCacheWrapper> = {
         let cache = NSCache<CacheKey, PapyrusCacheWrapper>()
@@ -202,11 +201,7 @@ public extension PapyrusStore
     /// - Parameter id: The `id` of the object.
     /// - Returns: The object of type `T` or nil if no object is found.
     func object<T>(id: String) -> T? where T: Papyrus
-    {
-        // Check if the object has been queued for deletion
-        let key = CacheKey(id: id, type: T.self)
-        guard !self.idsQueuedForDeletion.contains(key) else { return nil }
-        
+    {   
         if let object = self.fetchCachedObject(id: id) as T? { return object }
         
         let url = self.fileURL(for: String(describing: T.self), id: id)
