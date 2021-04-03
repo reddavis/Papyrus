@@ -11,10 +11,8 @@ import Foundation
 final class CacheKey: NSObject
 {
     // Internal
+    let key: String
     override var hash: Int { self.key.hash }
-    
-    // Private
-    private let key: String
     
     // MARK: Initialization
     

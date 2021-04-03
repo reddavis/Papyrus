@@ -20,6 +20,7 @@
 		A4C9E6B42589D73E00476A7E /* PapyrusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */; };
 		A4C9E6B62589D73E00476A7E /* Papyrus.h in Headers */ = {isa = PBXBuildFile; fileRef = A4C9E6A82589D73D00476A7E /* Papyrus.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A4C9E6CC2589D78600476A7E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A4C9E6CB2589D78600476A7E /* README.md */; };
+		A4CA1D932618DB730057C88D /* CacheKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4CA1D922618DB730057C88D /* CacheKeyTests.swift */; };
 		A4DAAA92258C798D009E3125 /* SetupError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAA91258C798D009E3125 /* SetupError.swift */; };
 		A4DAAA97258C8525009E3125 /* Mirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAA96258C8525009E3125 /* Mirror.swift */; };
 		A4DAAA9D258C88AE009E3125 /* PapyrusCacheWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAA9C258C88AE009E3125 /* PapyrusCacheWrapper.swift */; };
@@ -60,6 +61,7 @@
 		A4C9E6B52589D73E00476A7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A4C9E6C52589D78100476A7E /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = SOURCE_ROOT; };
 		A4C9E6CB2589D78600476A7E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		A4CA1D922618DB730057C88D /* CacheKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheKeyTests.swift; sourceTree = "<group>"; };
 		A4DAAA91258C798D009E3125 /* SetupError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupError.swift; sourceTree = "<group>"; };
 		A4DAAA96258C8525009E3125 /* Mirror.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mirror.swift; sourceTree = "<group>"; };
 		A4DAAA9C258C88AE009E3125 /* PapyrusCacheWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusCacheWrapper.swift; sourceTree = "<group>"; };
@@ -112,8 +114,9 @@
 		A4515E46258B2364000B76CF /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */,
+				A4CA1D922618DB730057C88D /* CacheKeyTests.swift */,
 				A4EE68AF2593523E0056B386 /* ObserverPublisherTests.swift */,
+				A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */,
 				A49F855C25A2F90200A00C38 /* Papyrus.QueryTests.swift */,
 			);
 			path = Tests;
@@ -375,6 +378,7 @@
 				A4645464258B372E005C0FBB /* ExampleB.swift in Sources */,
 				A4DAAADA25907B51009E3125 /* Int+Extension.swift in Sources */,
 				A4C9E6B42589D73E00476A7E /* PapyrusStoreTests.swift in Sources */,
+				A4CA1D932618DB730057C88D /* CacheKeyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
