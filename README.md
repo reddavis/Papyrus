@@ -50,6 +50,12 @@ All write functions are synchronous and have asynchonous counterparts. Variety i
 
 Anything that conforms to the `Papyrus` protocol can be stored.
 
+The `Papyrus` protocol is simply an umbrella of these three protocols:
+
+- `Codable`
+- `Equatable`
+- `Identifiable`
+
 #### Example A - Basic Saving
 
 ```swift
