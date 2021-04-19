@@ -9,10 +9,10 @@ import Combine
 import Foundation
 
 
-/// `PapyrusStore.Query<T>` is a mechanism for querying `Papyrus` objects.
+/// `PapyrusStore.CollectionQuery<T>` is a mechanism for querying `Papyrus` objects.
 public extension PapyrusStore
 {
-    class Query<T> where T: Papyrus
+    class CollectionQuery<T> where T: Papyrus
     {
         // Public
         public typealias OnFilter = (T) throws -> Bool
@@ -87,9 +87,9 @@ public extension PapyrusStore
         /// Observe changes to the query.
         /// - Returns: A publisher that emits values when
         /// valid objects are changed.
-        public func observe() -> AnyPublisher<[T], Never>
+        public func publisher() -> AnyPublisher<[T], Never>
         {
-            PapyrusStore.ObserverPublisher(directoryURL: self.directoryURL)
+            CollectionObserverPublisher(directoryURL: self.directoryURL)
                 .tryMap { try $0.filter(self.filter) }
                 .tryMap { try $0.sorted(by: self.sort) }
                 .replaceError(with: [])

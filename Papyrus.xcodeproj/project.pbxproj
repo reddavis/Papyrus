@@ -14,8 +14,8 @@
 		A464545E258B371E005C0FBB /* ExampleA.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464545D258B371E005C0FBB /* ExampleA.swift */; };
 		A4645464258B372E005C0FBB /* ExampleB.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4645463258B372E005C0FBB /* ExampleB.swift */; };
 		A464546B258B3A5C005C0FBB /* XCTest+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464546A258B3A5C005C0FBB /* XCTest+Extension.swift */; };
-		A49F855925A2F07400A00C38 /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F855825A2F07400A00C38 /* Query.swift */; };
-		A49F855D25A2F90200A00C38 /* Papyrus.QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F855C25A2F90200A00C38 /* Papyrus.QueryTests.swift */; };
+		A4762566262895A000CAB805 /* ObjectObserverPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4762565262895A000CAB805 /* ObjectObserverPublisher.swift */; };
+		A476256A2628990200CAB805 /* ObjectObserverSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47625692628990200CAB805 /* ObjectObserverSubscription.swift */; };
 		A4C9E6AF2589D73E00476A7E /* Papyrus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C9E6A52589D73D00476A7E /* Papyrus.framework */; };
 		A4C9E6B42589D73E00476A7E /* PapyrusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */; };
 		A4C9E6B62589D73E00476A7E /* Papyrus.h in Headers */ = {isa = PBXBuildFile; fileRef = A4C9E6A82589D73D00476A7E /* Papyrus.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -27,9 +27,17 @@
 		A4DAAAD025906FA8009E3125 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAACF25906FA8009E3125 /* Collection.swift */; };
 		A4DAAADA25907B51009E3125 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAAD925907B51009E3125 /* Int+Extension.swift */; };
 		A4DAAB1C2591EFD1009E3125 /* CacheKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAB1B2591EFD0009E3125 /* CacheKey.swift */; };
-		A4EE68A825931AF50056B386 /* ObserverPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EE68A725931AF50056B386 /* ObserverPublisher.swift */; };
-		A4EE68B02593523E0056B386 /* ObserverPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EE68AF2593523E0056B386 /* ObserverPublisherTests.swift */; };
-		A4EE68BB25935F110056B386 /* ObserverSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EE68BA25935F110056B386 /* ObserverSubscription.swift */; };
+		A4EA231B2628A9C6006B62FA /* QueryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA231A2628A9C6006B62FA /* QueryError.swift */; };
+		A4EA2323262951E1006B62FA /* CollectionQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA2322262951E1006B62FA /* CollectionQuery.swift */; };
+		A4EA2327262951FC006B62FA /* CollectionQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA2326262951FC006B62FA /* CollectionQueryTests.swift */; };
+		A4EA233126295284006B62FA /* ObjectQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA233026295284006B62FA /* ObjectQuery.swift */; };
+		A4EA236F2629E905006B62FA /* ObjectObserverPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA236E2629E905006B62FA /* ObjectObserverPublisherTests.swift */; };
+		A4EA237E262B2996006B62FA /* ObjectQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA237D262B2996006B62FA /* ObjectQueryTests.swift */; };
+		A4EA2383262DDF54006B62FA /* HasOne.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA2382262DDF54006B62FA /* HasOne.swift */; };
+		A4EA2387262DDF68006B62FA /* HasMany.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA2386262DDF68006B62FA /* HasMany.swift */; };
+		A4EE68A825931AF50056B386 /* CollectionObserverPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EE68A725931AF50056B386 /* CollectionObserverPublisher.swift */; };
+		A4EE68B02593523E0056B386 /* CollectionObserverPublisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EE68AF2593523E0056B386 /* CollectionObserverPublisherTests.swift */; };
+		A4EE68BB25935F110056B386 /* CollectionObserverSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EE68BA25935F110056B386 /* CollectionObserverSubscription.swift */; };
 		A4EE68C125949FF00056B386 /* ExampleC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EE68C025949FF00056B386 /* ExampleC.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,8 +59,8 @@
 		A464545D258B371E005C0FBB /* ExampleA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleA.swift; sourceTree = "<group>"; };
 		A4645463258B372E005C0FBB /* ExampleB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleB.swift; sourceTree = "<group>"; };
 		A464546A258B3A5C005C0FBB /* XCTest+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+Extension.swift"; sourceTree = "<group>"; };
-		A49F855825A2F07400A00C38 /* Query.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
-		A49F855C25A2F90200A00C38 /* Papyrus.QueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Papyrus.QueryTests.swift; sourceTree = "<group>"; };
+		A4762565262895A000CAB805 /* ObjectObserverPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserverPublisher.swift; sourceTree = "<group>"; };
+		A47625692628990200CAB805 /* ObjectObserverSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserverSubscription.swift; sourceTree = "<group>"; };
 		A4C9E6A52589D73D00476A7E /* Papyrus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Papyrus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4C9E6A82589D73D00476A7E /* Papyrus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Papyrus.h; sourceTree = "<group>"; };
 		A4C9E6A92589D73D00476A7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -68,9 +76,17 @@
 		A4DAAACF25906FA8009E3125 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		A4DAAAD925907B51009E3125 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		A4DAAB1B2591EFD0009E3125 /* CacheKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheKey.swift; sourceTree = "<group>"; };
-		A4EE68A725931AF50056B386 /* ObserverPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserverPublisher.swift; sourceTree = "<group>"; };
-		A4EE68AF2593523E0056B386 /* ObserverPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserverPublisherTests.swift; sourceTree = "<group>"; };
-		A4EE68BA25935F110056B386 /* ObserverSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserverSubscription.swift; sourceTree = "<group>"; };
+		A4EA231A2628A9C6006B62FA /* QueryError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryError.swift; sourceTree = "<group>"; };
+		A4EA2322262951E1006B62FA /* CollectionQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionQuery.swift; sourceTree = "<group>"; };
+		A4EA2326262951FC006B62FA /* CollectionQueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionQueryTests.swift; sourceTree = "<group>"; };
+		A4EA233026295284006B62FA /* ObjectQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectQuery.swift; sourceTree = "<group>"; };
+		A4EA236E2629E905006B62FA /* ObjectObserverPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserverPublisherTests.swift; sourceTree = "<group>"; };
+		A4EA237D262B2996006B62FA /* ObjectQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectQueryTests.swift; sourceTree = "<group>"; };
+		A4EA2382262DDF54006B62FA /* HasOne.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HasOne.swift; sourceTree = "<group>"; };
+		A4EA2386262DDF68006B62FA /* HasMany.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HasMany.swift; sourceTree = "<group>"; };
+		A4EE68A725931AF50056B386 /* CollectionObserverPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionObserverPublisher.swift; sourceTree = "<group>"; };
+		A4EE68AF2593523E0056B386 /* CollectionObserverPublisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionObserverPublisherTests.swift; sourceTree = "<group>"; };
+		A4EE68BA25935F110056B386 /* CollectionObserverSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionObserverSubscription.swift; sourceTree = "<group>"; };
 		A4EE68C025949FF00056B386 /* ExampleC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,9 +131,11 @@
 			isa = PBXGroup;
 			children = (
 				A4CA1D922618DB730057C88D /* CacheKeyTests.swift */,
-				A4EE68AF2593523E0056B386 /* ObserverPublisherTests.swift */,
+				A4EE68AF2593523E0056B386 /* CollectionObserverPublisherTests.swift */,
+				A4EA2326262951FC006B62FA /* CollectionQueryTests.swift */,
 				A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */,
-				A49F855C25A2F90200A00C38 /* Papyrus.QueryTests.swift */,
+				A4EA236E2629E905006B62FA /* ObjectObserverPublisherTests.swift */,
+				A4EA237D262B2996006B62FA /* ObjectQueryTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -139,6 +157,24 @@
 				A464546A258B3A5C005C0FBB /* XCTest+Extension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		A476255D2628927700CAB805 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				A4EE68A725931AF50056B386 /* CollectionObserverPublisher.swift */,
+				A4EE68BA25935F110056B386 /* CollectionObserverSubscription.swift */,
+			);
+			path = Collection;
+			sourceTree = "<group>";
+		};
+		A4762564262892B700CAB805 /* Object */ = {
+			isa = PBXGroup;
+			children = (
+				A4762565262895A000CAB805 /* ObjectObserverPublisher.swift */,
+				A47625692628990200CAB805 /* ObjectObserverSubscription.swift */,
+			);
+			path = Object;
 			sourceTree = "<group>";
 		};
 		A4C9E69B2589D73D00476A7E = {
@@ -182,16 +218,17 @@
 		A4C9E6C12589D74500476A7E /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				A4EA23192628A9B0006B62FA /* Errors */,
 				A4DAAA95258C8517009E3125 /* Extensions */,
-				A4EE68B725935EB60056B386 /* Observer */,
+				A4EE68B725935EB60056B386 /* Publishers */,
+				A4EA238A262DE1E1006B62FA /* Queries */,
+				A4EA2381262DDF48006B62FA /* Relationships */,
 				A4DAAB1B2591EFD0009E3125 /* CacheKey.swift */,
 				A4645456258B3485005C0FBB /* Logger.swift */,
 				A444CC022589DFC90067F4B0 /* Papyrus.swift */,
 				A4DAAA9C258C88AE009E3125 /* PapyrusCacheWrapper.swift */,
 				A4645451258B3391005C0FBB /* PapyrusEncodingWrapper.swift */,
 				A444CBFC2589D8350067F4B0 /* PapyrusStore.swift */,
-				A4DAAA91258C798D009E3125 /* SetupError.swift */,
-				A49F855825A2F07400A00C38 /* Query.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -232,13 +269,40 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		A4EE68B725935EB60056B386 /* Observer */ = {
+		A4EA23192628A9B0006B62FA /* Errors */ = {
 			isa = PBXGroup;
 			children = (
-				A4EE68A725931AF50056B386 /* ObserverPublisher.swift */,
-				A4EE68BA25935F110056B386 /* ObserverSubscription.swift */,
+				A4DAAA91258C798D009E3125 /* SetupError.swift */,
+				A4EA231A2628A9C6006B62FA /* QueryError.swift */,
 			);
-			path = Observer;
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		A4EA2381262DDF48006B62FA /* Relationships */ = {
+			isa = PBXGroup;
+			children = (
+				A4EA2382262DDF54006B62FA /* HasOne.swift */,
+				A4EA2386262DDF68006B62FA /* HasMany.swift */,
+			);
+			path = Relationships;
+			sourceTree = "<group>";
+		};
+		A4EA238A262DE1E1006B62FA /* Queries */ = {
+			isa = PBXGroup;
+			children = (
+				A4EA2322262951E1006B62FA /* CollectionQuery.swift */,
+				A4EA233026295284006B62FA /* ObjectQuery.swift */,
+			);
+			path = Queries;
+			sourceTree = "<group>";
+		};
+		A4EE68B725935EB60056B386 /* Publishers */ = {
+			isa = PBXGroup;
+			children = (
+				A4762564262892B700CAB805 /* Object */,
+				A476255D2628927700CAB805 /* Collection */,
+			);
+			path = Publishers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -351,18 +415,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4EE68BB25935F110056B386 /* ObserverSubscription.swift in Sources */,
+				A4EE68BB25935F110056B386 /* CollectionObserverSubscription.swift in Sources */,
+				A4762566262895A000CAB805 /* ObjectObserverPublisher.swift in Sources */,
+				A4EA2383262DDF54006B62FA /* HasOne.swift in Sources */,
 				A4DAAB1C2591EFD1009E3125 /* CacheKey.swift in Sources */,
+				A476256A2628990200CAB805 /* ObjectObserverSubscription.swift in Sources */,
 				A4DAAAD025906FA8009E3125 /* Collection.swift in Sources */,
-				A4EE68A825931AF50056B386 /* ObserverPublisher.swift in Sources */,
+				A4EE68A825931AF50056B386 /* CollectionObserverPublisher.swift in Sources */,
 				A4DAAA97258C8525009E3125 /* Mirror.swift in Sources */,
 				A4DAAA92258C798D009E3125 /* SetupError.swift in Sources */,
-				A49F855925A2F07400A00C38 /* Query.swift in Sources */,
 				A4DAAA9D258C88AE009E3125 /* PapyrusCacheWrapper.swift in Sources */,
+				A4EA233126295284006B62FA /* ObjectQuery.swift in Sources */,
+				A4EA231B2628A9C6006B62FA /* QueryError.swift in Sources */,
+				A4EA2323262951E1006B62FA /* CollectionQuery.swift in Sources */,
 				A444CC032589DFC90067F4B0 /* Papyrus.swift in Sources */,
 				A444CBFD2589D8350067F4B0 /* PapyrusStore.swift in Sources */,
 				A4645452258B3391005C0FBB /* PapyrusEncodingWrapper.swift in Sources */,
 				A4645457258B3485005C0FBB /* Logger.swift in Sources */,
+				A4EA2387262DDF68006B62FA /* HasMany.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,13 +442,15 @@
 			files = (
 				A464546B258B3A5C005C0FBB /* XCTest+Extension.swift in Sources */,
 				A464545E258B371E005C0FBB /* ExampleA.swift in Sources */,
-				A49F855D25A2F90200A00C38 /* Papyrus.QueryTests.swift in Sources */,
 				A4EE68C125949FF00056B386 /* ExampleC.swift in Sources */,
-				A4EE68B02593523E0056B386 /* ObserverPublisherTests.swift in Sources */,
+				A4EA2327262951FC006B62FA /* CollectionQueryTests.swift in Sources */,
+				A4EA237E262B2996006B62FA /* ObjectQueryTests.swift in Sources */,
+				A4EE68B02593523E0056B386 /* CollectionObserverPublisherTests.swift in Sources */,
 				A4645464258B372E005C0FBB /* ExampleB.swift in Sources */,
 				A4DAAADA25907B51009E3125 /* Int+Extension.swift in Sources */,
 				A4C9E6B42589D73E00476A7E /* PapyrusStoreTests.swift in Sources */,
 				A4CA1D932618DB730057C88D /* CacheKeyTests.swift in Sources */,
+				A4EA236F2629E905006B62FA /* ObjectObserverPublisherTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

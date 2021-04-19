@@ -10,7 +10,7 @@ import XCTest
 @testable import Papyrus
 
 
-final class PapyrusQueryTests: XCTestCase
+final class CollectionQueryTests: XCTestCase
 {
     // Private
     private var storeDirectory: URL!
@@ -37,20 +37,20 @@ final class PapyrusQueryTests: XCTestCase
     
     func testFetchingAll() throws
     {
-        let query = PapyrusStore.Query<ExampleB>(directoryURL: self.storeDirectory)
+        let query = PapyrusStore.CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
         XCTAssertEqual(query.execute().count, self.numberOfDummyObjects)
     }
     
     func testFiltering() throws
     {
-        let query = PapyrusStore.Query<ExampleB>(directoryURL: self.storeDirectory)
+        let query = PapyrusStore.CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .filter { $0.integerValue > 5 }
         XCTAssertEqual(query.execute().count, 5)
     }
     
     func testSorting() throws
     {
-        let query = PapyrusStore.Query<ExampleB>(directoryURL: self.storeDirectory)
+        let query = PapyrusStore.CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .sort { $0.integerValue > $1.integerValue }
         XCTAssertEqual(query.execute().first?.integerValue, 10)
     }
@@ -59,9 +59,9 @@ final class PapyrusQueryTests: XCTestCase
     {
         let expectation = self.expectation(description: "Received value")
         
-        PapyrusStore.Query<ExampleB>(directoryURL: self.storeDirectory)
+        PapyrusStore.CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .filter { $0.integerValue > 5 }
-            .observe()
+            .publisher()
             .first()
             .sink {
                 XCTAssertEqual($0.count, 5)
@@ -76,9 +76,9 @@ final class PapyrusQueryTests: XCTestCase
     {
         let expectation = self.expectation(description: "Received value")
         
-        PapyrusStore.Query<ExampleB>(directoryURL: self.storeDirectory)
+        PapyrusStore.CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .sort { $0.integerValue > $1.integerValue }
-            .observe()
+            .publisher()
             .first()
             .sink {
                 XCTAssertEqual($0.first?.integerValue, 10)

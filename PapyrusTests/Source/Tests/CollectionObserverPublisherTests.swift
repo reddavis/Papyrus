@@ -10,7 +10,7 @@ import XCTest
 @testable import Papyrus
 
 
-final class ObserverPublisherTests: XCTestCase
+final class CollectionObserverPublisherTests: XCTestCase
 {
     // Private
     private var storeDirectory: URL!
@@ -39,7 +39,7 @@ final class ObserverPublisherTests: XCTestCase
     {
         let expectation = self.expectation(description: "Received values")
         
-        PapyrusStore.ObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
+        CollectionObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
             .first()
             .sink {
                 XCTAssertEqual($0.count, self.numberOfDummyObjects)
@@ -54,7 +54,7 @@ final class ObserverPublisherTests: XCTestCase
     {
         let expectation = self.expectation(description: "Completion called")
         
-        PapyrusStore.ObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
+        CollectionObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
             .first()
             .sink(receiveCompletion: {
                 XCTAssertEqual($0, .finished)
@@ -72,7 +72,7 @@ final class ObserverPublisherTests: XCTestCase
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 1
         
-        PapyrusStore.ObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
+        CollectionObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         
@@ -86,13 +86,13 @@ final class ObserverPublisherTests: XCTestCase
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 1
         
-        PapyrusStore.ObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
+        CollectionObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         
         let object = ExampleB(id: UUID().uuidString)
         try object.write(to: self.storeDirectory)
-        try FileManager.default.removeItem(at: self.storeDirectory.appendingPathComponent(object.id))
+        try FileManager.default.removeItem(at: self.storeDirectory.appendingPathComponent(String(object.id.hashValue)))
         
         self.waitForExpectations(timeout: 2.0)
     }
@@ -102,7 +102,7 @@ final class ObserverPublisherTests: XCTestCase
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 2
         
-        PapyrusStore.ObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
+        CollectionObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         

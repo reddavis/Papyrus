@@ -8,7 +8,7 @@
 import Foundation
 
 
-public extension PapyrusStore
+extension PapyrusStore
 {
     /// Information about errors during `PapyrusStore` setup.
     enum SetupError: Error

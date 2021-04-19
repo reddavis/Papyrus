@@ -12,18 +12,18 @@ final class CacheKey: NSObject
 {
     // Internal
     let key: String
-    override var hash: Int { self.key.hash }
+    override var hash: Int { self.key.hashValue }
     
     // MARK: Initialization
     
     init<T>(object: T) where T: Papyrus
     {
-        self.key = String(describing: T.self) + object.id
+        self.key = String(describing: T.self) + String(object.id.hashValue)
     }
     
-    init<T>(id: String, type: T.Type) where T: Papyrus
+    init<T, ID: Hashable>(id: ID, type: T.Type) where T: Papyrus
     {
-        self.key = String(describing: type) + id
+        self.key = String(describing: type) + String(id.hashValue)
     }
     
     // MARK: NSObject

@@ -11,6 +11,6 @@ import Foundation
 
 struct ExampleC: Papyrus
 {
-    let id: String
-    let children: [ExampleB]
+    var id: String
+    @HasMany var children: [ExampleB]
 }

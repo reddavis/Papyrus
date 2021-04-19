@@ -10,8 +10,21 @@ import XCTest
 
 extension XCTest
 {
+    func expectToEventually(
+        _ test: @autoclosure () -> Bool,
+        timeout: TimeInterval = 1.0,
+        message: String = ""
+    )
+    {
+        self.expectToEventually(test, timeout: timeout, message: message)
+    }
+    
     // Thanks to: https://www.vadimbulavin.com/swift-asynchronous-unit-testing-with-busy-assertion-pattern/
-    func expectToEventually(_ test: @autoclosure () -> Bool, timeout: TimeInterval = 1.0, message: String = "")
+    func expectToEventually(
+        _ test: () -> Bool,
+        timeout: TimeInterval = 1.0,
+        message: String = ""
+    )
     {
         let runLoop = RunLoop.current
         let timeoutDate = Date(timeIntervalSinceNow: timeout)
@@ -28,7 +41,35 @@ extension XCTest
         XCTFail(message)
     }
     
-    func expectToEventuallyReturn<T>(_ test: @autoclosure () -> T?, timeout: TimeInterval = 1.0, message: String = "") throws -> T
+    func expectToEventuallyThrow(
+        _ test: () throws -> Void,
+        timeout: TimeInterval = 1.0,
+        message: String = ""
+    )
+    {
+        let runLoop = RunLoop.current
+        let timeoutDate = Date(timeIntervalSinceNow: timeout)
+        repeat
+        {
+            do
+            {
+                try test()
+                runLoop.run(until: Date(timeIntervalSinceNow: 0.01))
+            }
+            catch
+            {
+                return
+            }
+        } while Date().compare(timeoutDate) == .orderedAscending
+        
+        XCTFail(message)
+    }
+    
+    func expectToEventuallyReturn<T>(
+        _ test: @autoclosure () -> T?,
+        timeout: TimeInterval = 1.0,
+        message: String = ""
+    ) throws -> T
     {
         let runLoop = RunLoop.current
         let timeoutDate = Date(timeIntervalSinceNow: timeout)

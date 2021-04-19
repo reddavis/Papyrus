@@ -5,6 +5,7 @@
 //  Created by Red Davis on 16/12/2020.
 //
 
+import Combine
 import Foundation
 
 
@@ -43,12 +44,14 @@ public final class PapyrusStore
     
     /// Initialize a new `PapyrusStore` instance persisted at the provided `URL`.
     /// - Parameter url: The `URL` to persist data to.
-    /// - Throws: Error when unable to create storage directory.
-    public init(url: URL) throws
+    public init(url: URL)
     {
         self.url = url
-        self.logger = Logger(subsystem: "com.reddavis.PapyrusStore", category: "PapyrusStore")
-        try self.setupDataDirectory()
+        self.logger = Logger(
+            subsystem: "com.reddavis.PapyrusStore",
+            category: "PapyrusStore"
+        )
+        self.setupDataDirectory()
     }
     
     /// Initialize a new `PapyrusStore` instance with the default
@@ -56,30 +59,39 @@ public final class PapyrusStore
     ///
     /// The default Papyrus Store will persist it's data to a
     /// directory inside Application Support.
-    /// - Throws: Error when unable to create storage directory.
-    public convenience init() throws
+    public convenience init()
     {
-        let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("Papyrus", isDirectory: true)
-        try self.init(url: url)
+        let url = FileManager.default.urls(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask
+        )[0].appendingPathComponent("Papyrus", isDirectory: true)
+        self.init(url: url)
     }
     
     // MARK: Setup
     
-    private func setupDataDirectory() throws
+    private func setupDataDirectory()
     {
-        try self.createDirectoryIfNeeded(at: self.url)
+        do
+        {
+            try self.createDirectoryIfNeeded(at: self.url)
+        }
+        catch
+        {
+            self.logger.fault("Unable to create store directory: \(error)")
+        }
     }
     
     // MARK: File management
     
-    private func fileURL(for object: Papyrus) -> URL
+    private func fileURL<ID: Hashable>(for typeDescription: String, id: ID) -> URL
     {
-        self.fileURL(for: String(describing: type(of: object)), id: object.id)
+        self.fileURL(for: typeDescription, filename: String(id.hashValue))
     }
     
-    private func fileURL(for typeDescription: String, id: String) -> URL
+    private func fileURL(for typeDescription: String, filename: String) -> URL
     {
-        self.directoryURL(for: typeDescription).appendingPathComponent(id)
+        self.directoryURL(for: typeDescription).appendingPathComponent(filename)
     }
     
     private func directoryURL<T>(for type: T.Type) -> URL
@@ -120,7 +132,7 @@ public extension PapyrusStore
 {
     /// Saves the object to the store.
     /// - Parameter object: The object to save.
-    func save<T>(_ object: T) where T: Papyrus
+    func save<T: Papyrus>(_ object: T)
     {
         // Pre-warm cache
         self.cache(object)
@@ -128,16 +140,13 @@ public extension PapyrusStore
         // Write to file system
         var touchedDirectories = Set([self.directoryURL(for: T.self)])
         
-        let root = PapyrusEncodingWrapper(object)
-        self.save(root, id: object.id)
-        self.logger.debug("Saved: \(String(describing: type(of: object))) [\(object.id)]")
+        let root = PapyrusEncodingWrapper(object: object)
+        self.save(root, filename: object.filename)
         
         // Store any Papyrus relationships.
-        Mirror.reflectProperties(of: object, matchingType: Papyrus.self, recursively: true) {
-            let encodable = PapyrusEncodingWrapper($0)
-            self.save(encodable, id: $0.id)
-            
-            touchedDirectories.insert(self.directoryURL(for: String(describing: type(of: $0))))
+        Mirror.reflectProperties(of: object, matchingType: PapyrusEncodingWrapper.self, recursively: true) {
+            self.save($0, filename: $0.filename)
+            touchedDirectories.insert(self.directoryURL(for: $0.typeDescription))
         }
         
         // Touch all changed directories
@@ -151,7 +160,7 @@ public extension PapyrusStore
     
     /// Eventually saves the object to the store.
     /// - Parameter object: The object to save.
-    func saveEventually<T>(_ object: T) where T: Papyrus
+    func saveEventually<T: Papyrus>(_ object: T)
     {
         self.writeQueue.async {
             self.save(object)
@@ -160,29 +169,28 @@ public extension PapyrusStore
     
     /// Saves all objects to the store.
     /// - Parameter objects: An array of objects to add to the store.
-    func save<T>(objects: [T]) where T: Papyrus
+    func save<T: Papyrus>(objects: [T])
     {
         objects.forEach(self.save)
     }
     
     /// Eventually saves all objects to the store.
     /// - Parameter objects: An array of objects to add to the store.
-    func saveEventually<T>(objects: [T]) where T: Papyrus
+    func saveEventually<T: Papyrus>(objects: [T])
     {
         self.writeQueue.async {
             objects.forEach(self.save)
         }
     }
     
-    private func save(_ object: PapyrusEncodingWrapper, id: String)
+    private func save(_ object: PapyrusEncodingWrapper, filename: String)
     {
         do
         {
             try self.createDirectoryIfNeeded(for: object.typeDescription)
             let data = try self.encoder.encode(object)
-            try data.write(to: self.fileURL(for: object.typeDescription, id: id))
-            
-            self.logger.debug("Saved: \(object.typeDescription) [\(id)]")
+            try data.write(to: self.fileURL(for: object.typeDescription, filename: filename))
+            self.logger.debug("Saved: \(object.typeDescription) [Filename: \(filename)]")
         }
         catch
         {
@@ -195,53 +203,33 @@ public extension PapyrusStore
 
 public extension PapyrusStore
 {
-    /// Retrieves an object, by its `id`, from the store.
-    ///
-    /// `nil` is returned if the object does not exist.
+    /// Creates a `ObjectQuery<T>` instance for an object of the
+    /// type inferred and id provided.
     /// - Parameter id: The `id` of the object.
-    /// - Returns: The object of type `T` or nil if no object is found.
-    func object<T>(id: String) -> T? where T: Papyrus
-    {   
-        if let object = self.fetchCachedObject(id: id) as T? { return object }
-        
-        let url = self.fileURL(for: String(describing: T.self), id: id)
-        guard self.fileManager.fileExists(atPath: url.path) else { return nil }
-        
-        // Load data
-        do
-        {
-            let data = try Data(contentsOf: url)
-            let object = try self.decoder.decode(T.self, from: data)
-            
-            // Cache object
-            self.cacheWriteQueue.async { self.cache(object) }
-            
-            return object
-        }
-        catch
-        {
-            try? self.fileManager.removeItem(at: url)
-            return nil
-        }
+    /// - Returns: A `ObjectQuery<T>` instance.
+    func object<T: Papyrus, ID: Hashable>(id: ID) -> ObjectQuery<T>
+    {
+        ObjectQuery(id: id, directoryURL: self.directoryURL(for: T.self))
     }
     
-    /// Retrieves an object, by its `id`, from the store.
+    /// Creates a `ObjectQuery<T>` instance for an object of the
+    /// type and id provided.
     /// - Parameters:
     ///   - id: The `id` of the object.
     ///   - type: The `type` of the object.
-    /// - Returns: The object of `type` or nil if no object is found.
-    func object<T>(id: String, of type: T.Type) -> T? where T: Papyrus
+    /// - Returns: A `ObjectQuery<T>` instance.
+    func object<T: Papyrus, ID: Hashable>(id: ID, of type: T.Type) -> ObjectQuery<T>
     {
-        self.object(id: id)
+        ObjectQuery(id: id, directoryURL: self.directoryURL(for: T.self))
     }
     
     /// Returns a `PapyrusCollection<T>` instance of all objects of
     /// the given type.
     /// - Parameter type: The type of objects to fetch.
-    /// - Returns: A `PapyrusCollection<T>` instance.
-    func objects<T>(type: T.Type) -> Query<T>
+    /// - Returns: A `AnyPublisher<[T], Error>` instance.
+    func objects<T: Papyrus>(type: T.Type) -> CollectionQuery<T>
     {
-        Query(directoryURL: self.directoryURL(for: T.self))
+        CollectionQuery(directoryURL: self.directoryURL(for: T.self))
     }
 }
 
@@ -253,7 +241,7 @@ public extension PapyrusStore
     /// - Parameters:
     ///   - id: The `id` of the object to be deleted.
     ///   - type: The `type` of the object to be deleted.
-    func delete<T>(id: String, of type: T.Type) where T: Papyrus
+    func delete<T: Papyrus, ID: Hashable>(id: ID, of type: T.Type)
     {
         self.delete(objectIdentifiers: [id : type])
     }
@@ -262,7 +250,7 @@ public extension PapyrusStore
     /// - Parameters:
     ///   - id: The `id` of the object to be deleted.
     ///   - type: The `type` of the object to be deleted.
-    func deleteEventually<T>(id: String, of type: T.Type) where T: Papyrus
+    func deleteEventually<T: Papyrus>(id: String, of type: T.Type)
     {
         self.writeQueue.async {
             self.delete(id: id, of: type)
@@ -271,14 +259,14 @@ public extension PapyrusStore
     
     /// Deletes an object from the store.
     /// - Parameter object: The object to delete.
-    func delete<T>(_ object: T) where T: Papyrus
+    func delete<T: Papyrus>(_ object: T)
     {
         self.delete(objectIdentifiers: [object.id : T.self])
     }
     
     /// Eventually deletes an object from the store.
     /// - Parameter object: The object to delete.
-    func deleteEventually<T>(_ object: T) where T: Papyrus
+    func deleteEventually<T: Papyrus>(_ object: T)
     {
         self.writeQueue.async {
             self.delete(object)
@@ -287,9 +275,9 @@ public extension PapyrusStore
     
     /// Deletes an array of objects.
     /// - Parameter objects: An array of objects to delete.
-    func delete<T>(objects: [T]) where T: Papyrus
+    func delete<T: Papyrus, ID>(objects: [T]) where ID == T.ID
     {
-        let identifiers = objects.reduce(into: [String : T.Type]()) {
+        let identifiers = objects.reduce(into: [ID : T.Type]()) {
             $0[$1.id] = T.self
         }
         self.delete(objectIdentifiers: identifiers)
@@ -297,14 +285,14 @@ public extension PapyrusStore
     
     /// Eventually deletes an array of objects.
     /// - Parameter objects: An array of objects to delete.
-    func deleteEventually<T>(objects: [T]) where T: Papyrus
+    func deleteEventually<T: Papyrus>(objects: [T])
     {
         self.writeQueue.async {
             self.delete(objects: objects)
         }
     }
     
-    private func delete<T>(objectIdentifiers: [String : T.Type]) where T: Papyrus
+    private func delete<ID: Hashable, T: Papyrus>(objectIdentifiers: [ID : T.Type])
     {
         objectIdentifiers.forEach {
             self.removeCachedObject(id: $0.key, type: $0.value)
@@ -365,7 +353,7 @@ private extension PapyrusStore
         self.logger.debug("Cached: \(String(describing: type(of: object))) [\(object.id)]")
     }
     
-    func fetchCachedObject<T>(id: String) -> T? where T: Papyrus
+    func fetchCachedObject<ID: Hashable, T: Papyrus>(id: ID) -> T?
     {
         let key = CacheKey(id: id, type: T.self)
         guard let wrapper = self.memoryCache.object(forKey: key),
@@ -377,7 +365,7 @@ private extension PapyrusStore
         return object
     }
     
-    func removeCachedObject<T>(id: String, type: T.Type) where T: Papyrus
+    func removeCachedObject<ID: Hashable, T: Papyrus>(id: ID, type: T.Type)
     {
         let key = CacheKey(id: id, type: type)
         self.memoryCache.removeObject(forKey: key)

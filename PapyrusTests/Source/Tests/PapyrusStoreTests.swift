@@ -26,7 +26,7 @@ final class PapyrusStoreTests: XCTestCase
         
         let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        self.store = try PapyrusStore(url: self.storeDirectory)
+        self.store = PapyrusStore(url: self.storeDirectory)
     }
     
     // MARK: Saving
@@ -42,7 +42,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
         
         // Object B's data file created
-        let objectBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB))).appendingPathComponent(idB)
+        let objectBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB))).appendingPathComponent(String(idB.hashValue))
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
@@ -59,7 +59,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeADirectory.path))
         
         // Object A's data file created
-        let objectADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectA))).appendingPathComponent(idA)
+        let objectADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectA))).appendingPathComponent(String(idA.hashValue))
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectADataFile.path))
         
         // Object B's type directory created
@@ -67,7 +67,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
         
         // Object B's data file created
-        let objectBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB))).appendingPathComponent(idB)
+        let objectBDataFile = objectTypeBDirectory.appendingPathComponent(String(idB.hashValue))
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
@@ -88,7 +88,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: parentDirectory.path))
         
         // Parent's data file created
-        let parentDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: parent))).appendingPathComponent(parentID)
+        let parentDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: parent))).appendingPathComponent(String(parentID.hashValue))
         XCTAssertTrue(self.fileManager.fileExists(atPath: parentDataFile.path))
         
         // Child A's type directory created
@@ -96,7 +96,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: childADirectory.path))
         
         // Child A's data file created
-        let childADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childA))).appendingPathComponent(childAID)
+        let childADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childA))).appendingPathComponent(String(childAID.hashValue))
         XCTAssertTrue(self.fileManager.fileExists(atPath: childADataFile.path))
         
         // Child B's type directory created
@@ -104,7 +104,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: childBDirectory.path))
         
         // Child B's data file created
-        let childBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childB))).appendingPathComponent(childBID)
+        let childBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childB))).appendingPathComponent(String(childBID.hashValue))
         XCTAssertTrue(self.fileManager.fileExists(atPath: childBDataFile.path))
     }
     
@@ -128,7 +128,7 @@ final class PapyrusStoreTests: XCTestCase
         expectation.expectedFulfillmentCount = 2
         
         self.store.objects(type: ExampleB.self)
-            .observe()
+            .publisher()
             .subscribe(on: DispatchQueue.global())
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
@@ -143,7 +143,14 @@ final class PapyrusStoreTests: XCTestCase
         let objectA = ExampleB(id: idA)
         
         self.store.saveEventually(objectA)
-        self.expectToEventually(self.store.object(id: idA, of: ExampleB.self) != nil)
+        self.expectToEventually {
+            do
+            {
+                let result = try self.store.object(id: idA, of: ExampleB.self).execute()
+                return result == objectA
+            }
+            catch { return false }
+        }
     }
     
     func testSavingObjectsEventually() throws
@@ -155,7 +162,19 @@ final class PapyrusStoreTests: XCTestCase
         let objectB = ExampleB(id: idB)
         
         self.store.saveEventually(objects: [objectA, objectB])
-        self.expectToEventually(self.store.object(id: idA, of: ExampleB.self) != nil && self.store.object(id: idB, of: ExampleB.self) != nil)
+        self.expectToEventually {
+            do
+            {
+                let fetchA = try self.store.object(id: idA, of: ExampleB.self).execute()
+                XCTAssertEqual(objectA, fetchA)
+                
+                let fetchB = try self.store.object(id: idB, of: ExampleB.self).execute()
+                XCTAssertEqual(objectB, fetchB)
+                
+                return true
+            }
+            catch { return false }
+        }
     }
     
     // MARK: Fetching
@@ -166,7 +185,7 @@ final class PapyrusStoreTests: XCTestCase
         let objectB = ExampleB(id: idB)
         self.store.save(objectB)
         
-        let fetchedObject: ExampleB? = self.store.object(id: idB)
+        let fetchedObject: ExampleB? = try XCTUnwrap(self.store.object(id: idB).execute())
         XCTAssertEqual(fetchedObject?.id, objectB.id)
     }
     
@@ -178,10 +197,10 @@ final class PapyrusStoreTests: XCTestCase
         let object = ExampleB(id: id)
         self.store.save(object)
         
-        let fetchedObject: ExampleB = try XCTUnwrap(self.store.object(id: id))
+        let fetchedObject: ExampleB = try XCTUnwrap(self.store.object(id: id).execute())
         self.store.delete(fetchedObject)
         
-        XCTAssertNil(self.store.object(id: id, of: ExampleB.self))
+        XCTAssertThrowsError(try self.store.object(id: id, of: ExampleB.self).execute())
     }
     
     func testDeletingEventuallyObject() throws
@@ -190,9 +209,12 @@ final class PapyrusStoreTests: XCTestCase
         let object = ExampleB(id: id)
         self.store.save(object)
         
-        let fetchedObject: ExampleB = try XCTUnwrap(self.store.object(id: id))
+        let fetchedObject: ExampleB = try XCTUnwrap(self.store.object(id: id).execute())
         self.store.deleteEventually(fetchedObject)
-        self.expectToEventually(self.store.object(id: id, of: ExampleB.self) == nil)
+        
+        self.expectToEventuallyThrow {
+            _ = try self.store.object(id: id, of: ExampleB.self).execute()
+        }
     }
     
     func testDeletingObjects() throws
@@ -205,12 +227,12 @@ final class PapyrusStoreTests: XCTestCase
         let objectB = ExampleB(id: idB)
         self.store.save(objectB)
         
-        let fetchedObjectA: ExampleB = try XCTUnwrap(self.store.object(id: idA))
-        let fetchedObjectB: ExampleB = try XCTUnwrap(self.store.object(id: idB))
+        let fetchedObjectA: ExampleB = try XCTUnwrap(self.store.object(id: idA).execute())
+        let fetchedObjectB: ExampleB = try XCTUnwrap(self.store.object(id: idB).execute())
         self.store.delete(objects: [fetchedObjectA, fetchedObjectB])
         
-        XCTAssertNil(self.store.object(id: idA, of: ExampleB.self))
-        XCTAssertNil(self.store.object(id: idB, of: ExampleB.self))
+        XCTAssertThrowsError(try self.store.object(id: idA, of: ExampleB.self).execute())
+        XCTAssertThrowsError(try self.store.object(id: idB, of: ExampleB.self).execute())
     }
     
     func testDeletingObjectsEventually() throws
@@ -223,10 +245,15 @@ final class PapyrusStoreTests: XCTestCase
         let objectB = ExampleB(id: idB)
         self.store.save(objectB)
         
-        let fetchedObjectA: ExampleB = try XCTUnwrap(self.store.object(id: idA))
-        let fetchedObjectB: ExampleB = try XCTUnwrap(self.store.object(id: idB))
-        self.store.delete(objects: [fetchedObjectA, fetchedObjectB])
-        self.expectToEventually(self.store.object(id: idA, of: ExampleB.self) == nil && self.store.object(id: idB, of: ExampleB.self) == nil)
+        let fetchedObjectA: ExampleB = try XCTUnwrap(self.store.object(id: idA).execute())
+        let fetchedObjectB: ExampleB = try XCTUnwrap(self.store.object(id: idB).execute())
+        self.store.deleteEventually(objects: [fetchedObjectA, fetchedObjectB])
+        
+        self.expectToEventually {
+            let a = try? self.store.object(id: idA, of: ExampleB.self).execute()
+            let b = try? self.store.object(id: idB, of: ExampleB.self).execute()
+            return a != nil && b != nil
+        }
     }
     
     func testUpdatesReceivedOnDeleting() throws
@@ -235,7 +262,7 @@ final class PapyrusStoreTests: XCTestCase
         expectation.expectedFulfillmentCount = 3
         
         self.store.objects(type: ExampleB.self)
-            .observe()
+            .publisher()
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         
@@ -263,9 +290,9 @@ final class PapyrusStoreTests: XCTestCase
         self.store.save(objects: [objectA, objectB, objectC])
         self.store.merge(with: [objectA, objectB])
         
-        XCTAssertNotNil(self.store.object(id: idA, of: ExampleB.self))
-        XCTAssertNotNil(self.store.object(id: idB, of: ExampleB.self))
-        XCTAssertNil(self.store.object(id: idC, of: ExampleB.self))
+        XCTAssertNoThrow(try self.store.object(id: idA, of: ExampleB.self).execute())
+        XCTAssertNoThrow(try self.store.object(id: idB, of: ExampleB.self).execute())
+        XCTAssertThrowsError(try self.store.object(id: idC, of: ExampleB.self).execute())
     }
     
     func testMergingEventually() throws
@@ -282,8 +309,6 @@ final class PapyrusStoreTests: XCTestCase
         self.store.save(objects: [objectA, objectB, objectC])
         self.store.mergeEventually(with: [objectA, objectB])
         
-        self.expectToEventually(self.store.object(id: idA, of: ExampleB.self) != nil)
-        self.expectToEventually(self.store.object(id: idB, of: ExampleB.self) != nil)
-        self.expectToEventually(self.store.object(id: idC, of: ExampleB.self) == nil)
+        self.expectToEventuallyThrow { _ = try self.store.object(id: idC, of: ExampleB.self).execute() }
     }
 }

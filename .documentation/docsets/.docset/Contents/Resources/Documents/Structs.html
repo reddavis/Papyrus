@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Protocols  Reference</title>
+    <title>Structures  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Section/Protocols" class="dashAnchor"></a>
-    <a title="Protocols  Reference"></a>
+    <a name="//apple_ref/swift/Section/Structures" class="dashAnchor"></a>
+    <a title="Structures  Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="index.html"> Docs</a> (63% documented)</p>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="index.html"> Reference</a>
         <img id="carat" src="img/carat.png" />
-        Protocols  Reference
+        Structures  Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -82,8 +82,8 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Protocols</h1>
-            <p>The following protocols are available globally.</p>
+            <h1>Structures</h1>
+            <p>The following structures are available globally.</p>
 
           </section>
           <section class="section task-group-section">
@@ -92,9 +92,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7PapyrusAAP"></a>
-                    <a name="//apple_ref/swift/Protocol/Papyrus" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7PapyrusAAP">Papyrus</a>
+                    <a name="/s:7Papyrus7HasManyV"></a>
+                    <a name="//apple_ref/swift/Struct/HasMany" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus7HasManyV">HasMany</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -102,22 +102,47 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A type that can be stored, retrieved and deleted from a <code><a href="Classes/PapyrusStore.html">PapyrusStore</a></code>.</p>
+                        <p>Undocumented</p>
 
-<p>A <code>Papyrus</code> conforming object must also conform:</p>
-
-<ul>
-<li><code>Codable</code></li>
-<li><code>Equatable</code></li>
-<li><code>Identifiable</code></li>
-</ul>
-
+                        <a href="Structs/HasMany.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Papyrus</span> <span class="p">:</span> <span class="kt">Decodable</span><span class="p">,</span> <span class="kt">Encodable</span><span class="p">,</span> <span class="kt">Equatable</span><span class="p">,</span> <span class="kt">Identifiable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@propertyWrapper</span>
+<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">HasMany</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">Codable</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">HasMany</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Papyrus6HasOneV"></a>
+                    <a name="//apple_ref/swift/Struct/HasOne" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus6HasOneV">HasOne</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Structs/HasOne.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@propertyWrapper</span>
+<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">HasOne</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">Codable</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">HasOne</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
 
                         </div>
                       </div>

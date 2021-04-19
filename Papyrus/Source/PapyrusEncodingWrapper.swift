@@ -12,16 +12,18 @@ struct PapyrusEncodingWrapper: Encodable
 {
     // Internal
     let typeDescription: String
+    let filename: String
     
     // Private
     private let _encode: (Encoder) throws -> Void
     
     // MARK: Initializer
     
-    init(_ wrapped: Encodable)
+    init<T: Papyrus>(object: T)
     {
-        self._encode = wrapped.encode
-        self.typeDescription = String(describing: type(of: wrapped))
+        self.filename = object.filename
+        self._encode = object.encode
+        self.typeDescription = String(describing: type(of: object))
     }
 
     // MARK: Encodable

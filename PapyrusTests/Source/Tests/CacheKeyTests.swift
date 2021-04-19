@@ -15,10 +15,10 @@ class CacheKeyTests: XCTestCase
     {
         var id = UUID().uuidString
         var key = CacheKey(id: id, type: ExampleA.self).key
-        XCTAssertEqual(key, "ExampleA\(id)")
+        XCTAssertEqual(key, "ExampleA\(id.hashValue)")
         
         id = UUID().uuidString
         key = CacheKey(object: ExampleB(id: id)).key
-        XCTAssertEqual(key, "ExampleB\(id)")
+        XCTAssertEqual(key, "ExampleB\(id.hashValue)")
     }
 }

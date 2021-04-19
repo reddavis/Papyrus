@@ -11,7 +11,7 @@ struct Car: Papyrus
 }
 
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
-let store = try PapyrusStore()
+let store = PapyrusStore()
 store.save(car)
 ```
 
@@ -29,6 +29,14 @@ dependencies: [
     .package(url: "https://github.com/reddavis/Papryrus", from: "0.9.0")
 ]
 ```
+
+## Note
+
+Worth noting Papyrus is still in very early days and API's are expected to change dramatically. Saying that, [SEMVER](https://semver.org) will be kept.
+
+## Apps using Papyrus
+
+- [Stocket](https://apps.apple.com/gb/app/stocket-app/id1555942263)
 
 ## Documentation
 
@@ -53,7 +61,7 @@ struct Car: Papyrus
 }
 
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
-let store = try PapyrusStore()
+let store = PapyrusStore()
 store.save(car)
 ```
 
@@ -68,7 +76,7 @@ struct Car: Papyrus
 }
 
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
-let store = try PapyrusStore()
+let store = PapyrusStore()
 store.saveEventually(car)
 ```
 
@@ -83,7 +91,8 @@ struct Manufacturer: Papyrus
 {
     let id: String
     let name: String
-    let cars: [Car]
+    @HasMany let cars: [Car]
+    @HasOne let address: Address
 }
 
 struct Car: Papyrus
@@ -92,13 +101,27 @@ struct Car: Papyrus
     let model: String
 }
 
+struct Address: Papyrus
+{
+    let id: UUID
+    let lineOne: String
+    let lineTwo: String?
+}
+
 let modelS = Car(id: "abc...", model: "Model S")
-let tesla = Manufacturer(id: "abc...", name: "Tesla", cars: [modelS])
-let store = try PapyrusStore()
+let address = Address(id: UUID(), lineOne: "blah blah", lineTwo: nil)
+let tesla = Manufacturer(
+    id: "abc...", 
+    name: "Tesla", 
+    cars: [modelS], 
+    address: address
+)
+
+let store = PapyrusStore()
 store.save(tesla)
 ```
 
-Because `Car` also conforms to `Papyrus`, `PapyrusStore` will also persist the cars when it saves the manufacturer.
+Because `Car` and `Address` also conforms to `Papyrus` and the `@HasMany` and `@HasOne` property wrappers have been used, `PapyrusStore` will also persist the cars and the address when it saves the manufacturer.
 
 #### Example D - Merge
 
@@ -113,7 +136,7 @@ let carA = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
 let carB = Car(id: "def...", model: "Model 3", manufacturer: "Tesla")
 let carC = Car(id: "ghi...", model: "Model X", manufacturer: "Tesla")
 
-let store = try PapyrusStore()
+let store = PapyrusStore()
 store.save(objects: [carA, carB])
 
 store.merge(with: [carA, carC])
@@ -132,8 +155,24 @@ Fetching objects has two forms:
 #### Example A
 
 ```swift
-let store = try PapyrusStore()
-let tesla = store.object(id: "abc...", of: Manufacturer.self)
+let store = PapyrusStore()
+let tesla = try store.object(id: "abc...", of: Manufacturer.self).execute()
+```
+
+#### Example B
+
+You also have the option of a Publisher that will fire an event on first fetch and then when the object changes or is deleted. 
+
+When the object doesn't exist a `PapyrusStore.QueryError` error is sent.
+
+```swift
+let store = PapyrusStore()
+let cancellable = store.object(id: "abc...", of: Manufacturer.self)
+    .publisher()
+    .sink(
+        receiveCompletion: { ... },
+        receiveValue: { ... }
+    )
 ```
 
 ### Fetching collections
@@ -166,7 +205,7 @@ let manufacturers = self.store
                         .execute()
 ```
 
-Calling `observe()` on a `PapryrusStore.Query` object will return a Combine publicher which will emit the collection of objects. Unless specified the publisher will continue to emit a collection objects whenever a change is detected.
+Calling `publisher()` on a `PapryrusStore.CollectionQuery` object will return a Combine publisher which will emit the collection of objects. Unless specified the publisher will continue to emit a collection objects whenever a change is detected.
 
 A change constitutes of:
 
@@ -179,7 +218,7 @@ A change constitutes of:
 ```swift
 self.store
     .objects(type: Manufacturer.self)
-    .observe()
+    .publisher()
     .subscribe(on: DispatchQueue.global())
     .receive(on: DispatchQueue.main)
     .sink { self.updateUI(with: $0) }
@@ -192,7 +231,7 @@ self.store
     .objects(type: Manufacturer.self)
     .filter { $0.name == "Tesla" }
     .sort { $0.name < $1.name }
-    .observe()
+    .publisher()
     .subscribe(on: DispatchQueue.global())
     .receive(on: DispatchQueue.main)
     .sink { self.updateUI(with: $0) }
@@ -206,7 +245,7 @@ There are several methods for deleting objects.
 #### Example A
 
 ```swift
-let store = try PapyrusStore()
+let store = PapyrusStore()
 let tesla = store.object(id: "abc...", of: Manufacturer.self)
 store.delete(tesla)
 ```

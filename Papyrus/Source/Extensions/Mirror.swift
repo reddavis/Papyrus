@@ -11,10 +11,12 @@ import Foundation
 /// [Thanks!](https://www.swiftbysundell.com/articles/reflection-in-swift/)
 extension Mirror
 {
-    static func reflectProperties<T>(of target: Any,
-                                     matchingType type: T.Type = T.self,
-                                     recursively: Bool = false,
-                                     using closure: (T) -> Void)
+    static func reflectProperties<T>(
+        of target: Any,
+        matchingType type: T.Type = T.self,
+        recursively: Bool = false,
+        using closure: (T) -> Void
+    )
     {
         let mirror = Mirror(reflecting: target)
         mirror.children.forEach {
@@ -22,9 +24,11 @@ extension Mirror
             
             guard recursively else { return }
             
-            Mirror.reflectProperties(of: $0.value,
-                                     recursively: true,
-                                     using: closure)
+            Mirror.reflectProperties(
+                of: $0.value,
+                recursively: true,
+                using: closure
+            )
         }
     }
 }

@@ -11,9 +11,9 @@ import Foundation
 
 struct ExampleB: Papyrus
 {
-    let id: String
-    let value: String
-    let integerValue: Int
+    var id: String
+    var value: String
+    var integerValue: Int
     
     // MARK Initialization
     
@@ -30,7 +30,7 @@ struct ExampleB: Papyrus
     {
         let encoder = JSONEncoder()
         let data = try encoder.encode(self)
-        let url = url.appendingPathComponent(self.id)
+        let url = url.appendingPathComponent(String(self.id.hashValue))
         try data.write(to: url)
     }
 }

@@ -17,7 +17,7 @@
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html"> Docs</a> (69% documented)</p>
+        <p><a href="index.html"> Docs</a> (63% documented)</p>
         <p class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -48,10 +48,13 @@
                 <a href="Classes/PapyrusStore.html">PapyrusStore</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/PapyrusStore/Query.html">– Query</a>
+                <a href="Classes/PapyrusStore/QueryError.html">– QueryError</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/PapyrusStore/SetupError.html">– SetupError</a>
+                <a href="Classes/PapyrusStore/CollectionQuery.html">– CollectionQuery</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/PapyrusStore/ObjectQuery.html">– ObjectQuery</a>
               </li>
             </ul>
           </li>
@@ -59,7 +62,18 @@
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Protocols/Papyrus.html">Papyrus</a>
+                <a href="Protocols.html#/s:7PapyrusAAP">Papyrus</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/HasMany.html">HasMany</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/HasOne.html">HasOne</a>
               </li>
             </ul>
           </li>
@@ -75,6 +89,37 @@
           <section class="section task-group-section">
             <div class="task-group">
               <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Papyrus0A5StoreC"></a>
+                    <a name="//apple_ref/swift/Class/PapyrusStore" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC">PapyrusStore</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A <code>PapyrusStore</code> is a data store for <code><a href="Protocols.html#/s:7PapyrusAAP">Papyrus</a></code> conforming objects.</p>
+
+<p><code>PapyrusStore</code> aims to hit the sweet spot between saving raw API responses to the file system
+and a fully fledged database like Realm.</p>
+
+                        <a href="Classes/PapyrusStore.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">PapyrusStore</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -103,43 +148,12 @@
                     </section>
                   </div>
                 </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Papyrus0A5StoreC"></a>
-                    <a name="//apple_ref/swift/Class/PapyrusStore" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC">PapyrusStore</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A <code>PapyrusStore</code> is a data store for <code><a href="Protocols/Papyrus.html">Papyrus</a></code> conforming objects.</p>
-
-<p><code>PapyrusStore</code> aims to hit the sweet spot between saving raw API responses to the file system
-and a fully fledged database like Realm.</p>
-
-                        <a href="Classes/PapyrusStore.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">PapyrusStore</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
               </ul>
             </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2021-02-11)</p>
+          <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2021-04-19)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

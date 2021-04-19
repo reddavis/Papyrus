@@ -11,6 +11,6 @@ import Foundation
 
 struct ExampleA: Papyrus
 {
-    let id: String
-    let test: ExampleB
+    var id: String
+    @HasOne var test: ExampleB
 }
