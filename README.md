@@ -259,7 +259,7 @@ store.delete(tesla)
 #### Example B
 
 ```swift
-let store = try PapyrusStore()
+let store = PapyrusStore()
 let tesla = store.object(id: "abc...", of: Manufacturer.self)
 store.deleteEventually(tesla)
 ```
@@ -267,14 +267,14 @@ store.deleteEventually(tesla)
 #### Example C
 
 ```swift
-let store = try PapyrusStore()
+let store = PapyrusStore()
 store.delete(id: "abc...", of: Manufacturer.self)
 ```
 
 #### Example D
 
 ```swift
-let store = try PapyrusStore()
+let store = PapyrusStore()
 let tesla = store.object(id: "abc...", of: Manufacturer.self)
 let ford = store.object(id: "xyz...", of: Manufacturer.self)
 store.delete(objects: [tesla, ford])
