@@ -30,7 +30,7 @@ struct ExampleB: Papyrus
     {
         let encoder = JSONEncoder()
         let data = try encoder.encode(self)
-        let url = url.appendingPathComponent(String(self.id.hashValue))
+        let url = url.appendingPathComponent(String(self.id))
         try data.write(to: url)
     }
 }

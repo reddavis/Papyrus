@@ -42,7 +42,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
         
         // Object B's data file created
-        let objectBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB))).appendingPathComponent(String(idB.hashValue))
+        let objectBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB))).appendingPathComponent(idB)
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
@@ -59,7 +59,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeADirectory.path))
         
         // Object A's data file created
-        let objectADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectA))).appendingPathComponent(String(idA.hashValue))
+        let objectADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectA))).appendingPathComponent(idA)
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectADataFile.path))
         
         // Object B's type directory created
@@ -67,7 +67,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
         
         // Object B's data file created
-        let objectBDataFile = objectTypeBDirectory.appendingPathComponent(String(idB.hashValue))
+        let objectBDataFile = objectTypeBDirectory.appendingPathComponent(idB)
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
@@ -88,7 +88,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: parentDirectory.path))
         
         // Parent's data file created
-        let parentDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: parent))).appendingPathComponent(String(parentID.hashValue))
+        let parentDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: parent))).appendingPathComponent(parentID)
         XCTAssertTrue(self.fileManager.fileExists(atPath: parentDataFile.path))
         
         // Child A's type directory created
@@ -96,7 +96,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: childADirectory.path))
         
         // Child A's data file created
-        let childADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childA))).appendingPathComponent(String(childAID.hashValue))
+        let childADataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childA))).appendingPathComponent(childAID)
         XCTAssertTrue(self.fileManager.fileExists(atPath: childADataFile.path))
         
         // Child B's type directory created
@@ -104,7 +104,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: childBDirectory.path))
         
         // Child B's data file created
-        let childBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childB))).appendingPathComponent(String(childBID.hashValue))
+        let childBDataFile = self.storeDirectory.appendingPathComponent(String(describing: type(of: childB))).appendingPathComponent(childBID)
         XCTAssertTrue(self.fileManager.fileExists(atPath: childBDataFile.path))
     }
     
@@ -293,6 +293,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertNoThrow(try self.store.object(id: idA, of: ExampleB.self).execute())
         XCTAssertNoThrow(try self.store.object(id: idB, of: ExampleB.self).execute())
         XCTAssertThrowsError(try self.store.object(id: idC, of: ExampleB.self).execute())
+        XCTAssertEqual(2, self.store.objects(type: ExampleB.self).execute().count)
     }
     
     func testMergingEventually() throws

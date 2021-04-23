@@ -21,12 +21,12 @@ public extension PapyrusStore
         
         // MARK: Initialization
         
-        init<ID: Hashable>(
+        init<ID: LosslessStringConvertible>(
             id: ID,
             directoryURL: URL
         )
         {
-            self.filename = String(id.hashValue)
+            self.filename = String(id)
             self.directoryURL = directoryURL
         }
         

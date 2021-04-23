@@ -13,12 +13,15 @@ import Foundation
 /// A `Papyrus` conforming object must also conform:
 /// - `Codable`
 /// - `Equatable`
-/// - `Identifiable`
-public protocol Papyrus: Codable, Equatable, Identifiable { }
+/// - `Identifiable where ID: LosslessStringConvertible`
+public protocol Papyrus: Codable, Equatable, Identifiable where ID: LosslessStringConvertible
+{
+    
+}
 
 // MARK: Helpers
 
 extension Papyrus
 {
-    var filename: String { String(self.id.hashValue) }
+    var filename: String { String(self.id) }
 }

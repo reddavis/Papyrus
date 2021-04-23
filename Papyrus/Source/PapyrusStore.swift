@@ -84,9 +84,9 @@ public final class PapyrusStore
     
     // MARK: File management
     
-    private func fileURL<ID: Hashable>(for typeDescription: String, id: ID) -> URL
+    private func fileURL<ID: LosslessStringConvertible>(for typeDescription: String, id: ID) -> URL
     {
-        self.fileURL(for: typeDescription, filename: String(id.hashValue))
+        self.fileURL(for: typeDescription, filename: String(id))
     }
     
     private func fileURL(for typeDescription: String, filename: String) -> URL
@@ -141,7 +141,7 @@ public extension PapyrusStore
         var touchedDirectories = Set([self.directoryURL(for: T.self)])
         
         let root = PapyrusEncodingWrapper(object: object)
-        self.save(root, filename: object.filename)
+        self.save(root, filename: root.filename)
         
         // Store any Papyrus relationships.
         Mirror.reflectProperties(of: object, matchingType: PapyrusEncodingWrapper.self, recursively: true) {
@@ -207,7 +207,7 @@ public extension PapyrusStore
     /// type inferred and id provided.
     /// - Parameter id: The `id` of the object.
     /// - Returns: A `ObjectQuery<T>` instance.
-    func object<T: Papyrus, ID: Hashable>(id: ID) -> ObjectQuery<T>
+    func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID) -> ObjectQuery<T>
     {
         ObjectQuery(id: id, directoryURL: self.directoryURL(for: T.self))
     }
@@ -218,7 +218,7 @@ public extension PapyrusStore
     ///   - id: The `id` of the object.
     ///   - type: The `type` of the object.
     /// - Returns: A `ObjectQuery<T>` instance.
-    func object<T: Papyrus, ID: Hashable>(id: ID, of type: T.Type) -> ObjectQuery<T>
+    func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID, of type: T.Type) -> ObjectQuery<T>
     {
         ObjectQuery(id: id, directoryURL: self.directoryURL(for: T.self))
     }
@@ -241,7 +241,7 @@ public extension PapyrusStore
     /// - Parameters:
     ///   - id: The `id` of the object to be deleted.
     ///   - type: The `type` of the object to be deleted.
-    func delete<T: Papyrus, ID: Hashable>(id: ID, of type: T.Type)
+    func delete<T: Papyrus, ID: LosslessStringConvertible & Hashable>(id: ID, of type: T.Type)
     {
         self.delete(objectIdentifiers: [id : type])
     }
@@ -292,7 +292,7 @@ public extension PapyrusStore
         }
     }
     
-    private func delete<ID: Hashable, T: Papyrus>(objectIdentifiers: [ID : T.Type])
+    private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID : T.Type])
     {
         objectIdentifiers.forEach {
             self.removeCachedObject(id: $0.key, type: $0.value)
@@ -305,6 +305,8 @@ public extension PapyrusStore
         objectIdentifiers.forEach {
             let url = self.fileURL(for: String(describing: $0.value), id: $0.key)
             try? self.fileManager.removeItem(at: url)
+            
+            self.logger.debug("Deleted: \(url)")
         }
         
         // Touch all changed directories
@@ -353,7 +355,7 @@ private extension PapyrusStore
         self.logger.debug("Cached: \(String(describing: type(of: object))) [\(object.id)]")
     }
     
-    func fetchCachedObject<ID: Hashable, T: Papyrus>(id: ID) -> T?
+    func fetchCachedObject<ID: LosslessStringConvertible, T: Papyrus>(id: ID) -> T?
     {
         let key = CacheKey(id: id, type: T.self)
         guard let wrapper = self.memoryCache.object(forKey: key),
@@ -365,7 +367,7 @@ private extension PapyrusStore
         return object
     }
     
-    func removeCachedObject<ID: Hashable, T: Papyrus>(id: ID, type: T.Type)
+    func removeCachedObject<ID: LosslessStringConvertible, T: Papyrus>(id: ID, type: T.Type)
     {
         let key = CacheKey(id: id, type: type)
         self.memoryCache.removeObject(forKey: key)

@@ -18,12 +18,12 @@ final class CacheKey: NSObject
     
     init<T>(object: T) where T: Papyrus
     {
-        self.key = String(describing: T.self) + String(object.id.hashValue)
+        self.key = String(describing: T.self) + String(object.id)
     }
     
-    init<T, ID: Hashable>(id: ID, type: T.Type) where T: Papyrus
+    init<T, ID: LosslessStringConvertible>(id: ID, type: T.Type) where T: Papyrus
     {
-        self.key = String(describing: type) + String(id.hashValue)
+        self.key = String(describing: type) + String(id)
     }
     
     // MARK: NSObject
