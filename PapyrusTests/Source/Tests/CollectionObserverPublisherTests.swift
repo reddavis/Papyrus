@@ -92,7 +92,7 @@ final class CollectionObserverPublisherTests: XCTestCase
         
         let object = ExampleB(id: UUID().uuidString)
         try object.write(to: self.storeDirectory)
-        try FileManager.default.removeItem(at: self.storeDirectory.appendingPathComponent(String(object.id.hashValue)))
+        try FileManager.default.removeItem(at: self.storeDirectory.appendingPathComponent(object.id))
         
         self.waitForExpectations(timeout: 2.0)
     }

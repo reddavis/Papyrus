@@ -18,7 +18,7 @@ final class ObjectObserverPublisherTests: XCTestCase
     private var cancellables: Set<AnyCancellable>!
     
     private var filename: String {
-        String(self.id!.hashValue)
+        self.id
     }
     
     // MARK: Setup
@@ -30,7 +30,11 @@ final class ObjectObserverPublisherTests: XCTestCase
         
         let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: self.storeDirectory, withIntermediateDirectories: true, attributes: nil)
+        try FileManager.default.createDirectory(
+            at: self.storeDirectory,
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
     }
     
     // MARK: Tests
