@@ -65,37 +65,100 @@
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/PapyrusStore.swift",
-      "line": 336,
+      "line": 324,
       "symbol": "PapyrusStore.merge(with:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/PapyrusStore.swift",
-      "line": 347,
+      "line": 335,
       "symbol": "PapyrusStore.mergeEventually(with:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Query.swift",
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Queries/CollectionQuery.swift",
       "line": 15,
-      "symbol": "PapyrusStore.Query",
+      "symbol": "PapyrusStore.CollectionQuery",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Query.swift",
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Queries/CollectionQuery.swift",
       "line": 18,
-      "symbol": "PapyrusStore.Query.OnFilter",
+      "symbol": "PapyrusStore.CollectionQuery.OnFilter",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Query.swift",
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Queries/CollectionQuery.swift",
       "line": 19,
-      "symbol": "PapyrusStore.Query.OnSort",
+      "symbol": "PapyrusStore.CollectionQuery.OnSort",
       "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Queries/ObjectQuery.swift",
+      "line": 15,
+      "symbol": "PapyrusStore.ObjectQuery",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasMany.swift",
+      "line": 12,
+      "symbol": "HasMany",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasMany.swift",
+      "line": 15,
+      "symbol": "HasMany.wrappedValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasMany.swift",
+      "line": 26,
+      "symbol": "HasMany.init(wrappedValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasMany.swift",
+      "line": 48,
+      "symbol": "HasMany",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasOne.swift",
+      "line": 12,
+      "symbol": "HasOne",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasOne.swift",
+      "line": 15,
+      "symbol": "HasOne.wrappedValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasOne.swift",
+      "line": 26,
+      "symbol": "HasOne.init(wrappedValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasOne.swift",
+      "line": 48,
+      "symbol": "HasOne",
+      "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     }
   ],

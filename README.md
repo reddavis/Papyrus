@@ -54,7 +54,7 @@ The `Papyrus` protocol is simply an umbrella of these three protocols:
 
 - `Codable`
 - `Equatable`
-- `Identifiable`
+- `Identifiable where ID: LosslessStringConvertible`
 
 #### Example A - Basic Saving
 
@@ -278,6 +278,39 @@ let store = PapyrusStore()
 let tesla = store.object(id: "abc...", of: Manufacturer.self)
 let ford = store.object(id: "xyz...", of: Manufacturer.self)
 store.delete(objects: [tesla, ford])
+```
+
+### Migrations (experimental)
+
+If the wish is to keep existing data when introducing schema changes you can register a migration.
+
+#### Example A
+
+```swift
+struct Car: Papyrus
+{
+    let id: String
+    let model: String
+    let manufacturer: String
+}
+
+struct CarV2: Papyrus
+{
+    let id: String
+    let model: String
+    let manufacturer: String
+    let year: Int
+}
+
+let migration = Migration<Car, CarV2> { oldObject in
+    CarV2(
+        id: oldObject.id,
+        model: oldObject.model,
+        manufacturer: oldObject.manufacturer,
+        year: 0
+    )
+}
+self.store.register(migration: migration)
 ```
 
 ## License
