@@ -25,8 +25,14 @@ public final class PapyrusStore
     
     // Private
     private let fileManager = FileManager.default
+    private var cancellables: Set<AnyCancellable> = []
+    private let url: URL
+    private let logger: Logger
+    
     private let writeQueue = DispatchQueue(label: "com.reddavis.Papyrus.writeQueue.\(UUID())", qos: .background)
     private let cacheWriteQueue = DispatchQueue(label: "com.reddavis.Papyrus.cacheWriteQueue.\(UUID())", qos: .background)
+    private let migrationQueue = DispatchQueue(label: "com.reddavis.Papyrus.migrationQueue.\(UUID())", qos: .background)
+    
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     
@@ -37,8 +43,7 @@ public final class PapyrusStore
         return cache
     }()
     
-    private let url: URL
-    private let logger: Logger
+    
     
     // MARK: Initialization
     
@@ -323,6 +328,14 @@ public extension PapyrusStore
 
 public extension PapyrusStore
 {
+    /// Merge new data with old data.
+    ///
+    /// Useful when syncing with an API.
+    /// The merge will:
+    ///   - Update objects that exist in the store and exist in `objects`.
+    ///   - Create objects that do not exist in the store and exist in `objects`.
+    ///   - Delete objects that exist in the store but do not exist in `objects`.
+    /// - Parameter objects: An array of objects to merge.
     func merge<T>(with objects: [T]) where T: Papyrus
     {
         let objectIDs = objects.map(\.id)
@@ -334,6 +347,14 @@ public extension PapyrusStore
         self.save(objects: objects)
     }
     
+    /// Eventually merges new data with old data.
+    ///
+    /// Useful when syncing with an API.
+    /// The merge will:
+    ///   - Update objects that exist in the store and exist in `objects`.
+    ///   - Create objects that do not exist in the store and exist in `objects`.
+    ///   - Delete objects that exist in the store but do not exist in `objects`.
+    /// - Parameter objects: An array of objects to merge.
     func mergeEventually<T>(with objects: [T]) where T: Papyrus
     {
         self.writeQueue.async {
@@ -371,5 +392,37 @@ private extension PapyrusStore
     {
         let key = CacheKey(id: id, type: type)
         self.memoryCache.removeObject(forKey: key)
+    }
+}
+
+// MARK: Migrations
+
+public extension PapyrusStore
+{
+    /// Register a data migration.
+    ///
+    /// The migration will be executed as soon as it is registered and are performed
+    /// on a background queue.
+    ///
+    /// Registered migrations are "live". This means that if new `FromObject`'s are saved
+    /// they will be automatically migrated to `ToObject`.
+    /// - Parameter migration: A `Migration` instance.
+    func register<FromObject: Papyrus, ToObject: Papyrus>(migration: Migration<FromObject, ToObject>)
+    {
+        self.objects(type: FromObject.self)
+            .publisher()
+            .subscribe(on: self.migrationQueue)
+            .receive(on: self.migrationQueue)
+            .sink { [weak self] objects in
+                guard let self = self else { return }
+                
+                objects
+                    .forEach { object in
+                        let toObject = migration.onMigrate(object)
+                        self.save(toObject)
+                        self.delete(object)
+                    }
+            }
+            .store(in: &self.cancellables)
     }
 }

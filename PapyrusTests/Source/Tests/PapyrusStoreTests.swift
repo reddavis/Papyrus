@@ -312,4 +312,37 @@ final class PapyrusStoreTests: XCTestCase
         
         self.expectToEventuallyThrow { _ = try self.store.object(id: idC, of: ExampleB.self).execute() }
     }
+    
+    // MARK: Migrations
+    
+    func testMigration() throws
+    {
+        let idA = UUID().uuidString
+        let idB = UUID().uuidString
+        let idC = UUID().uuidString
+        
+        let oldObjects = [idA, idB, idC].map { ExampleB.init(id: $0) }
+        self.store.save(objects: oldObjects)
+        XCTAssertEqual(3, self.store.objects(type: ExampleB.self).execute().count)
+        
+        let migration = Migration<ExampleB, ExampleD> { oldObject in
+            ExampleD(
+                id: oldObject.id,
+                value: oldObject.value,
+                integerValue: oldObject.integerValue
+            )
+        }
+        self.store.register(migration: migration)
+        
+        // Validate objects are migrated
+        self.expectToEventually(self.store.objects(type: ExampleB.self).execute().count == 0)
+        self.expectToEventually(self.store.objects(type: ExampleD.self).execute().count == 3)
+        
+        // Validate information migrated
+        try oldObjects.forEach { oldObject in
+            let object: ExampleD = try self.store.object(id: oldObject.id).execute()
+            XCTAssertEqual(oldObject.integerValue, object.integerValue)
+            XCTAssertEqual(oldObject.value, object.value)
+        }
+    }
 }

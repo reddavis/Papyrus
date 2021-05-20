@@ -16,6 +16,8 @@
 		A464546B258B3A5C005C0FBB /* XCTest+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464546A258B3A5C005C0FBB /* XCTest+Extension.swift */; };
 		A4762566262895A000CAB805 /* ObjectObserverPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4762565262895A000CAB805 /* ObjectObserverPublisher.swift */; };
 		A476256A2628990200CAB805 /* ObjectObserverSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47625692628990200CAB805 /* ObjectObserverSubscription.swift */; };
+		A49F483D2655248700B5A04F /* Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483C2655248600B5A04F /* Migration.swift */; };
+		A49F483F26569B7400B5A04F /* ExampleD.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483E26569B7400B5A04F /* ExampleD.swift */; };
 		A4C9E6AF2589D73E00476A7E /* Papyrus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C9E6A52589D73D00476A7E /* Papyrus.framework */; };
 		A4C9E6B42589D73E00476A7E /* PapyrusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */; };
 		A4C9E6B62589D73E00476A7E /* Papyrus.h in Headers */ = {isa = PBXBuildFile; fileRef = A4C9E6A82589D73D00476A7E /* Papyrus.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -61,6 +63,8 @@
 		A464546A258B3A5C005C0FBB /* XCTest+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+Extension.swift"; sourceTree = "<group>"; };
 		A4762565262895A000CAB805 /* ObjectObserverPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserverPublisher.swift; sourceTree = "<group>"; };
 		A47625692628990200CAB805 /* ObjectObserverSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserverSubscription.swift; sourceTree = "<group>"; };
+		A49F483C2655248600B5A04F /* Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migration.swift; sourceTree = "<group>"; };
+		A49F483E26569B7400B5A04F /* ExampleD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleD.swift; sourceTree = "<group>"; };
 		A4C9E6A52589D73D00476A7E /* Papyrus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Papyrus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4C9E6A82589D73D00476A7E /* Papyrus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Papyrus.h; sourceTree = "<group>"; };
 		A4C9E6A92589D73D00476A7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -146,6 +150,7 @@
 				A464545D258B371E005C0FBB /* ExampleA.swift */,
 				A4645463258B372E005C0FBB /* ExampleB.swift */,
 				A4EE68C025949FF00056B386 /* ExampleC.swift */,
+				A49F483E26569B7400B5A04F /* ExampleD.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -225,6 +230,7 @@
 				A4EA2381262DDF48006B62FA /* Relationships */,
 				A4DAAB1B2591EFD0009E3125 /* CacheKey.swift */,
 				A4645456258B3485005C0FBB /* Logger.swift */,
+				A49F483C2655248600B5A04F /* Migration.swift */,
 				A444CC022589DFC90067F4B0 /* Papyrus.swift */,
 				A4DAAA9C258C88AE009E3125 /* PapyrusCacheWrapper.swift */,
 				A4645451258B3391005C0FBB /* PapyrusEncodingWrapper.swift */,
@@ -418,6 +424,7 @@
 				A4EE68BB25935F110056B386 /* CollectionObserverSubscription.swift in Sources */,
 				A4762566262895A000CAB805 /* ObjectObserverPublisher.swift in Sources */,
 				A4EA2383262DDF54006B62FA /* HasOne.swift in Sources */,
+				A49F483D2655248700B5A04F /* Migration.swift in Sources */,
 				A4DAAB1C2591EFD1009E3125 /* CacheKey.swift in Sources */,
 				A476256A2628990200CAB805 /* ObjectObserverSubscription.swift in Sources */,
 				A4DAAAD025906FA8009E3125 /* Collection.swift in Sources */,
@@ -441,6 +448,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A464546B258B3A5C005C0FBB /* XCTest+Extension.swift in Sources */,
+				A49F483F26569B7400B5A04F /* ExampleD.swift in Sources */,
 				A464545E258B371E005C0FBB /* ExampleA.swift in Sources */,
 				A4EE68C125949FF00056B386 /* ExampleC.swift in Sources */,
 				A4EA2327262951FC006B62FA /* CollectionQueryTests.swift in Sources */,
