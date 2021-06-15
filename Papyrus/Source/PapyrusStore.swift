@@ -29,10 +29,6 @@ public final class PapyrusStore
     private let url: URL
     private let logger: Logger
     
-    private let writeQueue = DispatchQueue(label: "com.reddavis.Papyrus.writeQueue.\(UUID())", qos: .background)
-    private let cacheWriteQueue = DispatchQueue(label: "com.reddavis.Papyrus.cacheWriteQueue.\(UUID())", qos: .background)
-    private let migrationQueue = DispatchQueue(label: "com.reddavis.Papyrus.migrationQueue.\(UUID())", qos: .background)
-    
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     
@@ -137,11 +133,8 @@ public extension PapyrusStore
 {
     /// Saves the object to the store.
     /// - Parameter object: The object to save.
-    func save<T: Papyrus>(_ object: T)
+    func save<T: Papyrus>(_ object: T) async
     {
-        // Pre-warm cache
-        self.cache(object)
-        
         // Write to file system
         var touchedDirectories = Set([self.directoryURL(for: T.self)])
         
@@ -163,28 +156,13 @@ public extension PapyrusStore
         }
     }
     
-    /// Eventually saves the object to the store.
-    /// - Parameter object: The object to save.
-    func saveEventually<T: Papyrus>(_ object: T)
-    {
-        self.writeQueue.async {
-            self.save(object)
-        }
-    }
-    
     /// Saves all objects to the store.
     /// - Parameter objects: An array of objects to add to the store.
-    func save<T: Papyrus>(objects: [T])
+    func save<T: Papyrus>(objects: [T]) async
     {
-        objects.forEach(self.save)
-    }
-    
-    /// Eventually saves all objects to the store.
-    /// - Parameter objects: An array of objects to add to the store.
-    func saveEventually<T: Papyrus>(objects: [T])
-    {
-        self.writeQueue.async {
-            objects.forEach(self.save)
+        for object in objects
+        {
+            await self.save(object)
         }
     }
     
@@ -246,41 +224,21 @@ public extension PapyrusStore
     /// - Parameters:
     ///   - id: The `id` of the object to be deleted.
     ///   - type: The `type` of the object to be deleted.
-    func delete<T: Papyrus, ID: LosslessStringConvertible & Hashable>(id: ID, of type: T.Type)
+    func delete<T: Papyrus, ID: LosslessStringConvertible & Hashable>(id: ID, of type: T.Type) async
     {
         self.delete(objectIdentifiers: [id : type])
     }
-    
-    /// Eventually deletes an object with `id` and of `type` from the store.
-    /// - Parameters:
-    ///   - id: The `id` of the object to be deleted.
-    ///   - type: The `type` of the object to be deleted.
-    func deleteEventually<T: Papyrus>(id: String, of type: T.Type)
-    {
-        self.writeQueue.async {
-            self.delete(id: id, of: type)
-        }
-    }
-    
+
     /// Deletes an object from the store.
     /// - Parameter object: The object to delete.
-    func delete<T: Papyrus>(_ object: T)
+    func delete<T: Papyrus>(_ object: T) async
     {
         self.delete(objectIdentifiers: [object.id : T.self])
     }
     
-    /// Eventually deletes an object from the store.
-    /// - Parameter object: The object to delete.
-    func deleteEventually<T: Papyrus>(_ object: T)
-    {
-        self.writeQueue.async {
-            self.delete(object)
-        }
-    }
-    
     /// Deletes an array of objects.
     /// - Parameter objects: An array of objects to delete.
-    func delete<T: Papyrus, ID>(objects: [T]) where ID == T.ID
+    func delete<T: Papyrus, ID>(objects: [T]) async where ID == T.ID
     {
         let identifiers = objects.reduce(into: [ID : T.Type]()) {
             $0[$1.id] = T.self
@@ -288,21 +246,8 @@ public extension PapyrusStore
         self.delete(objectIdentifiers: identifiers)
     }
     
-    /// Eventually deletes an array of objects.
-    /// - Parameter objects: An array of objects to delete.
-    func deleteEventually<T: Papyrus>(objects: [T])
-    {
-        self.writeQueue.async {
-            self.delete(objects: objects)
-        }
-    }
-    
     private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID : T.Type])
     {
-        objectIdentifiers.forEach {
-            self.removeCachedObject(id: $0.key, type: $0.value)
-        }
-        
         let touchedDirectories = Set(objectIdentifiers.map {
             self.directoryURL(for: $0.value)
         })
@@ -336,62 +281,15 @@ public extension PapyrusStore
     ///   - Create objects that do not exist in the store and exist in `objects`.
     ///   - Delete objects that exist in the store but do not exist in `objects`.
     /// - Parameter objects: An array of objects to merge.
-    func merge<T>(with objects: [T]) where T: Papyrus
+    func merge<T>(with objects: [T]) async where T: Papyrus
     {
         let objectIDs = objects.map(\.id)
-        let objectsToDelete = self.objects(type: T.self)
+        let objectsToDelete = await self.objects(type: T.self)
             .filter { !objectIDs.contains($0.id) }
             .execute()
         
-        self.delete(objects: objectsToDelete)
-        self.save(objects: objects)
-    }
-    
-    /// Eventually merges new data with old data.
-    ///
-    /// Useful when syncing with an API.
-    /// The merge will:
-    ///   - Update objects that exist in the store and exist in `objects`.
-    ///   - Create objects that do not exist in the store and exist in `objects`.
-    ///   - Delete objects that exist in the store but do not exist in `objects`.
-    /// - Parameter objects: An array of objects to merge.
-    func mergeEventually<T>(with objects: [T]) where T: Papyrus
-    {
-        self.writeQueue.async {
-            self.merge(with: objects)
-        }
-    }
-}
-
-// MARK: Cache
-
-private extension PapyrusStore
-{
-    func cache<T>(_ object: T) where T: Papyrus
-    {
-        let wrapper = PapyrusCacheWrapper(object)
-        let key = CacheKey(object: object)
-        self.memoryCache.setObject(wrapper, forKey: key)
-        
-        self.logger.debug("Cached: \(String(describing: type(of: object))) [\(object.id)]")
-    }
-    
-    func fetchCachedObject<ID: LosslessStringConvertible, T: Papyrus>(id: ID) -> T?
-    {
-        let key = CacheKey(id: id, type: T.self)
-        guard let wrapper = self.memoryCache.object(forKey: key),
-              let object = wrapper.object as? T else
-        {
-            return nil
-        }
-        
-        return object
-    }
-    
-    func removeCachedObject<ID: LosslessStringConvertible, T: Papyrus>(id: ID, type: T.Type)
-    {
-        let key = CacheKey(id: id, type: type)
-        self.memoryCache.removeObject(forKey: key)
+        await self.delete(objects: objectsToDelete)
+        await self.save(objects: objects)
     }
 }
 
@@ -401,28 +299,18 @@ public extension PapyrusStore
 {
     /// Register a data migration.
     ///
-    /// The migration will be executed as soon as it is registered and are performed
-    /// on a background queue.
-    ///
-    /// Registered migrations are "live". This means that if new `FromObject`'s are saved
-    /// they will be automatically migrated to `ToObject`.
+    /// The migration will be executed as soon as it is registered.
     /// - Parameter migration: A `Migration` instance.
-    func register<FromObject: Papyrus, ToObject: Papyrus>(migration: Migration<FromObject, ToObject>)
+    func register<FromObject: Papyrus, ToObject: Papyrus>(migration: Migration<FromObject, ToObject>) async
     {
-        self.objects(type: FromObject.self)
-            .publisher()
-            .subscribe(on: self.migrationQueue)
-            .receive(on: self.migrationQueue)
-            .sink { [weak self] objects in
-                guard let self = self else { return }
-                
-                objects
-                    .forEach { object in
-                        let toObject = migration.onMigrate(object)
-                        self.save(toObject)
-                        self.delete(object)
-                    }
-            }
-            .store(in: &self.cancellables)
+        let objects = await self.objects(type: FromObject.self)
+            .execute()
+        
+        for object in objects
+        {
+            let toObject = migration.onMigrate(object)
+            await self.save(toObject)
+            await self.delete(object)
+        }
     }
 }

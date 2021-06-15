@@ -29,7 +29,7 @@ final class ObjectQueryTests: XCTestCase
     
     // MARK: Tests
     
-    func testFetchingObject() throws
+    func testFetchingObject() async throws
     {
         let id = UUID().uuidString
         let object = ExampleB(id: id)
@@ -40,10 +40,11 @@ final class ObjectQueryTests: XCTestCase
             directoryURL: self.storeDirectory
         )
         
-        XCTAssertEqual(try query.execute(), object)
+        let result = try await query.execute()
+        XCTAssertEqual(result, object)
     }
     
-    func testFetchingNonExistentObject() throws
+    func testFetchingNonExistentObject() async throws
     {
         let id = UUID().uuidString
         let query = PapyrusStore.ObjectQuery<ExampleB>(
@@ -51,6 +52,11 @@ final class ObjectQueryTests: XCTestCase
             directoryURL: self.storeDirectory
         )
         
-        XCTAssertThrowsError(try query.execute())
+        do
+        {
+            _ = try await query.execute()
+            XCTFail("Error should be raised")
+        }
+        catch { }
     }
 }

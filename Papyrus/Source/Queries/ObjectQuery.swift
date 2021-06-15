@@ -35,7 +35,7 @@ public extension PapyrusStore
         /// Executes the query. If filter or sort parameters are
         /// set, they will be applied to the results.
         /// - Returns: The results of the query.
-        public func execute() throws -> T
+        public func execute() async throws -> T
         {
             let fileURL = self.directoryURL.appendingPathComponent(self.filename)
             guard self.fileManager.fileExists(atPath: fileURL.path) else { throw PapyrusStore.QueryError.notFound }

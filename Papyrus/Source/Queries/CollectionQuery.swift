@@ -36,7 +36,7 @@ public extension PapyrusStore
         /// Executes the query. If filter or sort parameters are
         /// set, they will be applied to the results.
         /// - Returns: The results of the query.
-        public func execute() -> [T]
+        public func execute() async -> [T]
         {
             guard let directoryNames = try? self.fileManager.contentsOfDirectory(atPath: self.directoryURL.path) else { return [] }
             let decoder = JSONDecoder()

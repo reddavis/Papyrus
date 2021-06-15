@@ -35,24 +35,30 @@ final class CollectionQueryTests: XCTestCase
     
     // MARK: Tests
     
-    func testFetchingAll() throws
+    func testFetchingAll() async throws
     {
         let query = PapyrusStore.CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
-        XCTAssertEqual(query.execute().count, self.numberOfDummyObjects)
+        let results = await query.execute().count
+        
+        XCTAssertEqual(results, self.numberOfDummyObjects)
     }
     
-    func testFiltering() throws
+    func testFiltering() async throws
     {
         let query = PapyrusStore.CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .filter { $0.integerValue > 5 }
-        XCTAssertEqual(query.execute().count, 5)
+        let results = await query.execute().count
+        
+        XCTAssertEqual(results, 5)
     }
     
-    func testSorting() throws
+    func testSorting() async throws
     {
         let query = PapyrusStore.CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .sort { $0.integerValue > $1.integerValue }
-        XCTAssertEqual(query.execute().first?.integerValue, 10)
+        let results = await query.execute()
+        
+        XCTAssertEqual(results.first?.integerValue, 10)
     }
     
     func testFiltersAppliedToObserverPublisher() throws

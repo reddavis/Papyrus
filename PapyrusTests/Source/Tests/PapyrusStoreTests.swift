@@ -31,11 +31,11 @@ final class PapyrusStoreTests: XCTestCase
     
     // MARK: Saving
     
-    func testDirectoriesAndFilesAreCreated() throws
+    func testDirectoriesAndFilesAreCreated() async throws
     {
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
-        self.store.save(objectB)
+        await self.store.save(objectB)
         
         // Object B's type directory created
         let objectTypeBDirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectB)))
@@ -46,13 +46,13 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
-    func testHasOneRelationshipDirectoriesAndFilesAreCreated() throws
+    func testHasOneRelationshipDirectoriesAndFilesAreCreated() async throws
     {
         let idA = UUID().uuidString
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
         let objectA = ExampleA(id: idA, test: objectB)
-        self.store.save(objectA)
+        await self.store.save(objectA)
         
         // Object A's type directory created
         let objectTypeADirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: objectA)))
@@ -71,7 +71,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
-    func testHasManyRelationshipDirectoriesAndFilesAreCreated() throws
+    func testHasManyRelationshipDirectoriesAndFilesAreCreated() async throws
     {
         let childAID = UUID().uuidString
         let childA = ExampleB(id: childAID)
@@ -81,7 +81,7 @@ final class PapyrusStoreTests: XCTestCase
         
         let parentID = UUID().uuidString
         let parent = ExampleC(id: parentID, children: [childA, childB])
-        self.store.save(parent)
+        await self.store.save(parent)
         
         // Parent's type directory created
         let parentDirectory = self.storeDirectory.appendingPathComponent(String(describing: type(of: parent)))
@@ -108,7 +108,7 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertTrue(self.fileManager.fileExists(atPath: childBDataFile.path))
     }
     
-    func testSavingMultipleObjects() throws
+    func testSavingMultipleObjects() async throws
     {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
@@ -116,7 +116,7 @@ final class PapyrusStoreTests: XCTestCase
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
         
-        self.store.save(objects: [objectA, objectB])
+        await self.store.save(objects: [objectA, objectB])
         
         XCTAssertNotNil(self.store.object(id: idA, of: ExampleB.self))
         XCTAssertNotNil(self.store.object(id: idB, of: ExampleB.self))
@@ -133,127 +133,68 @@ final class PapyrusStoreTests: XCTestCase
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         
-        self.store.save(ExampleB(id: UUID().uuidString))
+        async { await self.store.save(ExampleB(id: UUID().uuidString)) }
         self.waitForExpectations(timeout: 2.0)
-    }
-    
-    func testSavingEventually() throws
-    {
-        let idA = UUID().uuidString
-        let objectA = ExampleB(id: idA)
-        
-        self.store.saveEventually(objectA)
-        self.expectToEventually {
-            do
-            {
-                let result = try self.store.object(id: idA, of: ExampleB.self).execute()
-                return result == objectA
-            }
-            catch { return false }
-        }
-    }
-    
-    func testSavingObjectsEventually() throws
-    {
-        let idA = UUID().uuidString
-        let objectA = ExampleB(id: idA)
-        
-        let idB = UUID().uuidString
-        let objectB = ExampleB(id: idB)
-        
-        self.store.saveEventually(objects: [objectA, objectB])
-        self.expectToEventually {
-            do
-            {
-                let fetchA = try self.store.object(id: idA, of: ExampleB.self).execute()
-                XCTAssertEqual(objectA, fetchA)
-                
-                let fetchB = try self.store.object(id: idB, of: ExampleB.self).execute()
-                XCTAssertEqual(objectB, fetchB)
-                
-                return true
-            }
-            catch { return false }
-        }
     }
     
     // MARK: Fetching
     
-    func testFetchingObjectByID() throws
+    func testFetchingObjectByID() async throws
     {
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
-        self.store.save(objectB)
+        await self.store.save(objectB)
         
-        let fetchedObject: ExampleB? = try XCTUnwrap(self.store.object(id: idB).execute())
-        XCTAssertEqual(fetchedObject?.id, objectB.id)
+        let fetchedObject: ExampleB = try await self.store.object(id: idB).execute()
+        XCTAssertEqual(fetchedObject.id, objectB.id)
     }
     
     // MARK: Deleting
     
-    func testDeletingObject() throws
+    func testDeletingObject() async throws
     {
         let id = UUID().uuidString
         let object = ExampleB(id: id)
-        self.store.save(object)
+        await self.store.save(object)
         
-        let fetchedObject: ExampleB = try XCTUnwrap(self.store.object(id: id).execute())
-        self.store.delete(fetchedObject)
+        let fetchedObject = try await self.store.object(id: id, of: ExampleB.self).execute()
+        await self.store.delete(fetchedObject)
         
-        XCTAssertThrowsError(try self.store.object(id: id, of: ExampleB.self).execute())
-    }
-    
-    func testDeletingEventuallyObject() throws
-    {
-        let id = UUID().uuidString
-        let object = ExampleB(id: id)
-        self.store.save(object)
-        
-        let fetchedObject: ExampleB = try XCTUnwrap(self.store.object(id: id).execute())
-        self.store.deleteEventually(fetchedObject)
-        
-        self.expectToEventuallyThrow {
-            _ = try self.store.object(id: id, of: ExampleB.self).execute()
+        do
+        {
+            _ = try await self.store.object(id: id, of: ExampleB.self).execute()
+            XCTFail("Object not deleted")
         }
+        catch { }
     }
     
-    func testDeletingObjects() throws
+    func testDeletingObjects() async throws
     {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
-        self.store.save(objectA)
+        await self.store.save(objectA)
         
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
-        self.store.save(objectB)
+        await self.store.save(objectB)
         
-        let fetchedObjectA: ExampleB = try XCTUnwrap(self.store.object(id: idA).execute())
-        let fetchedObjectB: ExampleB = try XCTUnwrap(self.store.object(id: idB).execute())
-        self.store.delete(objects: [fetchedObjectA, fetchedObjectB])
+        let fetchedObjectA: ExampleB = try await self.store.object(id: idA).execute()
+        let fetchedObjectB: ExampleB = try await self.store.object(id: idB).execute()
+        await self.store.delete(objects: [fetchedObjectA, fetchedObjectB])
         
-        XCTAssertThrowsError(try self.store.object(id: idA, of: ExampleB.self).execute())
-        XCTAssertThrowsError(try self.store.object(id: idB, of: ExampleB.self).execute())
-    }
-    
-    func testDeletingObjectsEventually() throws
-    {
-        let idA = UUID().uuidString
-        let objectA = ExampleB(id: idA)
-        self.store.save(objectA)
-        
-        let idB = UUID().uuidString
-        let objectB = ExampleB(id: idB)
-        self.store.save(objectB)
-        
-        let fetchedObjectA: ExampleB = try XCTUnwrap(self.store.object(id: idA).execute())
-        let fetchedObjectB: ExampleB = try XCTUnwrap(self.store.object(id: idB).execute())
-        self.store.deleteEventually(objects: [fetchedObjectA, fetchedObjectB])
-        
-        self.expectToEventually {
-            let a = try? self.store.object(id: idA, of: ExampleB.self).execute()
-            let b = try? self.store.object(id: idB, of: ExampleB.self).execute()
-            return a != nil && b != nil
+        do
+        {
+            _ = try await self.store.object(id: idA, of: ExampleB.self).execute()
+            XCTFail("Object not deleted")
         }
+        catch { }
+        
+        do
+        {
+            _ = try await self.store.object(id: idB, of: ExampleB.self).execute()
+            XCTFail("Object not deleted")
+        }
+        catch { }
     }
     
     func testUpdatesReceivedOnDeleting() throws
@@ -267,16 +208,17 @@ final class PapyrusStoreTests: XCTestCase
             .store(in: &self.cancellables)
         
         let object = ExampleB(id: UUID().uuidString)
-        self.store.save(object)
-        
-        self.store.delete(object)
+        async {
+            await self.store.save(object)
+            await self.store.delete(object)
+        }
         
         self.waitForExpectations(timeout: 2.0)
     }
     
     // MARK: Merging
     
-    func testMerging() throws
+    func testMerging() async throws
     {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
@@ -287,43 +229,36 @@ final class PapyrusStoreTests: XCTestCase
         let idC = UUID().uuidString
         let objectC = ExampleB(id: idC)
         
-        self.store.save(objects: [objectA, objectB, objectC])
-        self.store.merge(with: [objectA, objectB])
+        await self.store.save(objects: [objectA, objectB, objectC])
+        await self.store.merge(with: [objectA, objectB])
         
-        XCTAssertNoThrow(try self.store.object(id: idA, of: ExampleB.self).execute())
-        XCTAssertNoThrow(try self.store.object(id: idB, of: ExampleB.self).execute())
-        XCTAssertThrowsError(try self.store.object(id: idC, of: ExampleB.self).execute())
-        XCTAssertEqual(2, self.store.objects(type: ExampleB.self).execute().count)
-    }
-    
-    func testMergingEventually() throws
-    {
-        let idA = UUID().uuidString
-        let objectA = ExampleB(id: idA)
+        XCTAssertNoThrow { try await self.store.object(id: idA, of: ExampleB.self).execute() }
+        XCTAssertNoThrow { try await self.store.object(id: idB, of: ExampleB.self).execute() }
         
-        let idB = UUID().uuidString
-        let objectB = ExampleB(id: idB)
+        do
+        {
+            _ = try await self.store.object(id: idC, of: ExampleB.self).execute()
+            XCTFail("Object not deleted")
+        }
+        catch { }
         
-        let idC = UUID().uuidString
-        let objectC = ExampleB(id: idC)
-        
-        self.store.save(objects: [objectA, objectB, objectC])
-        self.store.mergeEventually(with: [objectA, objectB])
-        
-        self.expectToEventuallyThrow { _ = try self.store.object(id: idC, of: ExampleB.self).execute() }
+        let exampleBs = await self.store.objects(type: ExampleB.self).execute()
+        XCTAssertEqual(2, exampleBs.count)
     }
     
     // MARK: Migrations
     
-    func testMigration() throws
+    func testMigration() async throws
     {
         let idA = UUID().uuidString
         let idB = UUID().uuidString
         let idC = UUID().uuidString
         
         let oldObjects = [idA, idB, idC].map { ExampleB.init(id: $0) }
-        self.store.save(objects: oldObjects)
-        XCTAssertEqual(3, self.store.objects(type: ExampleB.self).execute().count)
+        await self.store.save(objects: oldObjects)
+        
+        var exampleBResults = await self.store.objects(type: ExampleB.self).execute()
+        XCTAssertEqual(3, exampleBResults.count)
         
         let migration = Migration<ExampleB, ExampleD> { oldObject in
             ExampleD(
@@ -332,15 +267,19 @@ final class PapyrusStoreTests: XCTestCase
                 integerValue: oldObject.integerValue
             )
         }
-        self.store.register(migration: migration)
+        await self.store.register(migration: migration)
         
         // Validate objects are migrated
-        self.expectToEventually(self.store.objects(type: ExampleB.self).execute().count == 0)
-        self.expectToEventually(self.store.objects(type: ExampleD.self).execute().count == 3)
+        exampleBResults = await self.store.objects(type: ExampleB.self).execute()
+        XCTAssertEqual(0, exampleBResults.count)
+        
+        let exampleDResults = await self.store.objects(type: ExampleD.self).execute()
+        XCTAssertEqual(3, exampleDResults.count)
         
         // Validate information migrated
-        try oldObjects.forEach { oldObject in
-            let object: ExampleD = try self.store.object(id: oldObject.id).execute()
+        for oldObject in oldObjects
+        {
+            let object: ExampleD = try await self.store.object(id: oldObject.id).execute()
             XCTAssertEqual(oldObject.integerValue, object.integerValue)
             XCTAssertEqual(oldObject.value, object.value)
         }
