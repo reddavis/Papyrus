@@ -32,15 +32,6 @@ public final class PapyrusStore
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     
-    private let memoryCache: NSCache<CacheKey, PapyrusCacheWrapper> = {
-        let cache = NSCache<CacheKey, PapyrusCacheWrapper>()
-        cache.totalCostLimit = 20 * 1024 * 1024
-        
-        return cache
-    }()
-    
-    
-    
     // MARK: Initialization
     
     /// Initialize a new `PapyrusStore` instance persisted at the provided `URL`.
