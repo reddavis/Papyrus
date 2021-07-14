@@ -12,7 +12,7 @@ struct Car: Papyrus
 
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
 let store = PapyrusStore()
-store.save(car)
+await store.save(car)
 ```
 
 ## Requirements
