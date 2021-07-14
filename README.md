@@ -18,7 +18,7 @@ store.save(car)
 ## Requirements
 
 - iOS 14.0+
-- macOS 11.0+
+- macOS 12.0+
 
 ## Installation
 
@@ -56,7 +56,7 @@ The `Papyrus` protocol is simply an umbrella of these three protocols:
 - `Equatable`
 - `Identifiable where ID: LosslessStringConvertible`
 
-#### Example A - Basic Saving
+#### Example A 
 
 ```swift
 struct Car: Papyrus
@@ -68,25 +68,10 @@ struct Car: Papyrus
 
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
 let store = PapyrusStore()
-store.save(car)
+await store.save(car)
 ```
 
-#### Example B - Eventual Saving
-
-```swift
-struct Car: Papyrus
-{
-    let id: String
-    let model: String
-    let manufacturer: String
-}
-
-let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
-let store = PapyrusStore()
-store.saveEventually(car)
-```
-
-#### Example C - Relationships
+#### Example B - Relationships
 
 Papyrus also understands relationships. If we continue with our `Car` modelling...Let's imagine we have an app that fetches a list of car manufacturers and their cars.
 
@@ -124,12 +109,12 @@ let tesla = Manufacturer(
 )
 
 let store = PapyrusStore()
-store.save(tesla)
+await store.save(tesla)
 ```
 
-Because `Car` and `Address` also conforms to `Papyrus` and the `@HasMany` and `@HasOne` property wrappers have been used, `PapyrusStore` will also persist the cars and the address when it saves the manufacturer.
+Because `Car` and `Address` also conforms to `Papyrus` and the `@HasMany` and `@HasOne` property wrappers have been used, `PapyrusStore` will also persist the cars and the address when it saves the manufacturer. This means that we are able to perform direct queries on `Car`'s and `Address`es. 
 
-#### Example D - Merge
+#### Example C - Merge
 
 A common use case when dealing with API's is to fetch a collection of objects and the merge the results into your local collection.
 
@@ -145,8 +130,8 @@ let carC = Car(id: "ghi...", model: "Model X", manufacturer: "Tesla")
 let store = PapyrusStore()
 store.save(objects: [carA, carB])
 
-store.merge(with: [carA, carC])
-store
+await store.merge(with: [carA, carC])
+await store
     .objects(type: Car.self)
     .execute()
 // #=> [carA, carC]
@@ -162,7 +147,7 @@ Fetching objects has two forms:
 
 ```swift
 let store = PapyrusStore()
-let tesla = try store.object(id: "abc...", of: Manufacturer.self).execute()
+let tesla = try await store.object(id: "abc...", of: Manufacturer.self).execute()
 ```
 
 #### Example B
@@ -188,7 +173,7 @@ Papryrus gives you the ability to fetch, filter and observe colletions of object
 #### Example A - Simple fetch
 
 ```swift
-let manufacturers = self.store
+let manufacturers = await self.store
                         .objects(type: Manufacturer.self)
                         .execute()
 ```
@@ -196,7 +181,7 @@ let manufacturers = self.store
 #### Example B - Filtering
 
 ```swift
-let manufacturers = self.store
+let manufacturers = await self.store
                         .objects(type: Manufacturer.self)
                         .filter { $0.name == "Tesla" }
                         .execute()
@@ -205,7 +190,7 @@ let manufacturers = self.store
 #### Example C - Sorting
 
 ```swift
-let manufacturers = self.store
+let manufacturers = await self.store
                         .objects(type: Manufacturer.self)
                         .sort { $0.name < $1.name }
                         .execute()
@@ -253,31 +238,23 @@ There are several methods for deleting objects.
 ```swift
 let store = PapyrusStore()
 let tesla = store.object(id: "abc...", of: Manufacturer.self)
-store.delete(tesla)
+await store.delete(tesla)
 ```
 
 #### Example B
 
 ```swift
 let store = PapyrusStore()
-let tesla = store.object(id: "abc...", of: Manufacturer.self)
-store.deleteEventually(tesla)
+await store.delete(id: "abc...", of: Manufacturer.self)
 ```
 
 #### Example C
 
 ```swift
 let store = PapyrusStore()
-store.delete(id: "abc...", of: Manufacturer.self)
-```
-
-#### Example D
-
-```swift
-let store = PapyrusStore()
 let tesla = store.object(id: "abc...", of: Manufacturer.self)
 let ford = store.object(id: "xyz...", of: Manufacturer.self)
-store.delete(objects: [tesla, ford])
+await store.delete(objects: [tesla, ford])
 ```
 
 ### Migrations (experimental)
@@ -310,7 +287,8 @@ let migration = Migration<Car, CarV2> { oldObject in
         year: 0
     )
 }
-self.store.register(migration: migration)
+
+await self.store.register(migration: migration)
 ```
 
 ## License
