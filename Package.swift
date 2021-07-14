@@ -7,8 +7,8 @@ import PackageDescription
 let package = Package(
     name: "Papyrus",
     platforms: [
-        .iOS("13.0"),
-        .macOS("11.0")
+        .iOS("15.0"),
+        .macOS("12.0")
     ],
     products: [
         .library(
