@@ -6,6 +6,7 @@ import XCTest
 final class ObjectQueryTests: XCTestCase
 {
     // Private
+    private let fileManager = FileManager.default
     private var storeDirectory: URL!
     private var cancellables: Set<AnyCancellable>!
     
@@ -17,7 +18,7 @@ final class ObjectQueryTests: XCTestCase
         
         let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: self.storeDirectory, withIntermediateDirectories: true, attributes: nil)
+        try self.fileManager.createDirectory(at: self.storeDirectory, withIntermediateDirectories: true, attributes: nil)
     }
     
     // MARK: Tests
@@ -65,17 +66,26 @@ final class ObjectQueryTests: XCTestCase
         )
         
         var iterator = query.stream().makeAsyncIterator()
-                
-        var value = await iterator.next()
-        XCTAssertEqual(value, .success(object))
+        
+        // Initial object
+        var value = try await iterator.next()
+        XCTAssertEqual(value, object)
         
         // Update
         let updatedObject = ExampleB(id: id, value: UUID().uuidString)
         try updatedObject.write(to: self.storeDirectory)
         try self.updateDirectoryModificationDate(directoryURL: self.storeDirectory)
         
-        value = await iterator.next()
-        XCTAssertEqual(value, .success(updatedObject))
+        value = try await iterator.next()
+        XCTAssertEqual(value, updatedObject)
+        
+        // Not found
+        try self.fileManager.removeItem(at: self.storeDirectory.appendingPathComponent(id))
+        try self.updateDirectoryModificationDate(directoryURL: self.storeDirectory)
+        
+        await XCTAssertAsyncThrowsError {
+            _ = try await iterator.next()
+        }
     }
 }
 

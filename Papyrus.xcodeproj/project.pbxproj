@@ -17,6 +17,7 @@
 		A476256A2628990200CAB805 /* ObjectObserverSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47625692628990200CAB805 /* ObjectObserverSubscription.swift */; };
 		A47AD3FF26A195B00075439D /* DirectoryObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD3FE26A195B00075439D /* DirectoryObserverTests.swift */; };
 		A47AD40126A1B84E0075439D /* ObjectFileObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40026A1B84E0075439D /* ObjectFileObserverTests.swift */; };
+		A47AD40326A1DC9A0075439D /* Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40226A1DC9A0075439D /* Assertions.swift */; };
 		A494438726A04590008A8493 /* ObjectFileObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438626A04590008A8493 /* ObjectFileObserver.swift */; };
 		A494438C26A09B8B008A8493 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438B26A09B8B008A8493 /* DirectoryObserver.swift */; };
 		A49F483D2655248700B5A04F /* Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483C2655248600B5A04F /* Migration.swift */; };
@@ -64,6 +65,7 @@
 		A47625692628990200CAB805 /* ObjectObserverSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserverSubscription.swift; sourceTree = "<group>"; };
 		A47AD3FE26A195B00075439D /* DirectoryObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserverTests.swift; sourceTree = "<group>"; };
 		A47AD40026A1B84E0075439D /* ObjectFileObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFileObserverTests.swift; sourceTree = "<group>"; };
+		A47AD40226A1DC9A0075439D /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
 		A494438626A04590008A8493 /* ObjectFileObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFileObserver.swift; sourceTree = "<group>"; };
 		A494438B26A09B8B008A8493 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
 		A49F483C2655248600B5A04F /* Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migration.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				A4645469258B3A4E005C0FBB /* Extensions */,
 				A464545C258B3709005C0FBB /* Resources */,
 				A4515E46258B2364000B76CF /* Tests */,
+				A47AD40226A1DC9A0075439D /* Assertions.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				A464545E258B371E005C0FBB /* ExampleA.swift in Sources */,
 				A47AD40126A1B84E0075439D /* ObjectFileObserverTests.swift in Sources */,
 				A4EE68C125949FF00056B386 /* ExampleC.swift in Sources */,
+				A47AD40326A1DC9A0075439D /* Assertions.swift in Sources */,
 				A47AD3FF26A195B00075439D /* DirectoryObserverTests.swift in Sources */,
 				A4EA2327262951FC006B62FA /* CollectionQueryTests.swift in Sources */,
 				A4EA237E262B2996006B62FA /* ObjectQueryTests.swift in Sources */,

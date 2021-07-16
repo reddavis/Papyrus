@@ -59,18 +59,24 @@ public extension PapyrusStore
         }
         
         /// Observe changes to the query via an async stream.
-        /// - Returns: A `AsyncStream` instance.
-        public func stream() -> AsyncStream<Result<T, PapyrusStore.QueryError>>
+        /// - Returns: A `AsyncThrowingStream` instance.
+        public func stream() -> AsyncThrowingStream<T, Error>
         {
             let filename = self.filename
             let directoryURL = self.directoryURL
             
-            return AsyncStream { continuation in
+            return AsyncThrowingStream<T, Error> { continuation in
                 let observer = ObjectFileObserver<T>(
                     filename: filename,
                     directoryURL: directoryURL,
                     onChange: { result in
-                        continuation.yield(result)
+                        switch result
+                        {
+                        case .success(let object):
+                            continuation.yield(object)
+                        case .failure(let error):
+                            continuation.finish(throwing: error)
+                        }
                     }
                 )
                 
