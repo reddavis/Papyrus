@@ -1,10 +1,3 @@
-//
-//  ExampleD.swift
-//  PapyrusTests
-//
-//  Created by Red Davis on 20/05/2021.
-//
-
 import Foundation
 @testable import Papyrus
 

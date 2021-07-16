@@ -1,28 +1,16 @@
-//
-//  ObserverSubscription.swift
-//  Papyrus
-//
-//  Created by Red Davis on 23/12/2020.
-//
-
 import Combine
 import Foundation
 
 
-final class CollectionObserverSubscription<T: Subscriber, Output>: Subscription
-where T.Input == [Output], Output: Papyrus
+final class CollectionObserverSubscription<T: Subscriber, Output: Papyrus>: Subscription
+where T.Input == [Output]
 {
     // Private
     private let fileManager = FileManager.default
     private let directoryURL: URL
     private var subscriber: T?
     private var demand: Subscribers.Demand = .none
-    
-    private let directoryObserverDispatchQueue = DispatchQueue(
-        label: "com.reddavis.PapyrusStore.CollectionObserverSubscription.directoryObserverDispatchQueue.\(UUID())",
-        qos: .background
-    )
-    private var directoryObserver: DispatchSourceFileSystemObject?
+    private var observer: DirectoryObserver?
     
     // MARK: Initialization
     
@@ -32,45 +20,31 @@ where T.Input == [Output], Output: Papyrus
         self.subscriber = subscriber
     }
     
-    // MARK: Setup
-    
-    private func startDirectoryObserver()
-    {
-        if !self.fileManager.fileExists(atPath: self.directoryURL.path)
-        {
-            try? self.fileManager.createDirectory(at: self.directoryURL, withIntermediateDirectories: true)
-        }
-        
-        let fileDesciptor = open(self.directoryURL.path, O_EVTONLY)
-        self.directoryObserver = DispatchSource.makeFileSystemObjectSource(
-            fileDescriptor: fileDesciptor,
-            eventMask: [.attrib],
-            queue: self.directoryObserverDispatchQueue
-        )
-        self.directoryObserver?.setEventHandler { [weak self] in
-            self?.processNextRequest()
-        }
-        self.directoryObserver?.resume()
-    }
-    
     // MARK: Subscriber
     
     func cancel()
     {
         self.subscriber = nil
-        self.directoryObserver?.cancel()
+        self.observer?.cancel()
     }
     
     func request(_ demand: Subscribers.Demand)
     {
         self.demand = demand
-        self.processNextRequest()
-        self.startDirectoryObserver()
+        self.processChange()
+        
+        self.observer = DirectoryObserver(
+            url: self.directoryURL,
+            onChange: { [weak self] _ in
+                self?.processChange()
+            }
+        )
+        self.observer?.start()
     }
     
     // MARK: Data
     
-    private func processNextRequest()
+    private func processChange()
     {
         guard let subscriber = self.subscriber else { return }
         

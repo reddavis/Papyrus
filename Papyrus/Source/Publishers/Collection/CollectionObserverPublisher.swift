@@ -1,10 +1,3 @@
-//
-//  ObserverPublisher.swift
-//  Papyrus
-//
-//  Created by Red Davis on 23/12/2020.
-//
-
 import Combine
 import Foundation
 

@@ -1,10 +1,3 @@
-//
-//  Migration.swift
-//  Papyrus
-//
-//  Created by Red Davis on 19/05/2021.
-//
-
 import Foundation
 
 

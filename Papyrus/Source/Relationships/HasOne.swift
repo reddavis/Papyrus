@@ -1,10 +1,3 @@
-//
-//  HasOne.swift
-//  Papyrus
-//
-//  Created by Red Davis on 19/04/2021.
-//
-
 import Foundation
 
 

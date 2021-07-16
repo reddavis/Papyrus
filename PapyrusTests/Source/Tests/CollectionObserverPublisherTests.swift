@@ -1,10 +1,3 @@
-//
-//  QueryPublisherTests.swift
-//  PapyrusTests
-//
-//  Created by Red Davis on 23/12/2020.
-//
-
 import Combine
 import XCTest
 @testable import Papyrus

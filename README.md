@@ -166,6 +166,10 @@ let cancellable = store.object(id: "abc...", of: Manufacturer.self)
     )
 ```
 
+#### Example C
+
+With Swift 5.5 came async/await, which also introduced `AsyncStream`. 
+
 ### Fetching collections
 
 Papryrus gives you the ability to fetch, filter and observe colletions of objects.

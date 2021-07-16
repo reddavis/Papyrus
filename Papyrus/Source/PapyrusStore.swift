@@ -1,10 +1,3 @@
-//
-//  PapyrusStore.swift
-//  Papyrus
-//
-//  Created by Red Davis on 16/12/2020.
-//
-
 import Combine
 import Foundation
 
@@ -18,7 +11,7 @@ public final class PapyrusStore
     // Public
     
     /// The verboseness of the logger.
-    public var logLevel: Logger.LogLevel {
+    public var logLevel: LogLevel {
         get { self.logger.logLevel }
         set { self.logger.logLevel = newValue }
     }

@@ -1,10 +1,3 @@
-//
-//  PapyrusCollectionTests.swift
-//  PapyrusTests
-//
-//  Created by Red Davis on 04/01/2021.
-//
-
 import Combine
 import XCTest
 @testable import Papyrus

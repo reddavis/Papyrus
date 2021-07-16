@@ -1,10 +1,3 @@
-//
-//  HasMany.swift
-//  Papyrus
-//
-//  Created by Red Davis on 19/04/2021.
-//
-
 import Foundation
 
 
@@ -18,7 +11,7 @@ public struct HasMany<T: Papyrus>: Codable
         }
     }
     
-    // Internal
+    // Private
     private var encodingWrappers: [PapyrusEncodingWrapper]
     
     // MARK: Initialization

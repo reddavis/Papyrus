@@ -1,10 +1,3 @@
-//
-//  ObjectQuery.swift
-//  Papyrus
-//
-//  Created by Red Davis on 16/04/2021.
-//
-
 import Combine
 import Foundation
 
@@ -53,7 +46,7 @@ public extension PapyrusStore
             }
         }
         
-        /// Observe changes to the query.
+        /// Observe changes to the query via a publisher.
         /// - Returns: A publisher that emits values when
         /// valid objects are changed.
         public func publisher() -> AnyPublisher<T, PapyrusStore.QueryError>
@@ -63,6 +56,30 @@ public extension PapyrusStore
                 directoryURL: self.directoryURL
             )
             .eraseToAnyPublisher()
+        }
+        
+        /// Observe changes to the query via an async stream.
+        /// - Returns: A `AsyncStream` instance.
+        public func stream() -> AsyncStream<Result<T, PapyrusStore.QueryError>>
+        {
+            let filename = self.filename
+            let directoryURL = self.directoryURL
+            
+            return AsyncStream { continuation in
+                let observer = ObjectFileObserver<T>(
+                    filename: filename,
+                    directoryURL: directoryURL,
+                    onChange: { result in
+                        continuation.yield(result)
+                    }
+                )
+                
+                continuation.onTermination = { @Sendable _ in
+                    observer.cancel()
+                }
+                
+                observer.start()
+            }
         }
     }
 }

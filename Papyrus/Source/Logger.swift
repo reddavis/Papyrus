@@ -1,18 +1,9 @@
-//
-//  Logger.swift
-//  Red Davis
-//
-//  Created by Red Davis on 01/08/2019.
-//  Copyright © 2019 Red Davis. All rights reserved.
-//
-
 import Foundation
 import os.log
 
 
-public final class Logger
+final class Logger
 {
-    // Public
     var logLevel: LogLevel = .info
     
     // Private
@@ -61,37 +52,35 @@ public final class Logger
 
 // MARK: Log level
 
-public extension Logger
+public enum LogLevel: Int
 {
-    enum LogLevel: Int
-    {
-        case info
-        case debug
-        case error
-        case fault
-        case off
-        
-        var logType: OSLogType? {
-            switch self
-            {
-            case .info:
-                return .info
-            case .debug:
-                return .debug
-            case .error:
-                return .error
-            case .fault:
-                return .fault
-            case .off:
-                return nil
-            }
+    case info
+    case debug
+    case error
+    case fault
+    case off
+    
+    var logType: OSLogType? {
+        switch self
+        {
+        case .info:
+            return .info
+        case .debug:
+            return .debug
+        case .error:
+            return .error
+        case .fault:
+            return .fault
+        case .off:
+            return nil
         }
     }
 }
 
+
 // MARK: Comparable
 
-extension Logger.LogLevel: Comparable
+extension LogLevel: Comparable
 {
-    public static func <(lhs: Logger.LogLevel, rhs: Logger.LogLevel) -> Bool { lhs.rawValue < rhs.rawValue }
+    public static func <(lhs: LogLevel, rhs: LogLevel) -> Bool { lhs.rawValue < rhs.rawValue }
 }

@@ -1,10 +1,3 @@
-//
-//  SetupError.swift
-//  Papyrus
-//
-//  Created by Red Davis on 18/12/2020.
-//
-
 import Foundation
 
 

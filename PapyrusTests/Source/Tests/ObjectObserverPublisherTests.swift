@@ -1,10 +1,3 @@
-//
-//  ObjectObserverPublisherTests.swift
-//  PapyrusTests
-//
-//  Created by Red Davis on 16/04/2021.
-//
-
 import Combine
 import XCTest
 @testable import Papyrus

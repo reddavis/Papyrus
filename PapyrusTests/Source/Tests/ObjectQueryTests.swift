@@ -1,10 +1,3 @@
-//
-//  ObjectQueryTests.swift
-//  PapyrusTests
-//
-//  Created by Red Davis on 17/04/2021.
-//
-
 import Combine
 import XCTest
 @testable import Papyrus
@@ -58,5 +51,44 @@ final class ObjectQueryTests: XCTestCase
             XCTFail("Error should be raised")
         }
         catch { }
+    }
+    
+    func testStreamingObjectChanges() async throws
+    {
+        let id = UUID().uuidString
+        let object = ExampleB(id: id)
+        try object.write(to: self.storeDirectory)
+        
+        let query = PapyrusStore.ObjectQuery<ExampleB>(
+            id: id,
+            directoryURL: self.storeDirectory
+        )
+        
+        var iterator = query.stream().makeAsyncIterator()
+                
+        var value = await iterator.next()
+        XCTAssertEqual(value, .success(object))
+        
+        // Update
+        let updatedObject = ExampleB(id: id, value: UUID().uuidString)
+        try updatedObject.write(to: self.storeDirectory)
+        try self.updateDirectoryModificationDate(directoryURL: self.storeDirectory)
+        
+        value = await iterator.next()
+        XCTAssertEqual(value, .success(updatedObject))
+    }
+}
+
+
+// MARK: Helpers
+
+extension ObjectQueryTests
+{
+    func updateDirectoryModificationDate(directoryURL: URL) throws
+    {
+        try FileManager.default.setAttributes(
+            [.modificationDate : Date.now],
+            ofItemAtPath: directoryURL.path
+        )
     }
 }

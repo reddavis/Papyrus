@@ -1,10 +1,3 @@
-//
-//  Collection.swift
-//  Papyrus
-//
-//  Created by Red Davis on 21/12/2020.
-//
-
 import Foundation
 
 

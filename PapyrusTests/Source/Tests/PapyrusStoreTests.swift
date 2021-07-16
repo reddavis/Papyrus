@@ -1,10 +1,3 @@
-//
-//  PapyrusTests.swift
-//  PapyrusTests
-//
-//  Created by Red Davis on 16/12/2020.
-//
-
 import Combine
 import XCTest
 @testable import Papyrus
@@ -133,7 +126,7 @@ final class PapyrusStoreTests: XCTestCase
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         
-        async { await self.store.save(ExampleB(id: UUID().uuidString)) }
+        Task { await self.store.save(ExampleB(id: UUID().uuidString)) }
         self.waitForExpectations(timeout: 2.0)
     }
     
@@ -208,7 +201,7 @@ final class PapyrusStoreTests: XCTestCase
             .store(in: &self.cancellables)
         
         let object = ExampleB(id: UUID().uuidString)
-        async {
+        Task {
             await self.store.save(object)
             await self.store.delete(object)
         }

@@ -13,9 +13,12 @@
 		A4645457258B3485005C0FBB /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4645456258B3485005C0FBB /* Logger.swift */; };
 		A464545E258B371E005C0FBB /* ExampleA.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464545D258B371E005C0FBB /* ExampleA.swift */; };
 		A4645464258B372E005C0FBB /* ExampleB.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4645463258B372E005C0FBB /* ExampleB.swift */; };
-		A464546B258B3A5C005C0FBB /* XCTest+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464546A258B3A5C005C0FBB /* XCTest+Extension.swift */; };
 		A4762566262895A000CAB805 /* ObjectObserverPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4762565262895A000CAB805 /* ObjectObserverPublisher.swift */; };
 		A476256A2628990200CAB805 /* ObjectObserverSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47625692628990200CAB805 /* ObjectObserverSubscription.swift */; };
+		A47AD3FF26A195B00075439D /* DirectoryObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD3FE26A195B00075439D /* DirectoryObserverTests.swift */; };
+		A47AD40126A1B84E0075439D /* ObjectFileObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40026A1B84E0075439D /* ObjectFileObserverTests.swift */; };
+		A494438726A04590008A8493 /* ObjectFileObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438626A04590008A8493 /* ObjectFileObserver.swift */; };
+		A494438C26A09B8B008A8493 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438B26A09B8B008A8493 /* DirectoryObserver.swift */; };
 		A49F483D2655248700B5A04F /* Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483C2655248600B5A04F /* Migration.swift */; };
 		A49F483F26569B7400B5A04F /* ExampleD.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483E26569B7400B5A04F /* ExampleD.swift */; };
 		A4C9E6AF2589D73E00476A7E /* Papyrus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C9E6A52589D73D00476A7E /* Papyrus.framework */; };
@@ -24,7 +27,6 @@
 		A4C9E6CC2589D78600476A7E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A4C9E6CB2589D78600476A7E /* README.md */; };
 		A4DAAA92258C798D009E3125 /* SetupError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAA91258C798D009E3125 /* SetupError.swift */; };
 		A4DAAA97258C8525009E3125 /* Mirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAA96258C8525009E3125 /* Mirror.swift */; };
-		A4DAAA9D258C88AE009E3125 /* PapyrusCacheWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAA9C258C88AE009E3125 /* PapyrusCacheWrapper.swift */; };
 		A4DAAAD025906FA8009E3125 /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAACF25906FA8009E3125 /* Collection.swift */; };
 		A4DAAADA25907B51009E3125 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAAD925907B51009E3125 /* Int+Extension.swift */; };
 		A4EA231B2628A9C6006B62FA /* QueryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EA231A2628A9C6006B62FA /* QueryError.swift */; };
@@ -58,9 +60,12 @@
 		A4645456258B3485005C0FBB /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		A464545D258B371E005C0FBB /* ExampleA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleA.swift; sourceTree = "<group>"; };
 		A4645463258B372E005C0FBB /* ExampleB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleB.swift; sourceTree = "<group>"; };
-		A464546A258B3A5C005C0FBB /* XCTest+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+Extension.swift"; sourceTree = "<group>"; };
 		A4762565262895A000CAB805 /* ObjectObserverPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserverPublisher.swift; sourceTree = "<group>"; };
 		A47625692628990200CAB805 /* ObjectObserverSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserverSubscription.swift; sourceTree = "<group>"; };
+		A47AD3FE26A195B00075439D /* DirectoryObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserverTests.swift; sourceTree = "<group>"; };
+		A47AD40026A1B84E0075439D /* ObjectFileObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFileObserverTests.swift; sourceTree = "<group>"; };
+		A494438626A04590008A8493 /* ObjectFileObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFileObserver.swift; sourceTree = "<group>"; };
+		A494438B26A09B8B008A8493 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
 		A49F483C2655248600B5A04F /* Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migration.swift; sourceTree = "<group>"; };
 		A49F483E26569B7400B5A04F /* ExampleD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleD.swift; sourceTree = "<group>"; };
 		A4C9E6A52589D73D00476A7E /* Papyrus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Papyrus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,7 +78,6 @@
 		A4C9E6CB2589D78600476A7E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		A4DAAA91258C798D009E3125 /* SetupError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupError.swift; sourceTree = "<group>"; };
 		A4DAAA96258C8525009E3125 /* Mirror.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mirror.swift; sourceTree = "<group>"; };
-		A4DAAA9C258C88AE009E3125 /* PapyrusCacheWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusCacheWrapper.swift; sourceTree = "<group>"; };
 		A4DAAACF25906FA8009E3125 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		A4DAAAD925907B51009E3125 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		A4EA231A2628A9C6006B62FA /* QueryError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryError.swift; sourceTree = "<group>"; };
@@ -132,9 +136,11 @@
 			children = (
 				A4EE68AF2593523E0056B386 /* CollectionObserverPublisherTests.swift */,
 				A4EA2326262951FC006B62FA /* CollectionQueryTests.swift */,
-				A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */,
+				A47AD3FE26A195B00075439D /* DirectoryObserverTests.swift */,
+				A47AD40026A1B84E0075439D /* ObjectFileObserverTests.swift */,
 				A4EA236E2629E905006B62FA /* ObjectObserverPublisherTests.swift */,
 				A4EA237D262B2996006B62FA /* ObjectQueryTests.swift */,
+				A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -154,7 +160,6 @@
 			isa = PBXGroup;
 			children = (
 				A4DAAAD925907B51009E3125 /* Int+Extension.swift */,
-				A464546A258B3A5C005C0FBB /* XCTest+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -175,6 +180,15 @@
 				A47625692628990200CAB805 /* ObjectObserverSubscription.swift */,
 			);
 			path = Object;
+			sourceTree = "<group>";
+		};
+		A494438A26A09B6E008A8493 /* Observers */ = {
+			isa = PBXGroup;
+			children = (
+				A494438B26A09B8B008A8493 /* DirectoryObserver.swift */,
+				A494438626A04590008A8493 /* ObjectFileObserver.swift */,
+			);
+			path = Observers;
 			sourceTree = "<group>";
 		};
 		A4C9E69B2589D73D00476A7E = {
@@ -220,13 +234,13 @@
 			children = (
 				A4EA23192628A9B0006B62FA /* Errors */,
 				A4DAAA95258C8517009E3125 /* Extensions */,
+				A494438A26A09B6E008A8493 /* Observers */,
 				A4EE68B725935EB60056B386 /* Publishers */,
 				A4EA238A262DE1E1006B62FA /* Queries */,
 				A4EA2381262DDF48006B62FA /* Relationships */,
 				A4645456258B3485005C0FBB /* Logger.swift */,
 				A49F483C2655248600B5A04F /* Migration.swift */,
 				A444CC022589DFC90067F4B0 /* Papyrus.swift */,
-				A4DAAA9C258C88AE009E3125 /* PapyrusCacheWrapper.swift */,
 				A4645451258B3391005C0FBB /* PapyrusEncodingWrapper.swift */,
 				A444CBFC2589D8350067F4B0 /* PapyrusStore.swift */,
 			);
@@ -424,13 +438,14 @@
 				A4EE68A825931AF50056B386 /* CollectionObserverPublisher.swift in Sources */,
 				A4DAAA97258C8525009E3125 /* Mirror.swift in Sources */,
 				A4DAAA92258C798D009E3125 /* SetupError.swift in Sources */,
-				A4DAAA9D258C88AE009E3125 /* PapyrusCacheWrapper.swift in Sources */,
 				A4EA233126295284006B62FA /* ObjectQuery.swift in Sources */,
+				A494438C26A09B8B008A8493 /* DirectoryObserver.swift in Sources */,
 				A4EA231B2628A9C6006B62FA /* QueryError.swift in Sources */,
 				A4EA2323262951E1006B62FA /* CollectionQuery.swift in Sources */,
 				A444CC032589DFC90067F4B0 /* Papyrus.swift in Sources */,
 				A444CBFD2589D8350067F4B0 /* PapyrusStore.swift in Sources */,
 				A4645452258B3391005C0FBB /* PapyrusEncodingWrapper.swift in Sources */,
+				A494438726A04590008A8493 /* ObjectFileObserver.swift in Sources */,
 				A4645457258B3485005C0FBB /* Logger.swift in Sources */,
 				A4EA2387262DDF68006B62FA /* HasMany.swift in Sources */,
 			);
@@ -440,10 +455,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A464546B258B3A5C005C0FBB /* XCTest+Extension.swift in Sources */,
 				A49F483F26569B7400B5A04F /* ExampleD.swift in Sources */,
 				A464545E258B371E005C0FBB /* ExampleA.swift in Sources */,
+				A47AD40126A1B84E0075439D /* ObjectFileObserverTests.swift in Sources */,
 				A4EE68C125949FF00056B386 /* ExampleC.swift in Sources */,
+				A47AD3FF26A195B00075439D /* DirectoryObserverTests.swift in Sources */,
 				A4EA2327262951FC006B62FA /* CollectionQueryTests.swift in Sources */,
 				A4EA237E262B2996006B62FA /* ObjectQueryTests.swift in Sources */,
 				A4EE68B02593523E0056B386 /* CollectionObserverPublisherTests.swift in Sources */,
