@@ -168,7 +168,20 @@ let cancellable = store.object(id: "abc...", of: Manufacturer.self)
 
 #### Example C
 
-With Swift 5.5 came async/await, which also introduced `AsyncStream`. 
+With Swift 5.5 came async/await, which also introduced `AsyncStream` and `AsyncThrowingStream`. 
+
+When the object doesn't exist a `PapyrusStore.QueryError` error is thrown.
+
+```swift
+let store = PapyrusStore()
+let stream = store.object(id: "abc...", of: Manufacturer.self).stream()
+
+
+for try await object in stream
+{
+    ...
+}
+```
 
 ### Fetching collections
 
