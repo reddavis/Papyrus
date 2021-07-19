@@ -62,6 +62,7 @@ public extension PapyrusStore
         /// Apply a filter to the query.
         /// - Parameter onFilter: The filter to be applied.
         /// - Returns: The query item.
+        @discardableResult
         public func filter(_ onFilter: @escaping OnFilter) -> Self
         {
             self.filter = onFilter
@@ -71,6 +72,7 @@ public extension PapyrusStore
         /// Apply a sort to the query.
         /// - Parameter onSort: The sort to be applied.
         /// - Returns: The query item.
+        @discardableResult
         public func sort(_ onSort: @escaping OnSort) -> Self
         {
             self.sort = onSort
@@ -87,6 +89,37 @@ public extension PapyrusStore
                 .tryMap { try $0.sorted(by: self.sort) }
                 .replaceError(with: [])
                 .eraseToAnyPublisher()
+        }
+        
+        /// Observe changes to the query.
+        /// - Returns: A `AsyncThrowingStream` instance.
+        public func stream() -> AsyncThrowingStream<[T], Error>
+        {
+            let url = self.directoryURL
+            
+            return AsyncThrowingStream { continuation in
+                let observer = ObjectCollectionObserver<T>(
+                    url: url,
+                    onChange: { objects in
+                        do
+                        {
+                            var results = try objects.filter(self.filter)
+                            results = try results.sorted(by: self.sort)
+                            continuation.yield(results)
+                        }
+                        catch
+                        {
+                            continuation.finish(throwing: error)
+                        }
+                    }
+                )
+                
+                continuation.onTermination = { @Sendable _ in
+                    observer.cancel()
+                }
+                
+                observer.start()
+            }
         }
     }
 }

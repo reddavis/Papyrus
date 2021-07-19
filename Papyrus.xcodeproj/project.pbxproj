@@ -18,7 +18,9 @@
 		A47AD3FF26A195B00075439D /* DirectoryObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD3FE26A195B00075439D /* DirectoryObserverTests.swift */; };
 		A47AD40126A1B84E0075439D /* ObjectFileObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40026A1B84E0075439D /* ObjectFileObserverTests.swift */; };
 		A47AD40326A1DC9A0075439D /* Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40226A1DC9A0075439D /* Assertions.swift */; };
-		A494438726A04590008A8493 /* ObjectFileObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438626A04590008A8493 /* ObjectFileObserver.swift */; };
+		A47AD40526A1F5380075439D /* ObjectCollectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40426A1F5380075439D /* ObjectCollectionObserver.swift */; };
+		A47AD40726A1FF1D0075439D /* ObjectCollectionObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40626A1FF1D0075439D /* ObjectCollectionObserverTests.swift */; };
+		A494438726A04590008A8493 /* ObjectObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438626A04590008A8493 /* ObjectObserver.swift */; };
 		A494438C26A09B8B008A8493 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438B26A09B8B008A8493 /* DirectoryObserver.swift */; };
 		A49F483D2655248700B5A04F /* Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483C2655248600B5A04F /* Migration.swift */; };
 		A49F483F26569B7400B5A04F /* ExampleD.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483E26569B7400B5A04F /* ExampleD.swift */; };
@@ -66,7 +68,9 @@
 		A47AD3FE26A195B00075439D /* DirectoryObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserverTests.swift; sourceTree = "<group>"; };
 		A47AD40026A1B84E0075439D /* ObjectFileObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFileObserverTests.swift; sourceTree = "<group>"; };
 		A47AD40226A1DC9A0075439D /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
-		A494438626A04590008A8493 /* ObjectFileObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectFileObserver.swift; sourceTree = "<group>"; };
+		A47AD40426A1F5380075439D /* ObjectCollectionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectCollectionObserver.swift; sourceTree = "<group>"; };
+		A47AD40626A1FF1D0075439D /* ObjectCollectionObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectCollectionObserverTests.swift; sourceTree = "<group>"; };
+		A494438626A04590008A8493 /* ObjectObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserver.swift; sourceTree = "<group>"; };
 		A494438B26A09B8B008A8493 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
 		A49F483C2655248600B5A04F /* Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migration.swift; sourceTree = "<group>"; };
 		A49F483E26569B7400B5A04F /* ExampleD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleD.swift; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 				A4EE68AF2593523E0056B386 /* CollectionObserverPublisherTests.swift */,
 				A4EA2326262951FC006B62FA /* CollectionQueryTests.swift */,
 				A47AD3FE26A195B00075439D /* DirectoryObserverTests.swift */,
+				A47AD40626A1FF1D0075439D /* ObjectCollectionObserverTests.swift */,
 				A47AD40026A1B84E0075439D /* ObjectFileObserverTests.swift */,
 				A4EA236E2629E905006B62FA /* ObjectObserverPublisherTests.swift */,
 				A4EA237D262B2996006B62FA /* ObjectQueryTests.swift */,
@@ -189,7 +194,8 @@
 			isa = PBXGroup;
 			children = (
 				A494438B26A09B8B008A8493 /* DirectoryObserver.swift */,
-				A494438626A04590008A8493 /* ObjectFileObserver.swift */,
+				A494438626A04590008A8493 /* ObjectObserver.swift */,
+				A47AD40426A1F5380075439D /* ObjectCollectionObserver.swift */,
 			);
 			path = Observers;
 			sourceTree = "<group>";
@@ -432,6 +438,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A47AD40526A1F5380075439D /* ObjectCollectionObserver.swift in Sources */,
 				A4EE68BB25935F110056B386 /* CollectionObserverSubscription.swift in Sources */,
 				A4762566262895A000CAB805 /* ObjectObserverPublisher.swift in Sources */,
 				A4EA2383262DDF54006B62FA /* HasOne.swift in Sources */,
@@ -448,7 +455,7 @@
 				A444CC032589DFC90067F4B0 /* Papyrus.swift in Sources */,
 				A444CBFD2589D8350067F4B0 /* PapyrusStore.swift in Sources */,
 				A4645452258B3391005C0FBB /* PapyrusEncodingWrapper.swift in Sources */,
-				A494438726A04590008A8493 /* ObjectFileObserver.swift in Sources */,
+				A494438726A04590008A8493 /* ObjectObserver.swift in Sources */,
 				A4645457258B3485005C0FBB /* Logger.swift in Sources */,
 				A4EA2387262DDF68006B62FA /* HasMany.swift in Sources */,
 			);
@@ -466,6 +473,7 @@
 				A47AD3FF26A195B00075439D /* DirectoryObserverTests.swift in Sources */,
 				A4EA2327262951FC006B62FA /* CollectionQueryTests.swift in Sources */,
 				A4EA237E262B2996006B62FA /* ObjectQueryTests.swift in Sources */,
+				A47AD40726A1FF1D0075439D /* ObjectCollectionObserverTests.swift in Sources */,
 				A4EE68B02593523E0056B386 /* CollectionObserverPublisherTests.swift in Sources */,
 				A4645464258B372E005C0FBB /* ExampleB.swift in Sources */,
 				A4DAAADA25907B51009E3125 /* Int+Extension.swift in Sources */,

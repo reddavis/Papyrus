@@ -11,7 +11,7 @@ where T.Input == Output,
     private let directoryURL: URL
     private var subscriber: T?
     private var demand: Subscribers.Demand = .none
-    private var observer: ObjectFileObserver<Output>?
+    private var observer: ObjectObserver<Output>?
     
     // MARK: Initialization
     
@@ -38,7 +38,7 @@ where T.Input == Output,
     {
         self.demand = demand
         
-        self.observer = ObjectFileObserver<Output>(
+        self.observer = ObjectObserver<Output>(
             filename: self.filename,
             directoryURL: self.directoryURL,
             onChange: { [weak self] result in

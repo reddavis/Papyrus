@@ -27,7 +27,12 @@ struct ExampleB: Papyrus
     {
         let encoder = JSONEncoder()
         let data = try encoder.encode(self)
-        let url = url.appendingPathComponent(String(self.id))
+        let url = url.appendingPathComponent(self.id)
         try data.write(to: url)
+    }
+    
+    func remove(from url: URL) throws
+    {
+        try FileManager.default.removeItem(at: url.appendingPathComponent(self.id))        
     }
 }

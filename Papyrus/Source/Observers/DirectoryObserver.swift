@@ -9,7 +9,7 @@ final class DirectoryObserver
     
     private let directoryObserverDispatchQueue = DispatchQueue(
         label: "com.reddavis.DirectoryObserver.directoryObserverDispatchQueue.\(UUID())",
-        qos: .background
+        qos: .utility
     )
     private var directoryObserver: DispatchSourceFileSystemObject?
     private let onChange: (_ directoryURL: URL) -> Void

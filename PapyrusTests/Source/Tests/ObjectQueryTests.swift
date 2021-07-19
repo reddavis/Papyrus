@@ -46,12 +46,9 @@ final class ObjectQueryTests: XCTestCase
             directoryURL: self.storeDirectory
         )
         
-        do
-        {
+        await XCTAssertAsyncThrowsError({
             _ = try await query.execute()
-            XCTFail("Error should be raised")
-        }
-        catch { }
+        })
     }
     
     func testStreamingObjectChanges() async throws

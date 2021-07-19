@@ -17,7 +17,7 @@ await store.save(car)
 
 ## Requirements
 
-- iOS 14.0+
+- iOS 15.0+
 - macOS 12.0+
 
 ## Installation
@@ -213,6 +213,8 @@ let manufacturers = await self.store
                         .execute()
 ```
 
+#### Example D - Observing changes with Combine
+
 Calling `publisher()` on a `PapryrusStore.CollectionQuery` object will return a Combine publisher which will emit the collection of objects. Unless specified the publisher will continue to emit a collection objects whenever a change is detected.
 
 A change constitutes of:
@@ -220,8 +222,6 @@ A change constitutes of:
 - Addition of an object.
 - Deletion of an object.
 - Update of an object.
-
-#### Example D - Observing changes
 
 ```swift
 self.store
@@ -232,6 +232,7 @@ self.store
     .sink { self.updateUI(with: $0) }
     .store(in: &self.cancellables)
 ```
+
 #### Example E - All together
 
 ```swift
@@ -244,6 +245,29 @@ self.store
     .receive(on: DispatchQueue.main)
     .sink { self.updateUI(with: $0) }
     .store(in: &self.cancellables)
+```
+
+#### Example F - Observing changes with a stream
+
+Calling `stream()` on a `PapryrusStore.CollectionQuery` object will return a `AsyncThrowingStream` which will emit the collection of objects. Unless specified the stream will continue to emit a collection objects whenever a change is detected.
+
+A change constitutes of:
+
+- Addition of an object.
+- Deletion of an object.
+- Update of an object.
+
+```swift
+let stream = self.store
+    .objects(type: Manufacturer.self)
+    .filter { $0.name == "Tesla" }
+    .sort { $0.name < $1.name }
+    .stream()
+    
+for try await manufacturer in stream
+{
+    // ...
+}
 ```
 
 ### Deleting

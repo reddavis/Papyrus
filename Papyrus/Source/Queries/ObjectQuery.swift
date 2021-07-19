@@ -65,8 +65,8 @@ public extension PapyrusStore
             let filename = self.filename
             let directoryURL = self.directoryURL
             
-            return AsyncThrowingStream<T, Error> { continuation in
-                let observer = ObjectFileObserver<T>(
+            return AsyncThrowingStream { continuation in
+                let observer = ObjectObserver<T>(
                     filename: filename,
                     directoryURL: directoryURL,
                     onChange: { result in
