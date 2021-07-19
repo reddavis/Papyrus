@@ -20,6 +20,13 @@
 		A47AD40326A1DC9A0075439D /* Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40226A1DC9A0075439D /* Assertions.swift */; };
 		A47AD40526A1F5380075439D /* ObjectCollectionObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40426A1F5380075439D /* ObjectCollectionObserver.swift */; };
 		A47AD40726A1FF1D0075439D /* ObjectCollectionObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40626A1FF1D0075439D /* ObjectCollectionObserverTests.swift */; };
+		A47AD40F26A577A70075439D /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40E26A577A70075439D /* PerformanceTests.swift */; };
+		A47AD41026A577A70075439D /* Papyrus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C9E6A52589D73D00476A7E /* Papyrus.framework */; };
+		A47AD41626A578A50075439D /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DAAAD925907B51009E3125 /* Int+Extension.swift */; };
+		A47AD41726A5792D0075439D /* ExampleC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4EE68C025949FF00056B386 /* ExampleC.swift */; };
+		A47AD41826A5792D0075439D /* ExampleA.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464545D258B371E005C0FBB /* ExampleA.swift */; };
+		A47AD41926A5792D0075439D /* ExampleD.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483E26569B7400B5A04F /* ExampleD.swift */; };
+		A47AD41A26A5792D0075439D /* ExampleB.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4645463258B372E005C0FBB /* ExampleB.swift */; };
 		A494438726A04590008A8493 /* ObjectObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438626A04590008A8493 /* ObjectObserver.swift */; };
 		A494438C26A09B8B008A8493 /* DirectoryObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A494438B26A09B8B008A8493 /* DirectoryObserver.swift */; };
 		A49F483D2655248700B5A04F /* Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483C2655248600B5A04F /* Migration.swift */; };
@@ -47,6 +54,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A47AD41126A577A70075439D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A4C9E69C2589D73D00476A7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A4C9E6A42589D73D00476A7E;
+			remoteInfo = Papyrus;
+		};
 		A4C9E6B02589D73E00476A7E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A4C9E69C2589D73D00476A7E /* Project object */;
@@ -70,6 +84,8 @@
 		A47AD40226A1DC9A0075439D /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
 		A47AD40426A1F5380075439D /* ObjectCollectionObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectCollectionObserver.swift; sourceTree = "<group>"; };
 		A47AD40626A1FF1D0075439D /* ObjectCollectionObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectCollectionObserverTests.swift; sourceTree = "<group>"; };
+		A47AD40C26A577A70075439D /* PerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A47AD40E26A577A70075439D /* PerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
 		A494438626A04590008A8493 /* ObjectObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserver.swift; sourceTree = "<group>"; };
 		A494438B26A09B8B008A8493 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
 		A49F483C2655248600B5A04F /* Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migration.swift; sourceTree = "<group>"; };
@@ -101,6 +117,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A47AD40926A577A70075439D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A47AD41026A577A70075439D /* Papyrus.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A4C9E6A22589D73D00476A7E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -190,6 +214,14 @@
 			path = Object;
 			sourceTree = "<group>";
 		};
+		A47AD40D26A577A70075439D /* PerformanceTests */ = {
+			isa = PBXGroup;
+			children = (
+				A47AD40E26A577A70075439D /* PerformanceTests.swift */,
+			);
+			path = PerformanceTests;
+			sourceTree = "<group>";
+		};
 		A494438A26A09B6E008A8493 /* Observers */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,6 +239,7 @@
 				A4C9E6C42589D77700476A7E /* Documentation */,
 				A4C9E6A72589D73D00476A7E /* Papyrus */,
 				A4C9E6B22589D73E00476A7E /* PapyrusTests */,
+				A47AD40D26A577A70075439D /* PerformanceTests */,
 				A4C9E6A62589D73D00476A7E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -216,6 +249,7 @@
 			children = (
 				A4C9E6A52589D73D00476A7E /* Papyrus.framework */,
 				A4C9E6AE2589D73E00476A7E /* PapyrusTests.xctest */,
+				A47AD40C26A577A70075439D /* PerformanceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -342,6 +376,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		A47AD40B26A577A70075439D /* PerformanceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A47AD41326A577A70075439D /* Build configuration list for PBXNativeTarget "PerformanceTests" */;
+			buildPhases = (
+				A47AD40826A577A70075439D /* Sources */,
+				A47AD40926A577A70075439D /* Frameworks */,
+				A47AD40A26A577A70075439D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A47AD41226A577A70075439D /* PBXTargetDependency */,
+			);
+			name = PerformanceTests;
+			productName = PerformanceTests;
+			productReference = A47AD40C26A577A70075439D /* PerformanceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		A4C9E6A42589D73D00476A7E /* Papyrus */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A4C9E6B92589D73E00476A7E /* Build configuration list for PBXNativeTarget "Papyrus" */;
@@ -384,9 +436,12 @@
 		A4C9E69C2589D73D00476A7E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1220;
+				LastSwiftUpdateCheck = 1300;
 				LastUpgradeCheck = 1220;
 				TargetAttributes = {
+					A47AD40B26A577A70075439D = {
+						CreatedOnToolsVersion = 13.0;
+					};
 					A4C9E6A42589D73D00476A7E = {
 						CreatedOnToolsVersion = 12.2;
 						LastSwiftMigration = 1230;
@@ -411,11 +466,19 @@
 			targets = (
 				A4C9E6A42589D73D00476A7E /* Papyrus */,
 				A4C9E6AD2589D73E00476A7E /* PapyrusTests */,
+				A47AD40B26A577A70075439D /* PerformanceTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A47AD40A26A577A70075439D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A4C9E6A32589D73D00476A7E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -434,6 +497,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A47AD40826A577A70075439D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A47AD40F26A577A70075439D /* PerformanceTests.swift in Sources */,
+				A47AD41A26A5792D0075439D /* ExampleB.swift in Sources */,
+				A47AD41726A5792D0075439D /* ExampleC.swift in Sources */,
+				A47AD41826A5792D0075439D /* ExampleA.swift in Sources */,
+				A47AD41926A5792D0075439D /* ExampleD.swift in Sources */,
+				A47AD41626A578A50075439D /* Int+Extension.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A4C9E6A12589D73D00476A7E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -485,6 +561,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		A47AD41226A577A70075439D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A4C9E6A42589D73D00476A7E /* Papyrus */;
+			targetProxy = A47AD41126A577A70075439D /* PBXContainerItemProxy */;
+		};
 		A4C9E6B12589D73E00476A7E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A4C9E6A42589D73D00476A7E /* Papyrus */;
@@ -493,6 +574,53 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		A47AD41426A577A70075439D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CF43K35J9C;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reddavis.PerformanceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A47AD41526A577A70075439D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CF43K35J9C;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reddavis.PerformanceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		A4C9E6B72589D73E00476A7E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -712,6 +840,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A47AD41326A577A70075439D /* Build configuration list for PBXNativeTarget "PerformanceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A47AD41426A577A70075439D /* Debug */,
+				A47AD41526A577A70075439D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A4C9E69F2589D73D00476A7E /* Build configuration list for PBXProject "Papyrus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

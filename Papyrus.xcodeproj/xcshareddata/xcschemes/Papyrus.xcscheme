@@ -29,12 +29,26 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A4C9E6AD2589D73E00476A7E"
                BuildableName = "PapyrusTests.xctest"
                BlueprintName = "PapyrusTests"
+               ReferencedContainer = "container:Papyrus.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A47AD40B26A577A70075439D"
+               BuildableName = "PerformanceTests.xctest"
+               BlueprintName = "PerformanceTests"
                ReferencedContainer = "container:Papyrus.xcodeproj">
             </BuildableReference>
          </TestableReference>
