@@ -264,9 +264,9 @@ let stream = self.store
     .sort { $0.name < $1.name }
     .stream()
     
-for try await manufacturer in stream
+for try await manufacturers in stream
 {
-    // ...
+    // ... Do something with [Manufacturer].
 }
 ```
 
