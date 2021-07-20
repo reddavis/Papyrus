@@ -39,12 +39,6 @@
             <a href="../Classes.html">Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Classes/Logger.html">Logger</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/Logger/LogLevel.html">– LogLevel</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/PapyrusStore.html">PapyrusStore</a>
               </li>
               <li class="nav-group-task">
@@ -55,6 +49,14 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/PapyrusStore/ObjectQuery.html">– ObjectQuery</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/LogLevel.html">LogLevel</a>
               </li>
             </ul>
           </li>
@@ -105,9 +107,9 @@ and a fully fledged database like Realm.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus0A5StoreC8logLevelAA6LoggerC03LogD0Ovp"></a>
+                    <a name="/s:7Papyrus0A5StoreC8logLevelAA03LogD0Ovp"></a>
                     <a name="//apple_ref/swift/Property/logLevel" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC8logLevelAA6LoggerC03LogD0Ovp">logLevel</a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC8logLevelAA03LogD0Ovp">logLevel</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -122,7 +124,7 @@ and a fully fledged database like Realm.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">logLevel</span><span class="p">:</span> <span class="kt"><a href="../Classes/Logger.html">Logger</a></span><span class="o">.</span><span class="kt">LogLevel</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">logLevel</span><span class="p">:</span> <span class="kt"><a href="../Enums/LogLevel.html">LogLevel</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -263,9 +265,9 @@ directory inside Application Support.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus0A5StoreC4saveyyxA2ARzlF"></a>
+                    <a name="/s:7Papyrus0A5StoreC4saveyyxYaA2ARzlF"></a>
                     <a name="//apple_ref/swift/Method/save(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC4saveyyxA2ARzlF">save(_:<wbr>)</a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC4saveyyxYaA2ARzlF">save(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -280,7 +282,7 @@ directory inside Application Support.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">save</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">save</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="n">async</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
 
                         </div>
                       </div>
@@ -309,55 +311,9 @@ directory inside Application Support.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus0A5StoreC14saveEventuallyyyxA2ARzlF"></a>
-                    <a name="//apple_ref/swift/Method/saveEventually(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC14saveEventuallyyyxA2ARzlF">saveEventually(_:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Eventually saves the object to the store.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">saveEventually</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>object</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The object to save.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Papyrus0A5StoreC4save7objectsySayxG_tA2ARzlF"></a>
+                    <a name="/s:7Papyrus0A5StoreC4save7objectsySayxG_tYaA2ARzlF"></a>
                     <a name="//apple_ref/swift/Method/save(objects:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC4save7objectsySayxG_tA2ARzlF">save(objects:<wbr>)</a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC4save7objectsySayxG_tYaA2ARzlF">save(objects:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -372,53 +328,7 @@ directory inside Application Support.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">save</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>objects</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>An array of objects to add to the store.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Papyrus0A5StoreC14saveEventually7objectsySayxG_tA2ARzlF"></a>
-                    <a name="//apple_ref/swift/Method/saveEventually(objects:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC14saveEventually7objectsySayxG_tA2ARzlF">saveEventually(objects:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Eventually saves all objects to the store.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">saveEventually</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">save</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="n">async</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
 
                         </div>
                       </div>
@@ -638,9 +548,9 @@ the given type.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus0A5StoreC6delete2id2ofyq__xmtA2ARzSHR_s25LosslessStringConvertibleR_r0_lF"></a>
+                    <a name="/s:7Papyrus0A5StoreC6delete2id2ofyq__xmtYaA2ARzSHR_s25LosslessStringConvertibleR_r0_lF"></a>
                     <a name="//apple_ref/swift/Method/delete(id:of:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC6delete2id2ofyq__xmtA2ARzSHR_s25LosslessStringConvertibleR_r0_lF">delete(id:<wbr>of:<wbr>)</a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC6delete2id2ofyq__xmtYaA2ARzSHR_s25LosslessStringConvertibleR_r0_lF">delete(id:<wbr>of:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -655,7 +565,7 @@ the given type.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">ID</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">ID</span><span class="p">,</span> <span class="n">of</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span><span class="p">,</span> <span class="kt">ID</span> <span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">ID</span> <span class="p">:</span> <span class="kt">LosslessStringConvertible</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">ID</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">ID</span><span class="p">,</span> <span class="n">of</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span> <span class="n">async</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span><span class="p">,</span> <span class="kt">ID</span> <span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">ID</span> <span class="p">:</span> <span class="kt">LosslessStringConvertible</span></code></pre>
 
                         </div>
                       </div>
@@ -696,67 +606,9 @@ the given type.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus0A5StoreC16deleteEventually2id2ofySS_xmtA2ARzlF"></a>
-                    <a name="//apple_ref/swift/Method/deleteEventually(id:of:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC16deleteEventually2id2ofySS_xmtA2ARzlF">deleteEventually(id:<wbr>of:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Eventually deletes an object with <code>id</code> and of <code>type</code> from the store.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">deleteEventually</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">id</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">of</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">T</span><span class="o">.</span><span class="k">Type</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>id</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The <code>id</code> of the object to be deleted.</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>type</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The <code>type</code> of the object to be deleted.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Papyrus0A5StoreC6deleteyyxA2ARzlF"></a>
+                    <a name="/s:7Papyrus0A5StoreC6deleteyyxYaA2ARzlF"></a>
                     <a name="//apple_ref/swift/Method/delete(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC6deleteyyxA2ARzlF">delete(_:<wbr>)</a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC6deleteyyxYaA2ARzlF">delete(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -771,7 +623,7 @@ the given type.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="n">async</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
 
                         </div>
                       </div>
@@ -800,55 +652,9 @@ the given type.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus0A5StoreC16deleteEventuallyyyxA2ARzlF"></a>
-                    <a name="//apple_ref/swift/Method/deleteEventually(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC16deleteEventuallyyyxA2ARzlF">deleteEventually(_:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Eventually deletes an object from the store.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">deleteEventually</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">object</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>object</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The object to delete.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Papyrus0A5StoreC6delete7objectsySayxG_tA2ARz2IDQzRs_r0_lF"></a>
+                    <a name="/s:7Papyrus0A5StoreC6delete7objectsySayxG_tYaA2ARz2IDQzRs_r0_lF"></a>
                     <a name="//apple_ref/swift/Method/delete(objects:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC6delete7objectsySayxG_tA2ARz2IDQzRs_r0_lF">delete(objects:<wbr>)</a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC6delete7objectsySayxG_tYaA2ARz2IDQzRs_r0_lF">delete(objects:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -863,53 +669,7 @@ the given type.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">ID</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span><span class="p">,</span> <span class="kt">ID</span> <span class="o">==</span> <span class="kt">T</span><span class="o">.</span><span class="kt">ID</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>objects</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>An array of objects to delete.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Papyrus0A5StoreC16deleteEventually7objectsySayxG_tA2ARzlF"></a>
-                    <a name="//apple_ref/swift/Method/deleteEventually(objects:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC16deleteEventually7objectsySayxG_tA2ARzlF">deleteEventually(objects:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Eventually deletes an array of objects.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">deleteEventually</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">delete</span><span class="o">&lt;</span><span class="kt">T</span><span class="p">,</span> <span class="kt">ID</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="n">async</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span><span class="p">,</span> <span class="kt">ID</span> <span class="o">==</span> <span class="kt">T</span><span class="o">.</span><span class="kt">ID</span></code></pre>
 
                         </div>
                       </div>
@@ -951,9 +711,9 @@ the given type.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus0A5StoreC5merge4withySayxG_tA2ARzlF"></a>
+                    <a name="/s:7Papyrus0A5StoreC5merge4withySayxG_tYaA2ARzlF"></a>
                     <a name="//apple_ref/swift/Method/merge(with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC5merge4withySayxG_tA2ARzlF">merge(with:<wbr>)</a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC5merge4withySayxG_tYaA2ARzlF">merge(with:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -977,62 +737,7 @@ The merge will:</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">merge</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">with</span> <span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>objects</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>An array of objects to merge.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:7Papyrus0A5StoreC15mergeEventually4withySayxG_tA2ARzlF"></a>
-                    <a name="//apple_ref/swift/Method/mergeEventually(with:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC15mergeEventually4withySayxG_tA2ARzlF">mergeEventually(with:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Eventually merges new data with old data.</p>
-
-<p>Useful when syncing with an API.
-The merge will:</p>
-
-<ul>
-<li>Update objects that exist in the store and exist in <code>objects</code>.</li>
-<li>Create objects that do not exist in the store and exist in <code>objects</code>.</li>
-<li>Delete objects that exist in the store but do not exist in <code>objects</code>.</li>
-</ul>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">mergeEventually</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">with</span> <span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">merge</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">with</span> <span class="nv">objects</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span> <span class="n">async</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
 
                         </div>
                       </div>
@@ -1074,9 +779,9 @@ The merge will:</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus0A5StoreC8register9migrationyAA9MigrationVyxq_G_tA2ARzA2AR_r0_lF"></a>
+                    <a name="/s:7Papyrus0A5StoreC8register9migrationyAA9MigrationVyxq_G_tYaA2ARzA2AR_r0_lF"></a>
                     <a name="//apple_ref/swift/Method/register(migration:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus0A5StoreC8register9migrationyAA9MigrationVyxq_G_tA2ARzA2AR_r0_lF">register(migration:<wbr>)</a>
+                    <a class="token" href="#/s:7Papyrus0A5StoreC8register9migrationyAA9MigrationVyxq_G_tYaA2ARzA2AR_r0_lF">register(migration:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1086,18 +791,14 @@ The merge will:</p>
                       <div class="abstract">
                         <p>Register a data migration.</p>
 
-<p>The migration will be executed as soon as it is registered and are performed
-on a background queue.</p>
-
-<p>Registered migrations are &ldquo;live&rdquo;. This means that if new <code>FromObject</code>&lsquo;s are saved
-they will be automatically migrated to <code>ToObject</code>.</p>
+<p>The migration will be executed as soon as it is registered.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">register</span><span class="o">&lt;</span><span class="kt">FromObject</span><span class="p">,</span> <span class="kt">ToObject</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">migration</span><span class="p">:</span> <span class="kt"><a href="../Structs/Migration.html">Migration</a></span><span class="o">&lt;</span><span class="kt">FromObject</span><span class="p">,</span> <span class="kt">ToObject</span><span class="o">&gt;</span><span class="p">)</span> <span class="k">where</span> <span class="kt">FromObject</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span><span class="p">,</span> <span class="kt">ToObject</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">register</span><span class="o">&lt;</span><span class="kt">FromObject</span><span class="p">,</span> <span class="kt">ToObject</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">migration</span><span class="p">:</span> <span class="kt"><a href="../Structs/Migration.html">Migration</a></span><span class="o">&lt;</span><span class="kt">FromObject</span><span class="p">,</span> <span class="kt">ToObject</span><span class="o">&gt;</span><span class="p">)</span> <span class="n">async</span> <span class="k">where</span> <span class="kt">FromObject</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span><span class="p">,</span> <span class="kt">ToObject</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
 
                         </div>
                       </div>
@@ -1184,7 +885,7 @@ they will be automatically migrated to <code>ToObject</code>.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2021-05-20)</p>
+          <p>&copy; 2021 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2021-07-20)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

@@ -2,154 +2,140 @@
   "warnings": [
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 13,
-      "symbol": "Logger",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 64,
-      "symbol": "Logger",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 66,
-      "symbol": "Logger.LogLevel",
+      "line": 55,
+      "symbol": "LogLevel",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 68,
-      "symbol": "Logger.LogLevel.info",
+      "line": 57,
+      "symbol": "LogLevel.info",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 69,
-      "symbol": "Logger.LogLevel.debug",
+      "line": 58,
+      "symbol": "LogLevel.debug",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 70,
-      "symbol": "Logger.LogLevel.error",
+      "line": 59,
+      "symbol": "LogLevel.error",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 71,
-      "symbol": "Logger.LogLevel.fault",
+      "line": 60,
+      "symbol": "LogLevel.fault",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 72,
-      "symbol": "Logger.LogLevel.off",
+      "line": 61,
+      "symbol": "LogLevel.off",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Logger.swift",
-      "line": 94,
-      "symbol": "Logger.LogLevel",
+      "line": 83,
+      "symbol": "LogLevel",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Migration.swift",
-      "line": 15,
+      "line": 8,
       "symbol": "Migration.OnMigrate",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Queries/CollectionQuery.swift",
-      "line": 15,
+      "line": 8,
       "symbol": "PapyrusStore.CollectionQuery",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Queries/CollectionQuery.swift",
-      "line": 18,
+      "line": 11,
       "symbol": "PapyrusStore.CollectionQuery.OnFilter",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Queries/CollectionQuery.swift",
-      "line": 19,
+      "line": 12,
       "symbol": "PapyrusStore.CollectionQuery.OnSort",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Queries/ObjectQuery.swift",
-      "line": 15,
+      "line": 8,
       "symbol": "PapyrusStore.ObjectQuery",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasMany.swift",
-      "line": 12,
+      "line": 5,
       "symbol": "HasMany",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasMany.swift",
-      "line": 15,
+      "line": 8,
       "symbol": "HasMany.wrappedValue",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasMany.swift",
-      "line": 26,
+      "line": 19,
       "symbol": "HasMany.init(wrappedValue:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasMany.swift",
-      "line": 48,
+      "line": 41,
       "symbol": "HasMany",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasOne.swift",
-      "line": 12,
+      "line": 5,
       "symbol": "HasOne",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasOne.swift",
-      "line": 15,
+      "line": 8,
       "symbol": "HasOne.wrappedValue",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasOne.swift",
-      "line": 26,
+      "line": 19,
       "symbol": "HasOne.init(wrappedValue:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/reddavis/Documents/Projects/Papyrus/Papyrus/Source/Relationships/HasOne.swift",
-      "line": 48,
+      "line": 41,
       "symbol": "HasOne",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"

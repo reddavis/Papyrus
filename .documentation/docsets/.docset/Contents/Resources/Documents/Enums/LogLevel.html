@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>HasMany Structure Reference</title>
+    <title>LogLevel Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/HasMany" class="dashAnchor"></a>
-    <a title="HasMany Structure Reference"></a>
+    <a name="//apple_ref/swift/Enum/LogLevel" class="dashAnchor"></a>
+    <a title="LogLevel Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html"> Docs</a> (67% documented)</p>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../index.html"> Reference</a>
         <img id="carat" src="../img/carat.png" />
-        HasMany Structure Reference
+        LogLevel Enumeration Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -87,13 +87,12 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>HasMany</h1>
+            <h1>LogLevel</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">@propertyWrapper</span>
-<span class="kd">public</span> <span class="kd">struct</span> <span class="kt">HasMany</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">Codable</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7PapyrusAAP">Papyrus</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">HasMany</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">LogLevel</span> <span class="p">:</span> <span class="kt">Int</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">LogLevel</span><span class="p">:</span> <span class="kt">Comparable</span></code></pre>
 
                 </div>
               </div>
@@ -106,9 +105,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus7HasManyV12wrappedValueSayxGvp"></a>
-                    <a name="//apple_ref/swift/Property/wrappedValue" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus7HasManyV12wrappedValueSayxGvp">wrappedValue</a>
+                    <a name="/s:7Papyrus8LogLevelO4infoyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/info" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus8LogLevelO4infoyA2CmF">info</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -123,32 +122,19 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">wrappedValue</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">info</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Initialization"></a>
-                <a name="//apple_ref/swift/Section/Initialization" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Initialization"></a>
-                  <h3 class="section-name"><p>Initialization</p>
-</h3>
-                </div>
-              </div>
-              <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Papyrus7HasManyV12wrappedValueACyxGSayxG_tcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(wrappedValue:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Papyrus7HasManyV12wrappedValueACyxGSayxG_tcfc">init(wrappedValue:<wbr>)</a>
+                    <a name="/s:7Papyrus8LogLevelO5debugyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/debug" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus8LogLevelO5debugyA2CmF">debug</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -163,7 +149,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">wrappedValue</span><span class="p">:</span> <span class="p">[</span><span class="kt">T</span><span class="p">])</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">debug</span></code></pre>
 
                         </div>
                       </div>
@@ -173,9 +159,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:Se4fromxs7Decoder_p_tKcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(from:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:Se4fromxs7Decoder_p_tKcfc">init(from:<wbr>)</a>
+                    <a name="/s:7Papyrus8LogLevelO5erroryA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/error" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus8LogLevelO5erroryA2CmF">error</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -183,13 +169,68 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">from</span> <span class="nv">decoder</span><span class="p">:</span> <span class="kt">Decoder</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">error</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Papyrus8LogLevelO5faultyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/fault" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus8LogLevelO5faultyA2CmF">fault</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">fault</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Papyrus8LogLevelO3offyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/off" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Papyrus8LogLevelO3offyA2CmF">off</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">off</span></code></pre>
 
                         </div>
                       </div>
@@ -200,11 +241,11 @@
             </div>
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/Encodable"></a>
-                <a name="//apple_ref/swift/Section/Encodable" class="dashAnchor"></a>
+                <a name="/Comparable"></a>
+                <a name="//apple_ref/swift/Section/Comparable" class="dashAnchor"></a>
                 <div class="section-name-container">
-                  <a class="section-name-link" href="#/Encodable"></a>
-                  <h3 class="section-name"><p>Encodable</p>
+                  <a class="section-name-link" href="#/Comparable"></a>
+                  <h3 class="section-name"><p>Comparable</p>
 </h3>
                 </div>
               </div>
@@ -212,9 +253,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:SE6encode2toys7Encoder_p_tKF"></a>
-                    <a name="//apple_ref/swift/Method/encode(to:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:SE6encode2toys7Encoder_p_tKF">encode(to:<wbr>)</a>
+                    <a name="/s:SL1loiySbx_xtFZ"></a>
+                    <a name="//apple_ref/swift/Method/&lt;(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SL1loiySbx_xtFZ"><(_:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -228,46 +269,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">encode</span><span class="p">(</span><span class="n">to</span> <span class="nv">encoder</span><span class="p">:</span> <span class="kt">Encoder</span><span class="p">)</span> <span class="k">throws</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Equatable"></a>
-                <a name="//apple_ref/swift/Section/Equatable" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Equatable"></a>
-                  <h3 class="section-name"><p>Equatable</p>
-</h3>
-                </div>
-              </div>
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:SQ2eeoiySbx_xtFZ"></a>
-                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:SQ2eeoiySbx_xtFZ">==(_:<wbr>_:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">HasMany</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">HasMany</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">LogLevel</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">LogLevel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
