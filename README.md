@@ -26,7 +26,7 @@ await store.save(car)
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/reddavis/Papryrus", from: "0.9.0")
+    .package(url: "https://github.com/reddavis/Papryrus", from: "2.0.0")
 ]
 ```
 
