@@ -46,7 +46,7 @@ public extension PapyrusStore
                         }
                         catch
                         {
-                            // TODO: Delete file, it is likely old schema.
+                            // TODO: Log error.
                             return nil
                         }
                     }

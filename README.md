@@ -42,9 +42,7 @@ Worth noting Papyrus is still in very early days and API's are expected to chang
 
 [API Reference](https://mystifying-bohr-b56ce9.netlify.app)
 
-## Usage
-
-All write functions are synchronous and have asynchonous counterparts. Variety is the spice of life after all.  
+## Usage  
 
 ### Saving
 

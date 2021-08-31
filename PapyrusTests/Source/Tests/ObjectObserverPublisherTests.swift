@@ -80,7 +80,13 @@ final class ObjectObserverPublisherTests: XCTestCase
         .first()
         .sink(
             receiveCompletion: {
-                XCTAssertEqual($0, .finished)
+                switch $0
+                {
+                case .failure:
+                    XCTFail()
+                default:()
+                }
+                
                 expectation.fulfill()
             },
             receiveValue: {
@@ -158,7 +164,13 @@ final class ObjectObserverPublisherTests: XCTestCase
                 switch $0
                 {
                 case .failure(let error):
-                    XCTAssertEqual(error, .notFound)
+                    switch error
+                    {
+                    case .invalidSchema:
+                        XCTFail()
+                    default:()
+                    }
+                    
                     expectation.fulfill()
                 case .finished:
                     XCTFail()

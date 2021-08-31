@@ -63,7 +63,6 @@ final class ObjectCollectionObserver<Output: Papyrus>
                 catch
                 {
                     // Cached data is using an old schema.
-                    try? self.fileManager.removeItem(at: $0)
                     return nil
                 }
             }

@@ -57,15 +57,25 @@ final class ObjectObserver<Output: Papyrus>
             let object = try self.fetchObject()
             
             // Check the object has changed
-            guard self.previousFetch != .success(object) else { return }
-            self.previousFetch = .success(object)
-            self.onChange(.success(object))
+            switch self.previousFetch
+            {
+            case .success(let previousObject) where previousObject == object:
+                return
+            default:
+                self.previousFetch = .success(object)
+                self.onChange(.success(object))
+            }
         }
         catch let error as PapyrusStore.QueryError
         {
-            guard self.previousFetch != .failure(error) else { return }
-            self.previousFetch = .failure(error)
-            self.onChange(.failure(error))
+            switch self.previousFetch
+            {
+            case .success, .none:
+                self.previousFetch = .failure(error)
+                self.onChange(.failure(error))
+            case .failure:
+                return
+            }
         }
         catch { } // Only `PapyrusStore.QueryError` thrown
     }
@@ -82,9 +92,7 @@ final class ObjectObserver<Output: Papyrus>
         }
         catch
         {
-            // Cached data is using an old schema.
-            try? self.fileManager.removeItem(at: fileURL)
-            throw PapyrusStore.QueryError.notFound
+            throw PapyrusStore.QueryError.invalidSchema(details: error)
         }
     }
 }

@@ -41,8 +41,7 @@ public extension PapyrusStore
             catch
             {
                 // Cached data is using an old schema.
-                try? self.fileManager.removeItem(at: fileURL)
-                throw PapyrusStore.QueryError.notFound
+                throw PapyrusStore.QueryError.invalidSchema(details: error)
             }
         }
         
