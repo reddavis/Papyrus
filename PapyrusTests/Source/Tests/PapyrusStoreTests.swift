@@ -239,6 +239,41 @@ final class PapyrusStoreTests: XCTestCase
         XCTAssertEqual(2, exampleBs.count)
     }
     
+    func testMergingIntoSubset() async throws
+    {
+        let idA = UUID().uuidString
+        let objectA = ExampleB(id: idA)
+        
+        let idB = UUID().uuidString
+        let objectB = ExampleB(id: idB)
+        
+        let idC = UUID().uuidString
+        let objectC = ExampleB(id: idC)
+        
+        let idD = UUID().uuidString
+        let objectD = ExampleB(id: idD)
+        
+        await self.store.save(objects: [objectA, objectB, objectC, objectD])
+        await self.store.merge(
+            objects: [objectA, objectB],
+            into: { [idA, idB, idC].contains($0.id) }
+        )
+        
+        XCTAssertNoThrow { try await self.store.object(id: idA, of: ExampleB.self).execute() }
+        XCTAssertNoThrow { try await self.store.object(id: idB, of: ExampleB.self).execute() }
+        XCTAssertNoThrow { try await self.store.object(id: idD, of: ExampleB.self).execute() }
+        
+        do
+        {
+            _ = try await self.store.object(id: idC, of: ExampleB.self).execute()
+            XCTFail("Object not deleted")
+        }
+        catch { }
+        
+        let exampleBs = await self.store.objects(type: ExampleB.self).execute()
+        XCTAssertEqual(3, exampleBs.count)
+    }
+    
     // MARK: Migrations
     
     func testMigration() async throws

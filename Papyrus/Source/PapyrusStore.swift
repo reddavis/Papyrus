@@ -274,6 +274,33 @@ public extension PapyrusStore
         
         await self.delete(objects: objectsToDelete)
         await self.save(objects: objects)
+    /// Merge new data with a subset of old data.
+    ///
+    /// Useful when syncing with an API.
+    /// The merge will:
+    ///   - Update objects that exist in the filtered store and exist in `objects`.
+    ///   - Create objects that do not exist in the filtered store and exist in `objects`.
+    ///   - Delete objects that exist in the filtered store but do not exist in `objects`.
+    /// - Parameters:
+    ///   - objects: An array of objects to merge.
+    ///   - filter: The filter to be applied when calculating the subset
+    ///   of stored objects to merge into.
+    func merge<T: Papyrus>(objects: [T], into filter: @escaping (_ object: T) -> Bool) async
+    {
+        let objectIDs = objects.map(\.id)
+        let objectsToDelete = await self.objects(type: T.self)
+            .filter { !objectIDs.contains($0.id) && filter($0) }
+            .execute()
+        
+        await withTaskGroup(of: Void.self, body: { group in
+            group.addTask {
+                await self.delete(objects: objectsToDelete)
+            }
+            
+            group.addTask {
+                await self.save(objects: objects)
+            }
+        })
     }
 }
 
