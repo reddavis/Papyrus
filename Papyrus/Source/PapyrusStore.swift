@@ -144,10 +144,14 @@ public extension PapyrusStore
     /// - Parameter objects: An array of objects to add to the store.
     func save<T: Papyrus>(objects: [T]) async
     {
-        for object in objects
-        {
-            await self.save(object)
-        }
+        await withTaskGroup(of: Void.self, body: { group in
+            for object in objects
+            {
+                group.addTask {
+                    await self.save(object)
+                }
+            }
+        })
     }
     
     private func save(_ object: PapyrusEncodingWrapper, filename: String)
@@ -210,14 +214,14 @@ public extension PapyrusStore
     ///   - type: The `type` of the object to be deleted.
     func delete<T: Papyrus, ID: LosslessStringConvertible & Hashable>(id: ID, of type: T.Type) async
     {
-        self.delete(objectIdentifiers: [id : type])
+        await self.delete(objectIdentifiers: [id : type])
     }
 
     /// Deletes an object from the store.
     /// - Parameter object: The object to delete.
     func delete<T: Papyrus>(_ object: T) async
     {
-        self.delete(objectIdentifiers: [object.id : T.self])
+        await self.delete(objectIdentifiers: [object.id : T.self])
     }
     
     /// Deletes an array of objects.
@@ -227,29 +231,36 @@ public extension PapyrusStore
         let identifiers = objects.reduce(into: [ID : T.Type]()) {
             $0[$1.id] = T.self
         }
-        self.delete(objectIdentifiers: identifiers)
+        await self.delete(objectIdentifiers: identifiers)
     }
     
-    private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID : T.Type])
+    private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID : T.Type]) async
     {
-        let touchedDirectories = Set(objectIdentifiers.map {
-            self.directoryURL(for: $0.value)
-        })
-        
-        objectIdentifiers.forEach {
-            let url = self.fileURL(for: String(describing: $0.value), id: $0.key)
-            try? self.fileManager.removeItem(at: url)
+        await withTaskGroup(of: Void.self, body: { group in
+            let touchedDirectories = Set(objectIdentifiers.map {
+                self.directoryURL(for: $0.value)
+            })
             
-            self.logger.debug("Deleted: \(url)")
-        }
-        
-        // Touch all changed directories
-        self.logger.debug("Touching directories: \(touchedDirectories)")
-        
-        let now = Date()
-        touchedDirectories.forEach {
-            try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: $0.path)
-        }
+            for (id, type) in objectIdentifiers
+            {
+                group.addTask {
+                    let url = self.fileURL(for: String(describing: type), id: id)
+                    try? self.fileManager.removeItem(at: url)
+                    self.logger.debug("Deleted: \(url)")
+                }
+            }
+            
+            // Touch all changed directories
+            self.logger.debug("Touching directories: \(touchedDirectories)")
+            
+            let now = Date()
+            for url in touchedDirectories
+            {
+                group.addTask {
+                    try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: url.path)
+                }
+            }
+        })
     }
 }
 
@@ -265,15 +276,24 @@ public extension PapyrusStore
     ///   - Create objects that do not exist in the store and exist in `objects`.
     ///   - Delete objects that exist in the store but do not exist in `objects`.
     /// - Parameter objects: An array of objects to merge.
-    func merge<T>(with objects: [T]) async where T: Papyrus
+    func merge<T: Papyrus>(with objects: [T]) async
     {
         let objectIDs = objects.map(\.id)
         let objectsToDelete = await self.objects(type: T.self)
             .filter { !objectIDs.contains($0.id) }
             .execute()
         
-        await self.delete(objects: objectsToDelete)
-        await self.save(objects: objects)
+        await withTaskGroup(of: Void.self, body: { group in
+            group.addTask {
+                await self.delete(objects: objectsToDelete)
+            }
+            
+            group.addTask {
+                await self.save(objects: objects)
+            }
+        })
+    }
+    
     /// Merge new data with a subset of old data.
     ///
     /// Useful when syncing with an API.

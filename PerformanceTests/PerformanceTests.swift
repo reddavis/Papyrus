@@ -26,11 +26,6 @@ class PerformanceTests: XCTestCase
         self.store.logLevel = .off
     }
 
-    override func tearDownWithError() throws
-    {
-        
-    }
-
     // MARK: Tests
     
     func testSimpleObjectWrites() throws
