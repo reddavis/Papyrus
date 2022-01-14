@@ -3,8 +3,7 @@
 Papyrus aims to hit the sweet spot between saving raw API responses to the file system and a fully fledged database like Realm.
 
 ```swift
-struct Car: Papyrus
-{
+struct Car: Papyrus {
     let id: String
     let model: String
     let manufacturer: String
@@ -24,15 +23,13 @@ await store.save(car)
 
 ### Swift Package Manager
 
-```swift
-dependencies: [
-    .package(url: "https://github.com/reddavis/Papryrus", from: "2.0.0")
-]
-```
+In Xcode:
 
-## Note
-
-Worth noting Papyrus is still in very early days and API's are expected to change dramatically. Saying that, [SEMVER](https://semver.org) will be kept.
+1. Click `Project`.
+2. Click `Package Dependencies`.
+3. Click `+`.
+4. Enter package URL: `https://github.com/reddavis/Papyrus`.
+5. Add `Papyrus` to your app target.
 
 ## Apps using Papyrus
 
@@ -57,8 +54,7 @@ The `Papyrus` protocol is simply an umbrella of these three protocols:
 #### Example A 
 
 ```swift
-struct Car: Papyrus
-{
+struct Car: Papyrus {
     let id: String
     let model: String
     let manufacturer: String
@@ -76,22 +72,19 @@ Papyrus also understands relationships. If we continue with our `Car` modelling.
 Our models could look like:
 
 ```swift
-struct Manufacturer: Papyrus
-{
+struct Manufacturer: Papyrus {
     let id: String
     let name: String
     @HasMany let cars: [Car]
     @HasOne let address: Address
 }
 
-struct Car: Papyrus
-{
+struct Car: Papyrus {
     let id: String
     let model: String
 }
 
-struct Address: Papyrus
-{
+struct Address: Papyrus {
     let id: UUID
     let lineOne: String
     let lineTwo: String?
@@ -115,8 +108,6 @@ Because `Car` and `Address` also conforms to `Papyrus` and the `@HasMany` and `@
 #### Example C - Merge
 
 A common use case when dealing with API's is to fetch a collection of objects and the merge the results into your local collection.
-
-Merge also has a async counterpart `mergeEventually(objects:)`.
 
 Papyrus provides a function for this:
 
@@ -166,7 +157,7 @@ let cancellable = store.object(id: "abc...", of: Manufacturer.self)
 
 #### Example C
 
-With Swift 5.5 came async/await, which also introduced `AsyncStream` and `AsyncThrowingStream`. 
+With Swift 5.5 came async/await, which also introduced `AsyncSequence`. 
 
 When the object doesn't exist a `PapyrusStore.QueryError` error is thrown.
 
@@ -174,11 +165,14 @@ When the object doesn't exist a `PapyrusStore.QueryError` error is thrown.
 let store = PapyrusStore()
 let stream = store.object(id: "abc...", of: Manufacturer.self).stream()
 
-
-for try await object in stream
-{
-    ...
+do {
+    for try await object in stream {
+        ...
+    }
+} catch {
+    //.. Do something
 }
+
 ```
 
 ### Fetching collections
@@ -189,26 +183,26 @@ Papryrus gives you the ability to fetch, filter and observe colletions of object
 
 ```swift
 let manufacturers = await self.store
-                        .objects(type: Manufacturer.self)
-                        .execute()
+    .objects(type: Manufacturer.self)
+    .execute()
 ```
 
 #### Example B - Filtering
 
 ```swift
 let manufacturers = await self.store
-                        .objects(type: Manufacturer.self)
-                        .filter { $0.name == "Tesla" }
-                        .execute()
+    .objects(type: Manufacturer.self)
+    .filter { $0.name == "Tesla" }
+    .execute()
 ```
 
 #### Example C - Sorting
 
 ```swift
 let manufacturers = await self.store
-                        .objects(type: Manufacturer.self)
-                        .sort { $0.name < $1.name }
-                        .execute()
+    .objects(type: Manufacturer.self)
+    .sort { $0.name < $1.name }
+    .execute()
 ```
 
 #### Example D - Observing changes with Combine
@@ -261,11 +255,15 @@ let stream = self.store
     .filter { $0.name == "Tesla" }
     .sort { $0.name < $1.name }
     .stream()
-    
-for try await manufacturers in stream
-{
-    // ... Do something with [Manufacturer].
+
+do {
+    for try await manufacturers in stream {
+        // ... Do something with [Manufacturer].
+    }
+} catch {
+    //.. Do something
 }
+
 ```
 
 ### Deleting
@@ -303,15 +301,13 @@ If the wish is to keep existing data when introducing schema changes you can reg
 #### Example A
 
 ```swift
-struct Car: Papyrus
-{
+struct Car: Papyrus {
     let id: String
     let model: String
     let manufacturer: String
 }
 
-struct CarV2: Papyrus
-{
+struct CarV2: Papyrus {
     let id: String
     let model: String
     let manufacturer: String
