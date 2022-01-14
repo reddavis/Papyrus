@@ -1,9 +1,7 @@
 import Foundation
 
 
-final class ObjectObserver<Output: Papyrus>
-{
-    // Private
+final class ObjectObserver<Output: Papyrus> {
     private let fileManager = FileManager.default
     private let filename: String
     private let directoryURL: URL
@@ -18,8 +16,7 @@ final class ObjectObserver<Output: Papyrus>
         filename: String,
         directoryURL: URL,
         onChange: @escaping (_ result: Result<Output, PapyrusStore.QueryError>) -> Void
-    )
-    {
+    ) {
         self.filename = filename
         self.directoryURL = directoryURL
         self.onChange = onChange
@@ -27,8 +24,7 @@ final class ObjectObserver<Output: Papyrus>
     
     // MARK: Setup
     
-    func start()
-    {
+    func start() {
         self.processChange()
         
         self.directoryObserver = DirectoryObserver(
@@ -42,34 +38,27 @@ final class ObjectObserver<Output: Papyrus>
     
     // MARK: Subscriber
     
-    func cancel()
-    {
+    func cancel() {
         self.directoryObserver?.cancel()
         self.directoryObserver = nil
     }
     
     // MARK: Data
     
-    private func processChange()
-    {
-        do
-        {
+    private func processChange() {
+        do {
             let object = try self.fetchObject()
             
             // Check the object has changed
-            switch self.previousFetch
-            {
+            switch self.previousFetch {
             case .success(let previousObject) where previousObject == object:
                 return
             default:
                 self.previousFetch = .success(object)
                 self.onChange(.success(object))
             }
-        }
-        catch let error as PapyrusStore.QueryError
-        {
-            switch self.previousFetch
-            {
+        } catch let error as PapyrusStore.QueryError {
+            switch self.previousFetch {
             case .success, .none:
                 self.previousFetch = .failure(error)
                 self.onChange(.failure(error))
@@ -80,18 +69,14 @@ final class ObjectObserver<Output: Papyrus>
         catch { } // Only `PapyrusStore.QueryError` thrown
     }
     
-    private func fetchObject() throws -> Output
-    {
+    private func fetchObject() throws -> Output {
         let fileURL = self.directoryURL.appendingPathComponent(self.filename)
         guard self.fileManager.fileExists(atPath: fileURL.path) else { throw PapyrusStore.QueryError.notFound }
         
-        do
-        {
+        do {
             let data = try Data(contentsOf: fileURL)
             return try JSONDecoder().decode(Output.self, from: data)
-        }
-        catch
-        {
+        } catch {
             throw PapyrusStore.QueryError.invalidSchema(details: error)
         }
     }

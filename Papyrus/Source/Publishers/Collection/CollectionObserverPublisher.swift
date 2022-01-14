@@ -2,9 +2,7 @@ import Combine
 import Foundation
 
 
-struct CollectionObserverPublisher<T>: Publisher where T: Papyrus
-{
-    // Internal
+struct CollectionObserverPublisher<T>: Publisher where T: Papyrus {
     typealias Output = [T]
     typealias Failure = Never
     
@@ -13,15 +11,13 @@ struct CollectionObserverPublisher<T>: Publisher where T: Papyrus
     
     // MARK: Initialization
     
-    init(directoryURL: URL)
-    {
+    init(directoryURL: URL) {
         self.directoryURL = directoryURL
     }
     
     // MARK: Publisher
     
-    func receive<S: Subscriber>(subscriber: S) where Self.Failure == S.Failure, Self.Output == S.Input
-    {
+    func receive<S: Subscriber>(subscriber: S) where Self.Failure == S.Failure, Self.Output == S.Input {
         let subscription = CollectionObserverSubscription(directoryURL: self.directoryURL, subscriber: subscriber)
         subscriber.receive(subscription: subscription)
     }

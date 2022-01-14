@@ -3,33 +3,34 @@ import XCTest
 @testable import Papyrus
 
 
-final class ObjectQueryTests: XCTestCase
-{
-    // Private
+final class ObjectQueryTests: XCTestCase {
     private let fileManager = FileManager.default
     private var storeDirectory: URL!
     private var cancellables: Set<AnyCancellable>!
     
     // MARK: Setup
     
-    override func setUpWithError() throws
-    {
+    override func setUpWithError() throws {
         self.cancellables = []
         
         let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try self.fileManager.createDirectory(at: self.storeDirectory, withIntermediateDirectories: true, attributes: nil)
+        
+        try self.fileManager.createDirectory(
+            at: self.storeDirectory,
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
     }
     
     // MARK: Tests
     
-    func testFetchingObject() async throws
-    {
+    func testFetchingObject() async throws {
         let id = UUID().uuidString
         let object = ExampleB(id: id)
         try object.write(to: self.storeDirectory)
         
-        let query = PapyrusStore.ObjectQuery<ExampleB>(
+        let query = ObjectQuery<ExampleB>(
             id: id,
             directoryURL: self.storeDirectory
         )
@@ -38,10 +39,9 @@ final class ObjectQueryTests: XCTestCase
         XCTAssertEqual(result, object)
     }
     
-    func testFetchingNonExistentObject() async throws
-    {
+    func testFetchingNonExistentObject() async throws {
         let id = UUID().uuidString
-        let query = PapyrusStore.ObjectQuery<ExampleB>(
+        let query = ObjectQuery<ExampleB>(
             id: id,
             directoryURL: self.storeDirectory
         )
@@ -51,13 +51,12 @@ final class ObjectQueryTests: XCTestCase
         })
     }
     
-    func testStreamingObjectChanges() async throws
-    {
+    func testStreamingObjectChanges() async throws {
         let id = UUID().uuidString
         let object = ExampleB(id: id)
         try object.write(to: self.storeDirectory)
         
-        let query = PapyrusStore.ObjectQuery<ExampleB>(
+        let query = ObjectQuery<ExampleB>(
             id: id,
             directoryURL: self.storeDirectory
         )
@@ -89,10 +88,8 @@ final class ObjectQueryTests: XCTestCase
 
 // MARK: Helpers
 
-extension ObjectQueryTests
-{
-    func updateDirectoryModificationDate(directoryURL: URL) throws
-    {
+extension ObjectQueryTests {
+    func updateDirectoryModificationDate(directoryURL: URL) throws {
         try FileManager.default.setAttributes(
             [.modificationDate : Date.now],
             ofItemAtPath: directoryURL.path

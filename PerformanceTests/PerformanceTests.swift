@@ -2,16 +2,14 @@ import XCTest
 @testable import Papyrus
 
 
-class PerformanceTests: XCTestCase
-{
+class PerformanceTests: XCTestCase {
     private let fileManager = FileManager.default
     private var store: PapyrusStore!
     private var directory: URL!
     
     // MARK: Setup
     
-    override func setUpWithError() throws
-    {
+    override func setUpWithError() throws {
         let temporaryDirectoryURL = URL(
             fileURLWithPath: NSTemporaryDirectory(),
             isDirectory: true
@@ -28,8 +26,7 @@ class PerformanceTests: XCTestCase
 
     // MARK: Tests
     
-    func testSimpleObjectWrites() throws
-    {
+    func testSimpleObjectWrites() throws {
         let objects = (0..<1000).map { _ in
             ExampleB(id: UUID().uuidString)
         }
@@ -47,8 +44,7 @@ class PerformanceTests: XCTestCase
         }
     }
     
-    func testComplexObjectWrites() throws
-    {
+    func testComplexObjectWrites() throws {
         let objects = (0..<1000).map { _ in
             ExampleA(
                 id: UUID().uuidString,
@@ -69,8 +65,7 @@ class PerformanceTests: XCTestCase
         }
     }
     
-    func testObjectDeletion() async throws
-    {
+    func testObjectDeletion() async throws {
         let objects = (0..<1000).map { _ in
             ExampleB(id: UUID().uuidString)
         }

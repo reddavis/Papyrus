@@ -2,8 +2,7 @@ import Foundation
 import os.log
 
 
-final class Logger
-{
+final class Logger {
     var logLevel: LogLevel = .info
     
     // Private
@@ -11,39 +10,34 @@ final class Logger
     
     // MARK: Initialziation
     
-    required init(subsystem: String, category: String)
-    {
+    required init(subsystem: String, category: String) {
         self.log = OSLog(subsystem: subsystem, category: category)
     }
     
     // MARK: API
     
-    func info(_ message: String)
-    {
+    func info(_ message: String) {
         self.log("ℹ️ \(message)", level: .info)
     }
     
-    func debug(_ message: String)
-    {
+    func debug(_ message: String) {
         self.log("🔎 \(message)", level: .debug)
     }
     
-    func error(_ message: String)
-    {
+    func error(_ message: String) {
         self.log("⚠️ \(message)", level: .error)
     }
 
-    func fault(_ message: String)
-    {
+    func fault(_ message: String) {
         self.log("🔥 \(message)", level: .fault)
     }
     
     // MARK: Log
     
-    private func log(_ message: String, level: LogLevel)
-    {
-        guard level >= self.logLevel,
-              let type = level.logType else { return }
+    private func log(_ message: String, level: LogLevel) {
+        guard
+            level >= self.logLevel,
+            let type = level.logType else { return }
         os_log("%@", log: self.log, type: type, message)
     }
 }
@@ -52,8 +46,7 @@ final class Logger
 
 // MARK: Log level
 
-public enum LogLevel: Int
-{
+public enum LogLevel: Int {
     case info
     case debug
     case error
@@ -61,8 +54,7 @@ public enum LogLevel: Int
     case off
     
     var logType: OSLogType? {
-        switch self
-        {
+        switch self {
         case .info:
             return .info
         case .debug:
@@ -80,7 +72,6 @@ public enum LogLevel: Int
 
 // MARK: Comparable
 
-extension LogLevel: Comparable
-{
+extension LogLevel: Comparable {
     public static func <(lhs: LogLevel, rhs: LogLevel) -> Bool { lhs.rawValue < rhs.rawValue }
 }

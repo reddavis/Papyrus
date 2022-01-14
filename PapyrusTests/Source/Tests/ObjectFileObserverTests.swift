@@ -2,17 +2,14 @@ import XCTest
 @testable import Papyrus
 
 
-class ObjectObserverTests: XCTestCase
-{
-    // Private
+class ObjectObserverTests: XCTestCase {
     private var temporaryDirectoryURL: URL!
     private var directory: URL!
     private let fileManager = FileManager.default
     
     // MARK: Setup
     
-    override func setUpWithError() throws
-    {
+    override func setUpWithError() throws {
         self.temporaryDirectoryURL = URL(
             fileURLWithPath: NSTemporaryDirectory(),
             isDirectory: true
@@ -32,8 +29,7 @@ class ObjectObserverTests: XCTestCase
     
     // MARK: Tests
     
-    func testDirectoryCreatedIfNotExists() throws
-    {
+    func testDirectoryCreatedIfNotExists() throws {
         let directory = self.temporaryDirectoryURL.appendingPathComponent(
             UUID().uuidString,
             isDirectory: true
@@ -52,8 +48,7 @@ class ObjectObserverTests: XCTestCase
         XCTAssert(self.fileManager.fileExists(atPath: directory.path))
     }
     
-    func testObservingUpdates() throws
-    {
+    func testObservingUpdates() throws {
         // Setup
         let expectation = self.expectation(description: "Change detected")
         expectation.expectedFulfillmentCount = 2
@@ -79,8 +74,7 @@ class ObjectObserverTests: XCTestCase
         self.waitForExpectations(timeout: 5.0, handler: nil)
     }
     
-    func testObservingDeletions() throws
-    {
+    func testObservingDeletions() throws {
         // Setup
         let expectation = self.expectation(description: "Change detected")
         expectation.expectedFulfillmentCount = 2
@@ -105,8 +99,7 @@ class ObjectObserverTests: XCTestCase
         self.waitForExpectations(timeout: 5.0, handler: nil)
     }
     
-    func testOnChangeNotTriggeredIfNoChangeToObject() throws
-    {
+    func testOnChangeNotTriggeredIfNoChangeToObject() throws {
         // Setup
         let expectation = self.expectation(description: "Change detected")
         
@@ -132,10 +125,8 @@ class ObjectObserverTests: XCTestCase
 
 // MARK: Helpers
 
-fileprivate extension ObjectObserverTests
-{
-    func markDirectoryAsUpdated(_ url: URL, date: Date = .now) throws
-    {
+fileprivate extension ObjectObserverTests {
+    func markDirectoryAsUpdated(_ url: URL, date: Date = .now) throws {
         try self.fileManager.setAttributes(
             [.modificationDate : date],
             ofItemAtPath: url.path

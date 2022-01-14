@@ -4,8 +4,7 @@ import Foundation
 
 final class ObjectObserverSubscription<T: Subscriber, Output: Papyrus>: Subscription
 where T.Input == Output,
-      T.Failure == PapyrusStore.QueryError
-{
+      T.Failure == PapyrusStore.QueryError {
     // Private
     private let filename: String
     private let directoryURL: URL
@@ -19,8 +18,7 @@ where T.Input == Output,
         filename: String,
         directoryURL: URL,
         subscriber: T
-    )
-    {
+    ) {
         self.filename = filename
         self.directoryURL = directoryURL
         self.subscriber = subscriber
@@ -28,14 +26,12 @@ where T.Input == Output,
     
     // MARK: Subscriber
     
-    func cancel()
-    {
+    func cancel() {
         self.subscriber = nil
         self.observer?.cancel()
     }
     
-    func request(_ demand: Subscribers.Demand)
-    {
+    func request(_ demand: Subscribers.Demand) {
         self.demand = demand
         
         self.observer = ObjectObserver<Output>(
@@ -50,17 +46,14 @@ where T.Input == Output,
     
     // MARK: Data
     
-    private func processResult(_ result: Result<Output, PapyrusStore.QueryError>)
-    {
+    private func processResult(_ result: Result<Output, PapyrusStore.QueryError>) {
         guard let subscriber = self.subscriber else { return }
-        guard self.demand > 0 else
-        {
+        guard self.demand > 0 else {
             subscriber.receive(completion: .finished)
             return
         }
         
-        switch result
-        {
+        switch result {
         case .success(let object):
             self.demand -= 1
             self.demand += subscriber.receive(object)

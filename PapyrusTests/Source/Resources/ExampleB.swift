@@ -2,8 +2,7 @@ import Foundation
 @testable import Papyrus
 
 
-struct ExampleB: Papyrus
-{
+struct ExampleB: Papyrus {
     var id: String
     var value: String
     var integerValue: Int
@@ -14,8 +13,7 @@ struct ExampleB: Papyrus
         id: String,
         value: String = UUID().uuidString,
         integerValue: Int = 0
-    )
-    {
+    ) {
         self.id = id
         self.value = value
         self.integerValue = integerValue
@@ -23,16 +21,14 @@ struct ExampleB: Papyrus
     
     // MARK: Data
     
-    func write(to url: URL) throws
-    {
+    func write(to url: URL) throws {
         let encoder = JSONEncoder()
         let data = try encoder.encode(self)
         let url = url.appendingPathComponent(self.id)
         try data.write(to: url)
     }
     
-    func remove(from url: URL) throws
-    {
+    func remove(from url: URL) throws {
         try FileManager.default.removeItem(at: url.appendingPathComponent(self.id))        
     }
 }

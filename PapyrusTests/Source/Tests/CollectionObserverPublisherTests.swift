@@ -3,22 +3,24 @@ import XCTest
 @testable import Papyrus
 
 
-final class CollectionObserverPublisherTests: XCTestCase
-{
-    // Private
+final class CollectionObserverPublisherTests: XCTestCase {
     private var storeDirectory: URL!
     private let numberOfDummyObjects = 10
     private var cancellables: Set<AnyCancellable>!
     
     // MARK: Setup
     
-    override func setUpWithError() throws
-    {
+    override func setUpWithError() throws {
         self.cancellables = []
         
         let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: self.storeDirectory, withIntermediateDirectories: true, attributes: nil)
+        
+        try FileManager.default.createDirectory(
+            at: self.storeDirectory,
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
         
         // Dummy data
         try self.numberOfDummyObjects.times {
@@ -28,8 +30,7 @@ final class CollectionObserverPublisherTests: XCTestCase
     
     // MARK: Tests
     
-    func testValuesReceived() throws
-    {
+    func testValuesReceived() throws {
         let expectation = self.expectation(description: "Received values")
         
         CollectionObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
@@ -43,8 +44,7 @@ final class CollectionObserverPublisherTests: XCTestCase
         self.waitForExpectations(timeout: 2.0)
     }
     
-    func testCompletionReceived() throws
-    {
+    func testCompletionReceived() throws {
         let expectation = self.expectation(description: "Completion called")
         
         CollectionObserverPublisher<ExampleB>(directoryURL: self.storeDirectory)
@@ -60,8 +60,7 @@ final class CollectionObserverPublisherTests: XCTestCase
         self.waitForExpectations(timeout: 2.0)
     }
     
-    func testUpdatesNotReceivedOnWrites() throws
-    {
+    func testUpdatesNotReceivedOnWrites() throws {
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 1
         
@@ -74,8 +73,7 @@ final class CollectionObserverPublisherTests: XCTestCase
         self.waitForExpectations(timeout: 2.0)
     }
     
-    func testUpdatesNotReceivedOnDeletes() throws
-    {
+    func testUpdatesNotReceivedOnDeletes() throws {
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 1
         
@@ -90,8 +88,7 @@ final class CollectionObserverPublisherTests: XCTestCase
         self.waitForExpectations(timeout: 2.0)
     }
     
-    func testUpdatesReceivedOnAttributeUpdate() throws
-    {
+    func testUpdatesReceivedOnAttributeUpdate() throws {
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 2
         
@@ -99,7 +96,10 @@ final class CollectionObserverPublisherTests: XCTestCase
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         
-        try FileManager.default.setAttributes([.modificationDate : Date()], ofItemAtPath: self.storeDirectory.path)
+        try FileManager.default.setAttributes(
+            [.modificationDate : Date()],
+            ofItemAtPath: self.storeDirectory.path
+        )
         
         self.waitForExpectations(timeout: 2.0)
     }

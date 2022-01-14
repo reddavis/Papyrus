@@ -1,9 +1,7 @@
 import Foundation
 
 
-struct PapyrusEncodingWrapper: Encodable
-{
-    // Internal
+struct PapyrusEncodingWrapper: Encodable {
     let typeDescription: String
     let filename: String
     
@@ -12,8 +10,7 @@ struct PapyrusEncodingWrapper: Encodable
     
     // MARK: Initializer
     
-    init<T: Papyrus>(object: T)
-    {
+    init<T: Papyrus>(object: T) {
         self.filename = object.filename
         self._encode = object.encode
         self.typeDescription = String(describing: type(of: object))
@@ -21,8 +18,7 @@ struct PapyrusEncodingWrapper: Encodable
 
     // MARK: Encodable
     
-    func encode(to encoder: Encoder) throws
-    {
+    func encode(to encoder: Encoder) throws {
         try self._encode(encoder)
     }
 }

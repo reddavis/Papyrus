@@ -1,9 +1,7 @@
 import Foundation
 
 
-final class DirectoryObserver
-{
-    // Private
+final class DirectoryObserver {
     private let fileManager = FileManager.default
     private let url: URL
     
@@ -19,18 +17,15 @@ final class DirectoryObserver
     init(
         url: URL,
         onChange: @escaping (_ url: URL) -> Void
-    )
-    {
+    ) {
         self.url = url
         self.onChange = onChange
     }
     
     // MARK: Setup
     
-    func start()
-    {
-        if !self.fileManager.fileExists(atPath: self.url.path)
-        {
+    func start() {
+        if !self.fileManager.fileExists(atPath: self.url.path) {
             try? self.fileManager.createDirectory(at: self.url, withIntermediateDirectories: true)
         }
         
@@ -51,8 +46,7 @@ final class DirectoryObserver
     
     // MARK: Subscriber
     
-    func cancel()
-    {
+    func cancel() {
         self.directoryObserver?.cancel()
         self.directoryObserver = nil
     }

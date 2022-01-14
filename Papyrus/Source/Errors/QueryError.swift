@@ -1,11 +1,11 @@
 import Foundation
 
 
-public extension PapyrusStore
-{
+public extension PapyrusStore {
+    
     /// `PapyrusStore` query error.
-    enum QueryError: Error
-    {
+    enum QueryError: Error {
+        
         /// Object not found
         case notFound
         

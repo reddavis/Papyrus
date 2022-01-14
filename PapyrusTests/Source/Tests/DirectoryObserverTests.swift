@@ -2,16 +2,13 @@ import XCTest
 @testable import Papyrus
 
 
-class DirectoryObserverTests: XCTestCase
-{
-    // Private
+class DirectoryObserverTests: XCTestCase {
     private var directory: URL!
     private let fileManager = FileManager.default
     
     // MARK: Setup
     
-    override func setUpWithError() throws
-    {
+    override func setUpWithError() throws {
         let temporaryDirectoryURL = URL(
             fileURLWithPath: NSTemporaryDirectory(),
             isDirectory: true
@@ -25,8 +22,7 @@ class DirectoryObserverTests: XCTestCase
     
     // MARK: Tests
     
-    func testObservingChanges() throws
-    {
+    func testObservingChanges() throws {
         let expectation = self.expectation(description: "Change detected")
         
         let observer = DirectoryObserver(

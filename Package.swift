@@ -13,16 +13,19 @@ let package = Package(
     products: [
         .library(
             name: "Papyrus",
-            targets: ["Papyrus"]),
+            targets: ["Papyrus"]
+        )
     ],
     targets: [
         .target(
             name: "Papyrus",
             path: "Papyrus",
-            exclude: ["Supporting Files/Info.plist"]),
+            exclude: ["Supporting Files/Info.plist"]
+        ),
         .testTarget(
             name: "PapyrusTests",
             dependencies: ["Papyrus"],
-            path: "PapyrusTests"),
+            path: "PapyrusTests"
+        )
     ]
 )

@@ -6,9 +6,7 @@ import Foundation
 ///
 /// `PapyrusStore` aims to hit the sweet spot between saving raw API responses to the file system
 /// and a fully fledged database like Realm.
-public final class PapyrusStore
-{
-    // Public
+public final class PapyrusStore {
     
     /// The verboseness of the logger.
     public var logLevel: LogLevel {
@@ -29,8 +27,7 @@ public final class PapyrusStore
     
     /// Initialize a new `PapyrusStore` instance persisted at the provided `URL`.
     /// - Parameter url: The `URL` to persist data to.
-    public init(url: URL)
-    {
+    public init(url: URL) {
         self.url = url
         self.logger = Logger(
             subsystem: "com.reddavis.PapyrusStore",
@@ -44,8 +41,7 @@ public final class PapyrusStore
     ///
     /// The default Papyrus Store will persist it's data to a
     /// directory inside Application Support.
-    public convenience init()
-    {
+    public convenience init() {
         let url = FileManager.default.urls(
             for: .applicationSupportDirectory,
             in: .userDomainMask
@@ -55,47 +51,37 @@ public final class PapyrusStore
     
     // MARK: Setup
     
-    private func setupDataDirectory()
-    {
-        do
-        {
+    private func setupDataDirectory() {
+        do {
             try self.createDirectoryIfNeeded(at: self.url)
-        }
-        catch
-        {
+        } catch {
             self.logger.fault("Unable to create store directory: \(error)")
         }
     }
     
     // MARK: File management
     
-    private func fileURL<ID: LosslessStringConvertible>(for typeDescription: String, id: ID) -> URL
-    {
+    private func fileURL<ID: LosslessStringConvertible>(for typeDescription: String, id: ID) -> URL {
         self.fileURL(for: typeDescription, filename: String(id))
     }
     
-    private func fileURL(for typeDescription: String, filename: String) -> URL
-    {
+    private func fileURL(for typeDescription: String, filename: String) -> URL {
         self.directoryURL(for: typeDescription).appendingPathComponent(filename)
     }
     
-    private func directoryURL<T>(for type: T.Type) -> URL
-    {
+    private func directoryURL<T>(for type: T.Type) -> URL {
         self.directoryURL(for: String(describing: type))
     }
     
-    private func directoryURL(for typeDescription: String) -> URL
-    {
+    private func directoryURL(for typeDescription: String) -> URL {
         self.url.appendingPathComponent(typeDescription, isDirectory: true)
     }
     
-    private func createDirectoryIfNeeded(for typeDescription: String) throws
-    {
+    private func createDirectoryIfNeeded(for typeDescription: String) throws {
         try self.createDirectoryIfNeeded(at: self.directoryURL(for: typeDescription))
     }
     
-    private func createDirectoryIfNeeded(at url: URL) throws
-    {
+    private func createDirectoryIfNeeded(at url: URL) throws {
         var isDirectory = ObjCBool(false)
         let exists = self.fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory)
         
@@ -113,12 +99,11 @@ public final class PapyrusStore
 
 // MARK: Saving
 
-public extension PapyrusStore
-{
+public extension PapyrusStore {
+    
     /// Saves the object to the store.
     /// - Parameter object: The object to save.
-    func save<T: Papyrus>(_ object: T) async
-    {
+    func save<T: Papyrus>(_ object: T) async {
         // Write to file system
         var touchedDirectories = Set([self.directoryURL(for: T.self)])
         
@@ -142,11 +127,9 @@ public extension PapyrusStore
     
     /// Saves all objects to the store.
     /// - Parameter objects: An array of objects to add to the store.
-    func save<T: Papyrus>(objects: [T]) async
-    {
+    func save<T: Papyrus>(objects: [T]) async {
         await withTaskGroup(of: Void.self, body: { group in
-            for object in objects
-            {
+            for object in objects {
                 group.addTask {
                     await self.save(object)
                 }
@@ -154,17 +137,13 @@ public extension PapyrusStore
         })
     }
     
-    private func save(_ object: PapyrusEncodingWrapper, filename: String)
-    {
-        do
-        {
+    private func save(_ object: PapyrusEncodingWrapper, filename: String) {
+        do {
             try self.createDirectoryIfNeeded(for: object.typeDescription)
             let data = try self.encoder.encode(object)
             try data.write(to: self.fileURL(for: object.typeDescription, filename: filename))
             self.logger.debug("Saved: \(object.typeDescription) [Filename: \(filename)]")
-        }
-        catch
-        {
+        } catch {
             self.logger.fault("Failed to save: \(error)")
         }
     }
@@ -172,14 +151,13 @@ public extension PapyrusStore
 
 // MARK: Fetching
 
-public extension PapyrusStore
-{
+public extension PapyrusStore {
+    
     /// Creates a `ObjectQuery<T>` instance for an object of the
     /// type inferred and id provided.
     /// - Parameter id: The `id` of the object.
     /// - Returns: A `ObjectQuery<T>` instance.
-    func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID) -> ObjectQuery<T>
-    {
+    func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID) -> ObjectQuery<T> {
         ObjectQuery(id: id, directoryURL: self.directoryURL(for: T.self))
     }
     
@@ -189,8 +167,7 @@ public extension PapyrusStore
     ///   - id: The `id` of the object.
     ///   - type: The `type` of the object.
     /// - Returns: A `ObjectQuery<T>` instance.
-    func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID, of type: T.Type) -> ObjectQuery<T>
-    {
+    func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID, of type: T.Type) -> ObjectQuery<T> {
         ObjectQuery(id: id, directoryURL: self.directoryURL(for: T.self))
     }
     
@@ -198,51 +175,45 @@ public extension PapyrusStore
     /// the given type.
     /// - Parameter type: The type of objects to fetch.
     /// - Returns: A `AnyPublisher<[T], Error>` instance.
-    func objects<T: Papyrus>(type: T.Type) -> CollectionQuery<T>
-    {
+    func objects<T: Papyrus>(type: T.Type) -> CollectionQuery<T> {
         CollectionQuery(directoryURL: self.directoryURL(for: T.self))
     }
 }
 
 // MARK: Deleting
 
-public extension PapyrusStore
-{
+public extension PapyrusStore {
+    
     /// Deletes an object with `id` and of `type` from the store.
     /// - Parameters:
     ///   - id: The `id` of the object to be deleted.
     ///   - type: The `type` of the object to be deleted.
-    func delete<T: Papyrus, ID: LosslessStringConvertible & Hashable>(id: ID, of type: T.Type) async
-    {
+    func delete<T: Papyrus, ID: LosslessStringConvertible & Hashable>(id: ID, of type: T.Type) async {
         await self.delete(objectIdentifiers: [id : type])
     }
 
     /// Deletes an object from the store.
     /// - Parameter object: The object to delete.
-    func delete<T: Papyrus>(_ object: T) async
-    {
+    func delete<T: Papyrus>(_ object: T) async {
         await self.delete(objectIdentifiers: [object.id : T.self])
     }
     
     /// Deletes an array of objects.
     /// - Parameter objects: An array of objects to delete.
-    func delete<T: Papyrus, ID>(objects: [T]) async where ID == T.ID
-    {
+    func delete<T: Papyrus, ID>(objects: [T]) async where ID == T.ID {
         let identifiers = objects.reduce(into: [ID : T.Type]()) {
             $0[$1.id] = T.self
         }
         await self.delete(objectIdentifiers: identifiers)
     }
     
-    private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID : T.Type]) async
-    {
+    private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID : T.Type]) async {
         await withTaskGroup(of: Void.self, body: { group in
             let touchedDirectories = Set(objectIdentifiers.map {
                 self.directoryURL(for: $0.value)
             })
             
-            for (id, type) in objectIdentifiers
-            {
+            for (id, type) in objectIdentifiers {
                 group.addTask {
                     let url = self.fileURL(for: String(describing: type), id: id)
                     try? self.fileManager.removeItem(at: url)
@@ -254,8 +225,7 @@ public extension PapyrusStore
             self.logger.debug("Touching directories: \(touchedDirectories)")
             
             let now = Date()
-            for url in touchedDirectories
-            {
+            for url in touchedDirectories {
                 group.addTask {
                     try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: url.path)
                 }
@@ -266,8 +236,8 @@ public extension PapyrusStore
 
 // MARK: Merging
 
-public extension PapyrusStore
-{
+public extension PapyrusStore {
+    
     /// Merge new data with old data.
     ///
     /// Useful when syncing with an API.
@@ -276,8 +246,7 @@ public extension PapyrusStore
     ///   - Create objects that do not exist in the store and exist in `objects`.
     ///   - Delete objects that exist in the store but do not exist in `objects`.
     /// - Parameter objects: An array of objects to merge.
-    func merge<T: Papyrus>(with objects: [T]) async
-    {
+    func merge<T: Papyrus>(with objects: [T]) async {
         let objectIDs = objects.map(\.id)
         let objectsToDelete = await self.objects(type: T.self)
             .filter { !objectIDs.contains($0.id) }
@@ -305,8 +274,7 @@ public extension PapyrusStore
     ///   - objects: An array of objects to merge.
     ///   - filter: The filter to be applied when calculating the subset
     ///   of stored objects to merge into.
-    func merge<T: Papyrus>(objects: [T], into filter: @escaping (_ object: T) -> Bool) async
-    {
+    func merge<T: Papyrus>(objects: [T], into filter: @escaping (_ object: T) -> Bool) async {
         let objectIDs = objects.map(\.id)
         let objectsToDelete = await self.objects(type: T.self)
             .filter { !objectIDs.contains($0.id) && filter($0) }
@@ -326,19 +294,17 @@ public extension PapyrusStore
 
 // MARK: Migrations
 
-public extension PapyrusStore
-{
+public extension PapyrusStore {
+    
     /// Register a data migration.
     ///
     /// The migration will be executed as soon as it is registered.
     /// - Parameter migration: A `Migration` instance.
-    func register<FromObject: Papyrus, ToObject: Papyrus>(migration: Migration<FromObject, ToObject>) async
-    {
+    func register<FromObject: Papyrus, ToObject: Papyrus>(migration: Migration<FromObject, ToObject>) async {
         let objects = await self.objects(type: FromObject.self)
             .execute()
         
-        for object in objects
-        {
+        for object in objects {
             let toObject = migration.onMigrate(object)
             await self.save(toObject)
             await self.delete(object)

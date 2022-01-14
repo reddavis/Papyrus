@@ -2,17 +2,14 @@ import XCTest
 @testable import Papyrus
 
 
-class ObjectCollectionObserverTests: XCTestCase
-{
-    // Private
+class ObjectCollectionObserverTests: XCTestCase {
     private var temporaryDirectoryURL: URL!
     private var directory: URL!
     private let fileManager = FileManager.default
     
     // MARK: Setup
     
-    override func setUpWithError() throws
-    {
+    override func setUpWithError() throws {
         self.temporaryDirectoryURL = URL(
             fileURLWithPath: NSTemporaryDirectory(),
             isDirectory: true
@@ -26,8 +23,7 @@ class ObjectCollectionObserverTests: XCTestCase
     
     // MARK: Tests
     
-    func testDirectoryCreatedIfNotExists() throws
-    {
+    func testDirectoryCreatedIfNotExists() throws {
         let directory = self.temporaryDirectoryURL.appendingPathComponent(
             UUID().uuidString,
             isDirectory: true
@@ -45,8 +41,7 @@ class ObjectCollectionObserverTests: XCTestCase
         XCTAssert(self.fileManager.fileExists(atPath: directory.path))
     }
     
-    func testObservingChanges() throws
-    {
+    func testObservingChanges() throws {
         let expectation = self.expectation(description: "Change detected")
         expectation.expectedFulfillmentCount = 2
         

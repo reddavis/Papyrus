@@ -1,9 +1,7 @@
 import Foundation
 
 
-final class ObjectCollectionObserver<Output: Papyrus>
-{
-    // Private
+final class ObjectCollectionObserver<Output: Papyrus> {
     private let fileManager = FileManager.default
     private let url: URL
     
@@ -15,16 +13,14 @@ final class ObjectCollectionObserver<Output: Papyrus>
     init(
         url: URL,
         onChange: @escaping (_ objects: [Output]) -> Void
-    )
-    {
+    ) {
         self.url = url
         self.onChange = onChange
     }
     
     // MARK: Setup
     
-    func start()
-    {
+    func start() {
         self.onChange(self.fetchObjects())
         
         self.directoryObserver = DirectoryObserver(
@@ -39,29 +35,24 @@ final class ObjectCollectionObserver<Output: Papyrus>
     
     // MARK: Subscriber
     
-    func cancel()
-    {
+    func cancel() {
         self.directoryObserver?.cancel()
         self.directoryObserver = nil
     }
     
     // MARK: Data
     
-    private func fetchObjects() -> [Output]
-    {
+    private func fetchObjects() -> [Output] {
         guard let directoryNames = try? self.fileManager.contentsOfDirectory(atPath: self.url.path) else { return [] }
         let decoder = JSONDecoder()
         
         return directoryNames
             .map { self.url.appendingPathComponent($0) }
             .compactMap {
-                do
-                {
+                do {
                     let data = try Data(contentsOf: $0)
                     return try decoder.decode(Output.self, from: data)
-                }
-                catch
-                {
+                } catch {
                     // Cached data is using an old schema.
                     return nil
                 }

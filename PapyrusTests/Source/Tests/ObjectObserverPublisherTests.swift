@@ -3,9 +3,7 @@ import XCTest
 @testable import Papyrus
 
 
-final class ObjectObserverPublisherTests: XCTestCase
-{
-    // Private
+final class ObjectObserverPublisherTests: XCTestCase {
     private var id: String!
     private var storeDirectory: URL!
     private var cancellables: Set<AnyCancellable>!
@@ -16,13 +14,13 @@ final class ObjectObserverPublisherTests: XCTestCase
     
     // MARK: Setup
     
-    override func setUpWithError() throws
-    {
+    override func setUpWithError() throws {
         self.id = UUID().uuidString
         self.cancellables = []
         
         let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        
         try FileManager.default.createDirectory(
             at: self.storeDirectory,
             withIntermediateDirectories: true,
@@ -32,8 +30,7 @@ final class ObjectObserverPublisherTests: XCTestCase
     
     // MARK: Tests
     
-    func testValuesReceived() throws
-    {
+    func testValuesReceived() throws {
         // Setup
         let object = ExampleB(id: self.id)
         try object.write(to: self.storeDirectory)
@@ -47,8 +44,7 @@ final class ObjectObserverPublisherTests: XCTestCase
         )
         .sink(
             receiveCompletion: {
-                switch $0
-                {
+                switch $0 {
                 case .failure(let error):
                     XCTFail(error.localizedDescription)
                 case .finished:()
@@ -64,8 +60,7 @@ final class ObjectObserverPublisherTests: XCTestCase
         self.waitForExpectations(timeout: 2.0)
     }
     
-    func testCompletionReceived() throws
-    {
+    func testCompletionReceived() throws {
         // Setup
         let object = ExampleB(id: self.id)
         try object.write(to: self.storeDirectory)
@@ -80,8 +75,7 @@ final class ObjectObserverPublisherTests: XCTestCase
         .first()
         .sink(
             receiveCompletion: {
-                switch $0
-                {
+                switch $0 {
                 case .failure:
                     XCTFail()
                 default:()
@@ -98,8 +92,7 @@ final class ObjectObserverPublisherTests: XCTestCase
         self.waitForExpectations(timeout: 2.0)
     }
 
-    func testUpdatesReceivedOnChange() throws
-    {
+    func testUpdatesReceivedOnChange() throws {
         // Setup
         var object = ExampleB(id: self.id)
         try object.write(to: self.storeDirectory)
@@ -125,8 +118,7 @@ final class ObjectObserverPublisherTests: XCTestCase
         self.waitForExpectations(timeout: 2.0)
     }
     
-    func testUpdatesNotReceivedWhenNoChange() throws
-    {
+    func testUpdatesNotReceivedWhenNoChange() throws {
         // Setup
         let object = ExampleB(id: self.id)
         try object.write(to: self.storeDirectory)
@@ -151,8 +143,7 @@ final class ObjectObserverPublisherTests: XCTestCase
         self.waitForExpectations(timeout: 1.0)
     }
     
-    func testNotFoundErrorReceivedWhenNoObject() throws
-    {
+    func testNotFoundErrorReceivedWhenNoObject() throws {
         let expectation = self.expectation(description: "Received values")
         
         ObjectObserverPublisher<ExampleB>(
@@ -161,11 +152,9 @@ final class ObjectObserverPublisherTests: XCTestCase
         )
         .sink(
             receiveCompletion: {
-                switch $0
-                {
+                switch $0 {
                 case .failure(let error):
-                    switch error
-                    {
+                    switch error {
                     case .invalidSchema:
                         XCTFail()
                     default:()
@@ -186,10 +175,11 @@ final class ObjectObserverPublisherTests: XCTestCase
 
 // MARK: Helpers
 
-extension ObjectObserverPublisherTests
-{
-    func updateDirectoryModificationDate(directorURL: URL) throws
-    {
-        try FileManager.default.setAttributes([.modificationDate : Date()], ofItemAtPath: directorURL.path)
+extension ObjectObserverPublisherTests {
+    func updateDirectoryModificationDate(directorURL: URL) throws {
+        try FileManager.default.setAttributes(
+            [.modificationDate : Date()],
+            ofItemAtPath: directorURL.path
+        )
     }
 }

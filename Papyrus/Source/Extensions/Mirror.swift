@@ -2,15 +2,13 @@ import Foundation
 
 
 /// [Thanks!](https://www.swiftbysundell.com/articles/reflection-in-swift/)
-extension Mirror
-{
+extension Mirror {
     static func reflectProperties<T>(
         of target: Any,
         matchingType type: T.Type = T.self,
         recursively: Bool = false,
         using closure: (T) -> Void
-    )
-    {
+    ) {
         let mirror = Mirror(reflecting: target)
         mirror.children.forEach {
             ($0.value as? T).map(closure)

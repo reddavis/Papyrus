@@ -3,8 +3,7 @@ import Foundation
 
 
 final class CollectionObserverSubscription<T: Subscriber, Output: Papyrus>: Subscription
-where T.Input == [Output]
-{
+where T.Input == [Output] {
     // Private
     private let fileManager = FileManager.default
     private let directoryURL: URL
@@ -14,22 +13,19 @@ where T.Input == [Output]
     
     // MARK: Initialization
     
-    init(directoryURL: URL, subscriber: T)
-    {
+    init(directoryURL: URL, subscriber: T) {
         self.directoryURL = directoryURL
         self.subscriber = subscriber
     }
     
     // MARK: Subscriber
     
-    func cancel()
-    {
+    func cancel() {
         self.subscriber = nil
         self.observer?.cancel()
     }
     
-    func request(_ demand: Subscribers.Demand)
-    {
+    func request(_ demand: Subscribers.Demand) {
         self.demand = demand
         self.processChange()
         
@@ -44,12 +40,10 @@ where T.Input == [Output]
     
     // MARK: Data
     
-    private func processChange()
-    {
+    private func processChange() {
         guard let subscriber = self.subscriber else { return }
         
-        guard self.demand > 0 else
-        {
+        guard self.demand > 0 else {
             subscriber.receive(completion: .finished)
             return
         }
@@ -58,21 +52,17 @@ where T.Input == [Output]
         self.demand += subscriber.receive(self.fetchModels())
     }
     
-    private func fetchModels() -> [Output]
-    {
+    private func fetchModels() -> [Output] {
         guard let directoryNames = try? self.fileManager.contentsOfDirectory(atPath: self.directoryURL.path) else { return [] }
         let decoder = JSONDecoder()
         
         return directoryNames
             .map { self.directoryURL.appendingPathComponent($0) }
             .compactMap {
-                do
-                {
+                do {
                     let data = try Data(contentsOf: $0)
                     return try decoder.decode(Output.self, from: data)
-                }
-                catch
-                {
+                } catch {
                     // Cached data is using an old schema.
                     return nil
                 }
