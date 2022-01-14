@@ -19,8 +19,7 @@ let package = Package(
     targets: [
         .target(
             name: "Papyrus",
-            path: "Papyrus",
-            exclude: ["Supporting Files/Info.plist"]
+            path: "Papyrus"
         ),
         .testTarget(
             name: "PapyrusTests",

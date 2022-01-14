@@ -92,7 +92,6 @@
 		A49F483E26569B7400B5A04F /* ExampleD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleD.swift; sourceTree = "<group>"; };
 		A4C9E6A52589D73D00476A7E /* Papyrus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Papyrus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4C9E6A82589D73D00476A7E /* Papyrus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Papyrus.h; sourceTree = "<group>"; };
-		A4C9E6A92589D73D00476A7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A4C9E6AE2589D73E00476A7E /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PapyrusStoreTests.swift; sourceTree = "<group>"; };
 		A4C9E6B52589D73E00476A7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -294,7 +293,6 @@
 			isa = PBXGroup;
 			children = (
 				A4C9E6A82589D73D00476A7E /* Papyrus.h */,
-				A4C9E6A92589D73D00476A7E /* Info.plist */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
