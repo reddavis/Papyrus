@@ -2,6 +2,7 @@ import Combine
 import XCTest
 @testable import Papyrus
 
+// swiftlint:disable implicitly_unwrapped_optional
 
 final class ObjectQueryTests: XCTestCase {
     private let fileManager = FileManager.default
@@ -91,7 +92,7 @@ final class ObjectQueryTests: XCTestCase {
 extension ObjectQueryTests {
     func updateDirectoryModificationDate(directoryURL: URL) throws {
         try FileManager.default.setAttributes(
-            [.modificationDate : Date.now],
+            [.modificationDate: Date.now],
             ofItemAtPath: directoryURL.path
         )
     }

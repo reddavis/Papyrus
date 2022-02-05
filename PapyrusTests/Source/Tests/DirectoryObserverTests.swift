@@ -1,6 +1,7 @@
 import XCTest
 @testable import Papyrus
 
+// swiftlint:disable implicitly_unwrapped_optional
 
 class DirectoryObserverTests: XCTestCase {
     private var directory: URL!
@@ -38,7 +39,7 @@ class DirectoryObserverTests: XCTestCase {
         XCTAssert(self.fileManager.fileExists(atPath: self.directory.path))
         
         try self.fileManager.setAttributes(
-            [.modificationDate : Date.now],
+            [.modificationDate: Date.now],
             ofItemAtPath: self.directory.path
         )
         

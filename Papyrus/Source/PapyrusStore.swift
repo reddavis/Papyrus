@@ -129,7 +129,7 @@ public extension PapyrusStore {
         
         let now = Date()
         touchedDirectories.forEach {
-            try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: $0.path)
+            try? self.fileManager.setAttributes([.modificationDate: now], ofItemAtPath: $0.path)
         }
     }
     
@@ -197,25 +197,25 @@ public extension PapyrusStore {
     ///   - id: The `id` of the object to be deleted.
     ///   - type: The `type` of the object to be deleted.
     func delete<T: Papyrus, ID: LosslessStringConvertible & Hashable>(id: ID, of type: T.Type) async {
-        await self.delete(objectIdentifiers: [id : type])
+        await self.delete(objectIdentifiers: [id: type])
     }
 
     /// Deletes an object from the store.
     /// - Parameter object: The object to delete.
     func delete<T: Papyrus>(_ object: T) async {
-        await self.delete(objectIdentifiers: [object.id : T.self])
+        await self.delete(objectIdentifiers: [object.id: T.self])
     }
     
     /// Deletes an array of objects.
     /// - Parameter objects: An array of objects to delete.
     func delete<T: Papyrus, ID>(objects: [T]) async where ID == T.ID {
-        let identifiers = objects.reduce(into: [ID : T.Type]()) {
+        let identifiers = objects.reduce(into: [ID: T.Type]()) {
             $0[$1.id] = T.self
         }
         await self.delete(objectIdentifiers: identifiers)
     }
     
-    private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID : T.Type]) async {
+    private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID: T.Type]) async {
         await withTaskGroup(of: Void.self, body: { group in
             let touchedDirectories = Set(objectIdentifiers.map {
                 self.directoryURL(for: $0.value)
@@ -235,7 +235,7 @@ public extension PapyrusStore {
             let now = Date()
             for url in touchedDirectories {
                 group.addTask {
-                    try? self.fileManager.setAttributes([.modificationDate : now], ofItemAtPath: url.path)
+                    try? self.fileManager.setAttributes([.modificationDate: now], ofItemAtPath: url.path)
                 }
             }
         })

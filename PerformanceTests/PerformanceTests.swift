@@ -4,7 +4,9 @@ import XCTest
 
 class PerformanceTests: XCTestCase {
     private let fileManager = FileManager.default
+    // swiftlint:disable:next implicitly_unwrapped_optional
     private var store: PapyrusStore!
+    // swiftlint:disable:next implicitly_unwrapped_optional
     private var directory: URL!
     
     // MARK: Setup
