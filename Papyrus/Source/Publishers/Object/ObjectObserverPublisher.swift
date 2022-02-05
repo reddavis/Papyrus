@@ -1,3 +1,5 @@
+#if canImport(Combine)
+
 import Combine
 import Foundation
 
@@ -28,3 +30,4 @@ struct ObjectObserverPublisher<T>: Publisher where T: Papyrus & Equatable {
         subscriber.receive(subscription: subscription)
     }
 }
+#endif

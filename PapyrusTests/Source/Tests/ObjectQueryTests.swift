@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Combine
+#endif
 import XCTest
 @testable import Papyrus
 
@@ -6,7 +8,9 @@ import XCTest
 final class ObjectQueryTests: XCTestCase {
     private let fileManager = FileManager.default
     private var storeDirectory: URL!
+    #if canImport(Combine)
     private var cancellables: Set<AnyCancellable>!
+    #endif
     
     // MARK: Setup
     

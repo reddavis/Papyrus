@@ -1,3 +1,4 @@
+#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -69,3 +70,4 @@ where T.Input == [Output] {
             }
     }
 }
+#endif

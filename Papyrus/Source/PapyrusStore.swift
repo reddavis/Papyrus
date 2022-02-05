@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Combine
+#endif
 import Foundation
 
 
@@ -7,18 +9,23 @@ import Foundation
 /// `PapyrusStore` aims to hit the sweet spot between saving raw API responses to the file system
 /// and a fully fledged database like Realm.
 public final class PapyrusStore {
-    
+    #if !os(Linux) && !os(Android) && !os(Windows)
     /// The verboseness of the logger.
     public var logLevel: LogLevel {
         get { self.logger.logLevel }
         set { self.logger.logLevel = newValue }
     }
+    #endif
     
     // Private
     private let fileManager = FileManager.default
+    #if canImport(Combine)
     private var cancellables: Set<AnyCancellable> = []
+    #endif
     private let url: URL
+    #if !os(Linux) && !os(Android) && !os(Windows)
     private let logger: Logger
+    #endif
     
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
@@ -29,10 +36,12 @@ public final class PapyrusStore {
     /// - Parameter url: The `URL` to persist data to.
     public init(url: URL) {
         self.url = url
+        #if !os(Linux) && !os(Android) && !os(Windows)
         self.logger = Logger(
             subsystem: "com.reddavis.PapyrusStore",
             category: "PapyrusStore"
         )
+        #endif
         self.setupDataDirectory()
     }
     
@@ -55,7 +64,11 @@ public final class PapyrusStore {
         do {
             try self.createDirectoryIfNeeded(at: self.url)
         } catch {
+            #if !os(Linux) && !os(Android) && !os(Windows)
             self.logger.fault("Unable to create store directory: \(error)")
+            #else
+            print("Fault: Unable to create store directory: \(error)")
+            #endif
         }
     }
     
@@ -93,7 +106,9 @@ public final class PapyrusStore {
         
         // Create directory
         try self.fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+        #if !os(Linux) && !os(Android) && !os(Windows)
         self.logger.debug("Created directory: \(url.absoluteString)")
+        #endif
     }
 }
 
@@ -115,9 +130,11 @@ public extension PapyrusStore {
             self.save($0, filename: $0.filename)
             touchedDirectories.insert(self.directoryURL(for: $0.typeDescription))
         }
-        
+
+        #if !os(Linux) && !os(Android) && !os(Windows)
         // Touch all changed directories
         self.logger.debug("Touching directories: \(touchedDirectories)")
+        #endif
         
         let now = Date()
         touchedDirectories.forEach {
@@ -142,9 +159,15 @@ public extension PapyrusStore {
             try self.createDirectoryIfNeeded(for: object.typeDescription)
             let data = try self.encoder.encode(object)
             try data.write(to: self.fileURL(for: object.typeDescription, filename: filename))
+            #if !os(Linux) && !os(Android) && !os(Windows)
             self.logger.debug("Saved: \(object.typeDescription) [Filename: \(filename)]")
+            #endif
         } catch {
+            #if !os(Linux) && !os(Android) && !os(Windows)
             self.logger.fault("Failed to save: \(error)")
+            #else
+            print("Fault: Failed to save: \(error)")
+            #endif
         }
     }
 }
@@ -217,12 +240,16 @@ public extension PapyrusStore {
                 group.addTask {
                     let url = self.fileURL(for: String(describing: type), id: id)
                     try? self.fileManager.removeItem(at: url)
+                    #if !os(Linux) && !os(Android) && !os(Windows)
                     self.logger.debug("Deleted: \(url)")
+                    #endif
                 }
             }
             
+            #if !os(Linux) && !os(Android) && !os(Windows)
             // Touch all changed directories
             self.logger.debug("Touching directories: \(touchedDirectories)")
+            #endif
             
             let now = Date()
             for url in touchedDirectories {

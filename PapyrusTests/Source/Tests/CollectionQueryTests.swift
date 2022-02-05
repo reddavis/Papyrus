@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Combine
+#endif
 import XCTest
 @testable import Papyrus
 
@@ -6,7 +8,9 @@ import XCTest
 final class CollectionQueryTests: XCTestCase {
     private var storeDirectory: URL!
     private let numberOfDummyObjects = 10
+    #if canImport(Combine)
     private var cancellables: Set<AnyCancellable>!
+    #endif
     
     // MARK: Setup
     

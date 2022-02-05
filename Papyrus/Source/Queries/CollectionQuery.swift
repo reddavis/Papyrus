@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Combine
+#endif
 import Foundation
 
 
@@ -67,7 +69,8 @@ public class CollectionQuery<T> where T: Papyrus {
         self.sort = onSort
         return self
     }
-    
+
+    #if canImport(Combine)
     /// Observe changes to the query.
     /// - Returns: A publisher that emits values when
     /// valid objects are changed.
@@ -78,7 +81,8 @@ public class CollectionQuery<T> where T: Papyrus {
             .replaceError(with: [])
             .eraseToAnyPublisher()
     }
-    
+    #endif
+
     /// Observe changes to the query.
     /// - Returns: A `AsyncThrowingStream` instance.
     public func stream() -> AsyncThrowingStream<[T], Error> {

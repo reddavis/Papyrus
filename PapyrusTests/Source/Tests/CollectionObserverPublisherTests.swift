@@ -1,3 +1,4 @@
+#if canImport(Combine)
 import Combine
 import XCTest
 @testable import Papyrus
@@ -104,3 +105,4 @@ final class CollectionObserverPublisherTests: XCTestCase {
         self.waitForExpectations(timeout: 2.0)
     }
 }
+#endif

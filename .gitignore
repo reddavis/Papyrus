@@ -10,6 +10,7 @@
 xcuserdata
 profile
 *.moved-aside
+.swiftpm
 DerivedData
 .idea/
 *.hmap

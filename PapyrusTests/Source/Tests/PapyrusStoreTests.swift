@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Combine
+#endif
 import XCTest
 @testable import Papyrus
 
@@ -7,7 +9,9 @@ final class PapyrusStoreTests: XCTestCase {
     private let fileManager = FileManager.default
     private var store: PapyrusStore!
     private var storeDirectory: URL!
+    #if canImport(Combine)
     private var cancellables: Set<AnyCancellable>!
+    #endif
     
     // MARK: Setup
     

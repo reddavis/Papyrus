@@ -1,3 +1,5 @@
+#if !os(Linux) && !os(Android) && !os(Windows)
+
 import Foundation
 import os.log
 
@@ -75,3 +77,4 @@ public enum LogLevel: Int {
 extension LogLevel: Comparable {
     public static func <(lhs: LogLevel, rhs: LogLevel) -> Bool { lhs.rawValue < rhs.rawValue }
 }
+#endif
