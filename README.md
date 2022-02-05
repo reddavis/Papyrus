@@ -325,7 +325,3 @@ let migration = Migration<Car, CarV2> { oldObject in
 
 await self.store.register(migration: migration)
 ```
-
-## License
-
-Whatevs.
