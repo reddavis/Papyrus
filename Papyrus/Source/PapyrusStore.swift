@@ -20,19 +20,27 @@ public final class PapyrusStore {
     private let url: URL
     private let logger: Logger
     
-    private let encoder = JSONEncoder()
-    private let decoder = JSONDecoder()
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
     
     // MARK: Initialization
     
     /// Initialize a new `PapyrusStore` instance persisted at the provided `URL`.
     /// - Parameter url: The `URL` to persist data to.
-    public init(url: URL) {
+    /// - Parameter encoder: A custom JSON encoder for encoding persisted data.
+    /// Defaults to the standard JSON encoder.
+    /// - Parameter decoder: A custom JSON decoder for decoding persisted data.
+    /// Defaults to the standard JSON decoder.
+    public init(url: URL,
+                encoder: JSONEncoder = JSONEncoder(),
+                decoder: JSONDecoder = JSONDecoder()) {
         self.url = url
         self.logger = Logger(
             subsystem: "com.reddavis.PapyrusStore",
             category: "PapyrusStore"
         )
+        self.encoder = encoder
+        self.decoder = decoder
         self.setupDataDirectory()
     }
     

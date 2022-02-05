@@ -10,12 +10,14 @@ where T.Input == [Output] {
     private var subscriber: T?
     private var demand: Subscribers.Demand = .none
     private var observer: DirectoryObserver?
+    private let decoder: JSONDecoder
     
     // MARK: Initialization
     
-    init(directoryURL: URL, subscriber: T) {
+    init(directoryURL: URL, subscriber: T, decoder: JSONDecoder = JSONDecoder()) {
         self.directoryURL = directoryURL
         self.subscriber = subscriber
+        self.decoder = decoder
     }
     
     // MARK: Subscriber
@@ -54,7 +56,6 @@ where T.Input == [Output] {
     
     private func fetchModels() -> [Output] {
         guard let directoryNames = try? self.fileManager.contentsOfDirectory(atPath: self.directoryURL.path) else { return [] }
-        let decoder = JSONDecoder()
         
         return directoryNames
             .map { self.directoryURL.appendingPathComponent($0) }

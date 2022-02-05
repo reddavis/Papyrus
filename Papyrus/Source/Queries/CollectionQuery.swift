@@ -12,11 +12,13 @@ public class CollectionQuery<T> where T: Papyrus {
     private let directoryURL: URL
     private var filter: OnFilter?
     private var sort: OnSort?
+    private let decoder: JSONDecoder
     
     // MARK: Initialization
     
-    init(directoryURL: URL) {
+    init(directoryURL: URL, decoder: JSONDecoder = JSONDecoder()) {
         self.directoryURL = directoryURL
+        self.decoder = decoder
     }
     
     // MARK: API
@@ -26,7 +28,6 @@ public class CollectionQuery<T> where T: Papyrus {
     /// - Returns: The results of the query.
     public func execute() async -> [T] {
         guard let directoryNames = try? self.fileManager.contentsOfDirectory(atPath: self.directoryURL.path) else { return [] }
-        let decoder = JSONDecoder()
         
         do {
             return try directoryNames

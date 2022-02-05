@@ -9,15 +9,18 @@ public class ObjectQuery<T: Papyrus> {
     private let fileManager = FileManager.default
     private let filename: String
     private let directoryURL: URL
+    private let decoder: JSONDecoder
     
     // MARK: Initialization
     
     init<ID: LosslessStringConvertible>(
         id: ID,
-        directoryURL: URL
+        directoryURL: URL,
+        decoder: JSONDecoder = JSONDecoder()
     ) {
         self.filename = String(id)
         self.directoryURL = directoryURL
+        self.decoder = decoder
     }
     
     // MARK: API
@@ -31,7 +34,7 @@ public class ObjectQuery<T: Papyrus> {
         
         do {
             let data = try Data(contentsOf: fileURL)
-            return try JSONDecoder().decode(T.self, from: data)
+            return try decoder.decode(T.self, from: data)
         } catch {
             // Cached data is using an old schema.
             throw PapyrusStore.QueryError.invalidSchema(details: error)
