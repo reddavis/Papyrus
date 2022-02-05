@@ -67,6 +67,8 @@ class PerformanceTests: XCTestCase {
         }
     }
     
+
+    #if !os(iOS)
     func testObjectDeletion() async throws {
         let objects = (0..<1000).map { _ in
             ExampleB(id: UUID().uuidString)
@@ -86,4 +88,5 @@ class PerformanceTests: XCTestCase {
             group.wait()
         }
     }
+    #endif
 }
