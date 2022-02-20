@@ -3,6 +3,7 @@ import Combine
 import XCTest
 @testable import Papyrus
 
+// swiftlint:disable implicitly_unwrapped_optional
 
 final class CollectionObserverPublisherTests: XCTestCase {
     private var storeDirectory: URL!
@@ -98,7 +99,7 @@ final class CollectionObserverPublisherTests: XCTestCase {
             .store(in: &self.cancellables)
         
         try FileManager.default.setAttributes(
-            [.modificationDate : Date()],
+            [.modificationDate: Date()],
             ofItemAtPath: self.storeDirectory.path
         )
         

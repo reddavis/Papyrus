@@ -6,6 +6,7 @@ final class ObjectObserver<Output: Papyrus> {
     private let filename: String
     private let directoryURL: URL
     private var previousFetch: Result<Output, PapyrusStore.QueryError>?
+    private let decoder: JSONDecoder
     
     private var directoryObserver: DirectoryObserver?
     private let onChange: (_ result: Result<Output, PapyrusStore.QueryError>) -> Void
@@ -15,10 +16,12 @@ final class ObjectObserver<Output: Papyrus> {
     init(
         filename: String,
         directoryURL: URL,
+        decoder: JSONDecoder = JSONDecoder(),
         onChange: @escaping (_ result: Result<Output, PapyrusStore.QueryError>) -> Void
     ) {
         self.filename = filename
         self.directoryURL = directoryURL
+        self.decoder = decoder
         self.onChange = onChange
     }
     
@@ -75,7 +78,7 @@ final class ObjectObserver<Output: Papyrus> {
         
         do {
             let data = try Data(contentsOf: fileURL)
-            return try JSONDecoder().decode(Output.self, from: data)
+            return try decoder.decode(Output.self, from: data)
         } catch {
             throw PapyrusStore.QueryError.invalidSchema(details: error)
         }
