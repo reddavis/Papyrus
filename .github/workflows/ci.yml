@@ -49,6 +49,9 @@ jobs:
   spm-test:
     runs-on: macos-latest
     steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
@@ -59,8 +62,6 @@ jobs:
         with:
           format: lcov
           search-paths: ./.build
-        env:
-          DEVELOPER_DIR: ${{ env.CI_XCODE_13 }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
