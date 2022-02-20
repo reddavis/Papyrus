@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  env:
+    CI_XCODE_13: '/Applications/Xcode_13.2.1.app/Contents/Developer'
 
 jobs:
   build:
@@ -49,9 +51,6 @@ jobs:
   spm-test:
     runs-on: macos-latest
     steps:
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
@@ -62,11 +61,15 @@ jobs:
         with:
           format: lcov
           search-paths: ./.build
+        env:
+          DEVELOPER_DIR: ${{ env.CI_XCODE_13 }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
           files: ${{join(fromJSON(steps.coverage-files.outputs.files), ',')}}
           env_vars: SPM
+        env:
+          DEVELOPER_DIR: ${{ env.CI_XCODE_13 }}
 
   linux:
     runs-on: ubuntu-18.04
