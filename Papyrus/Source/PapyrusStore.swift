@@ -74,8 +74,6 @@ public final class PapyrusStore {
         } catch {
             #if !os(Linux) && !os(Android) && !os(Windows)
             self.logger.fault("Unable to create store directory: \(error)")
-            #else
-            print("Fault: Unable to create store directory: \(error)")
             #endif
         }
     }
@@ -173,8 +171,6 @@ public extension PapyrusStore {
         } catch {
             #if !os(Linux) && !os(Android) && !os(Windows)
             self.logger.fault("Failed to save: \(error)")
-            #else
-            print("Fault: Failed to save: \(error)")
             #endif
         }
     }
