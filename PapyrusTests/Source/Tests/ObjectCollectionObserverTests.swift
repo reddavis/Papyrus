@@ -1,6 +1,7 @@
 import XCTest
 @testable import Papyrus
 
+// swiftlint:disable implicitly_unwrapped_optional
 
 class ObjectCollectionObserverTests: XCTestCase {
     private var temporaryDirectoryURL: URL!
@@ -55,7 +56,7 @@ class ObjectCollectionObserverTests: XCTestCase {
         
         // Write object
         try self.fileManager.setAttributes(
-            [.modificationDate : Date.now],
+            [.modificationDate: Date.now],
             ofItemAtPath: self.directory.path
         )
         

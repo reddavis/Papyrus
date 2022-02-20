@@ -4,7 +4,8 @@ import Foundation
 final class ObjectCollectionObserver<Output: Papyrus> {
     private let fileManager = FileManager.default
     private let url: URL
-    
+    private let decoder: JSONDecoder
+
     private var directoryObserver: DirectoryObserver?
     private let onChange: (_ objects: [Output]) -> Void
     
@@ -12,9 +13,11 @@ final class ObjectCollectionObserver<Output: Papyrus> {
     
     init(
         url: URL,
+        decoder: JSONDecoder = JSONDecoder(),
         onChange: @escaping (_ objects: [Output]) -> Void
     ) {
         self.url = url
+        self.decoder = decoder
         self.onChange = onChange
     }
     
@@ -44,7 +47,6 @@ final class ObjectCollectionObserver<Output: Papyrus> {
     
     private func fetchObjects() -> [Output] {
         guard let directoryNames = try? self.fileManager.contentsOfDirectory(atPath: self.url.path) else { return [] }
-        let decoder = JSONDecoder()
         
         return directoryNames
             .map { self.url.appendingPathComponent($0) }
