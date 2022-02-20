@@ -1,3 +1,4 @@
+#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -22,3 +23,4 @@ struct CollectionObserverPublisher<T>: Publisher where T: Papyrus {
         subscriber.receive(subscription: subscription)
     }
 }
+#endif

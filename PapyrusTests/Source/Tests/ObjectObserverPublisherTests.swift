@@ -1,3 +1,4 @@
+#if canImport(Combine)
 import Combine
 import XCTest
 @testable import Papyrus
@@ -184,3 +185,4 @@ extension ObjectObserverPublisherTests {
         )
     }
 }
+#endif

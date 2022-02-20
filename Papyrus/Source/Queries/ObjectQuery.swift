@@ -1,4 +1,6 @@
+#if canImport(Combine)
 import Combine
+#endif
 import Foundation
 
 
@@ -40,7 +42,8 @@ public class ObjectQuery<T: Papyrus> {
             throw PapyrusStore.QueryError.invalidSchema(details: error)
         }
     }
-    
+
+    #if canImport(Combine)
     /// Observe changes to the query via a publisher.
     /// - Returns: A publisher that emits values when
     /// valid objects are changed.
@@ -51,6 +54,7 @@ public class ObjectQuery<T: Papyrus> {
         )
         .eraseToAnyPublisher()
     }
+    #endif
     
     /// Observe changes to the query via an async stream.
     /// - Returns: A `AsyncThrowingStream` instance.
