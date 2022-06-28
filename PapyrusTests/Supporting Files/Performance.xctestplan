@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "2BC610AC-5F3F-402D-8AE5-DE2DA0D1CC9B",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Papyrus.xcodeproj",
+        "identifier" : "A47AD40B26A577A70075439D",
+        "name" : "PerformanceTests"
+      }
+    }
+  ],
+  "version" : 1
+}

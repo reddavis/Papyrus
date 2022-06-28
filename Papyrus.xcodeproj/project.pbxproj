@@ -88,6 +88,8 @@
 		A47AD40E26A577A70075439D /* PerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
 		A494438626A04590008A8493 /* ObjectObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectObserver.swift; sourceTree = "<group>"; };
 		A494438B26A09B8B008A8493 /* DirectoryObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryObserver.swift; sourceTree = "<group>"; };
+		A496DE47286B3AB300D11351 /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTests.xctestplan; sourceTree = "<group>"; };
+		A496DE48286B3AC600D11351 /* Performance.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Performance.xctestplan; sourceTree = "<group>"; };
 		A49F483C2655248600B5A04F /* Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migration.swift; sourceTree = "<group>"; };
 		A49F483E26569B7400B5A04F /* ExampleD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleD.swift; sourceTree = "<group>"; };
 		A4C9E6A52589D73D00476A7E /* Papyrus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Papyrus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -156,6 +158,8 @@
 		A4515E41258B2307000B76CF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				A496DE48286B3AC600D11351 /* Performance.xctestplan */,
+				A496DE47286B3AB300D11351 /* UnitTests.xctestplan */,
 				A4C9E6B52589D73E00476A7E /* Info.plist */,
 			);
 			path = "Supporting Files";

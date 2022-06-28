@@ -1,0 +1,32 @@
+#!/bin/sh
+## HT to Nuke! - https://github.com/kean/Nuke
+
+set -eo pipefail
+
+scheme="Papyrus"
+
+while getopts "s:d:p:" opt; do
+    case $opt in
+    	s) scheme=$OPTARG;;
+      d) destination=$OPTARG;;
+      p) test_plan=$OPTARG;;
+    esac
+done
+shift $((OPTIND -1))
+
+echo "scheme = ${scheme}"
+echo "destinations = ${destination}"
+echo "test plan = ${test_plan}"
+
+test_plan_argument=""
+if [ ! -z "$test_plan" ]; then
+  test_plan_argument="-testPlan ${test_plan}"
+fi
+
+xcodebuild -version
+
+echo "\nRunning tests for destination: $destination"
+echo "\n- Destination: $destination"
+echo "\n- Scheme: $scheme"
+echo "\n- Test Plan: $test_plan_argument"
+xcodebuild test -scheme "$scheme" -destination "$destination" -enableCodeCoverage YES $test_plan_argument
