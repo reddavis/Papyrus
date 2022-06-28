@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 
-
 struct CollectionObserverPublisher<T>: Publisher where T: Papyrus {
     typealias Output = [T]
     typealias Failure = Never

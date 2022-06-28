@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// A data migration for migrating one `Papyrus` object to another.
 public struct Migration<FromObject: Papyrus, ToObject: Papyrus> {
     public typealias OnMigrate = (_ from: FromObject) -> ToObject

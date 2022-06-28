@@ -1,6 +1,5 @@
 import Foundation
 
-
 final class ObjectObserver<Output: Papyrus> {
     private let fileManager = FileManager.default
     private let filename: String

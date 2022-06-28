@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 
-
 struct ObjectObserverPublisher<T>: Publisher where T: Papyrus & Equatable {
     typealias Output = T
     typealias Failure = PapyrusStore.QueryError

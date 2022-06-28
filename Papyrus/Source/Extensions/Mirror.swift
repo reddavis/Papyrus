@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// [Thanks!](https://www.swiftbysundell.com/articles/reflection-in-swift/)
 extension Mirror {
     static func reflectProperties<T>(

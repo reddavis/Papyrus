@@ -1,6 +1,5 @@
 import Foundation
 
-
 @propertyWrapper
 public struct HasOne<T: Papyrus>: Codable {
     public var wrappedValue: T {

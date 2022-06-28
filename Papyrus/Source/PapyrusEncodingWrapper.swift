@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct PapyrusEncodingWrapper: Encodable {
     let typeDescription: String
     let filename: String
