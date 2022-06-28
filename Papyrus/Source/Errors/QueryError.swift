@@ -1,8 +1,6 @@
 import Foundation
 
-
-public extension PapyrusStore {
-    
+public extension PapyrusStore {    
     /// `PapyrusStore` query error.
     enum QueryError: Error {
         

@@ -1,0 +1,34 @@
+{
+  "configurations" : [
+    {
+      "id" : "2BC610AC-5F3F-402D-8AE5-DE2DA0D1CC9B",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "CollectionObserverPublisherTests",
+        "CollectionQueryTests",
+        "DirectoryObserverTests",
+        "ObjectCollectionObserverTests",
+        "ObjectObserverPublisherTests",
+        "ObjectObserverTests",
+        "ObjectQueryTests",
+        "PapyrusStoreTests"
+      ],
+      "target" : {
+        "containerPath" : "container:Papyrus.xcodeproj",
+        "identifier" : "A4C9E6AD2589D73E00476A7E",
+        "name" : "PapyrusTests"
+      }
+    }
+  ],
+  "version" : 1
+}

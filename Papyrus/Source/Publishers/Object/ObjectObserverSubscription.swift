@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 
-
 final class ObjectObserverSubscription<T: Subscriber, Output: Papyrus>: Subscription
 where T.Input == Output,
       T.Failure == PapyrusStore.QueryError {

@@ -1,6 +1,5 @@
 import Foundation
 
-
 final class DirectoryObserver {
     private let fileManager = FileManager.default
     private let url: URL

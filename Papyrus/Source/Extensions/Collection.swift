@@ -1,6 +1,5 @@
 import Foundation
 
-
 extension Sequence {
     func filter(_ isIncluded: ((Element) throws -> Bool)?) rethrows -> [Element] {
         guard let isIncluded = isIncluded else { return Array(self) }

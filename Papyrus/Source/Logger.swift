@@ -1,7 +1,6 @@
 import Foundation
 import os.log
 
-
 final class Logger {
     var logLevel: LogLevel = .info
     
@@ -42,8 +41,6 @@ final class Logger {
     }
 }
 
-
-
 // MARK: Log level
 
 public enum LogLevel: Int {
@@ -68,7 +65,6 @@ public enum LogLevel: Int {
         }
     }
 }
-
 
 // MARK: Comparable
 

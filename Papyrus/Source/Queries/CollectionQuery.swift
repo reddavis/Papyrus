@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 
-
 /// `PapyrusStore.CollectionQuery<T>` is a mechanism for querying `Papyrus` objects.
 public class CollectionQuery<T> where T: Papyrus {
     public typealias OnFilter = (T) throws -> Bool

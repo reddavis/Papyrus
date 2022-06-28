@@ -1,6 +1,5 @@
 import Foundation
 
-
 final class ObjectCollectionObserver<Output: Papyrus> {
     private let fileManager = FileManager.default
     private let url: URL

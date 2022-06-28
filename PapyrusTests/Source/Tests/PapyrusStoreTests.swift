@@ -2,8 +2,6 @@ import Combine
 import XCTest
 @testable import Papyrus
 
-// swiftlint:disable implicitly_unwrapped_optional
-
 final class PapyrusStoreTests: XCTestCase {
     private let fileManager = FileManager.default
     private var store: PapyrusStore!
@@ -20,9 +18,26 @@ final class PapyrusStoreTests: XCTestCase {
         self.store = PapyrusStore(url: self.storeDirectory)
     }
     
+    override func tearDown() {
+        try? self.fileManager.removeItem(at: self.storeDirectory)
+    }
+    
+    // MARK: Reseting
+    
+    func testReset() async {
+        let model = ExampleB(id: "1")
+        await self.store.save(model)
+        
+        var count = await self.store.objects(type: ExampleB.self).execute().count
+        XCTAssertEqual(count, 1)
+        self.store.reset()
+        count = await self.store.objects(type: ExampleB.self).execute().count
+        XCTAssertEqual(count, 0)
+    }
+    
     // MARK: Saving
     
-    func testDirectoriesAndFilesAreCreated() async throws {
+    func testDirectoriesAndFilesAreCreated() async {
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
         await self.store.save(objectB)
@@ -131,7 +146,7 @@ final class PapyrusStoreTests: XCTestCase {
         XCTAssertNotNil(self.store.object(id: idB, of: ExampleB.self))
     }
     
-    func testUpdatesReceivedOnSaving() throws {
+    func testUpdatesReceivedOnSaving() async {
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 2
         
@@ -141,8 +156,8 @@ final class PapyrusStoreTests: XCTestCase {
             .sink { _ in expectation.fulfill() }
             .store(in: &self.cancellables)
         
-        Task { await self.store.save(ExampleB(id: UUID().uuidString)) }
-        self.waitForExpectations(timeout: 2.0)
+        await self.store.save(ExampleB(id: UUID().uuidString))
+        await self.waitForExpectations(timeout: 2.0)
     }
     
     // MARK: Fetching
@@ -196,7 +211,7 @@ final class PapyrusStoreTests: XCTestCase {
         } catch { }
     }
     
-    func testUpdatesReceivedOnDeleting() throws {
+    func testUpdatesReceivedOnDeleting() async {
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 3
         
@@ -206,17 +221,15 @@ final class PapyrusStoreTests: XCTestCase {
             .store(in: &self.cancellables)
         
         let object = ExampleB(id: UUID().uuidString)
-        Task {
-            await self.store.save(object)
-            await self.store.delete(object)
-        }
+        await self.store.save(object)
+        await self.store.delete(object)
         
-        self.waitForExpectations(timeout: 2.0)
+        await self.waitForExpectations(timeout: 5.0)
     }
     
     // MARK: Merging
     
-    func testMerging() async throws {
+    func testMerging() async {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
         
@@ -241,7 +254,7 @@ final class PapyrusStoreTests: XCTestCase {
         XCTAssertEqual(2, exampleBs.count)
     }
     
-    func testMergingIntoSubset() async throws {
+    func testMergingIntoSubset() async {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
         

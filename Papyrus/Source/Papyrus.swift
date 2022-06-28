@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// A type that can be stored, retrieved and deleted from a `PapyrusStore`.
 ///
 /// A `Papyrus` conforming object must also conform:

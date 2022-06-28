@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 
-
 final class CollectionObserverSubscription<T: Subscriber, Output: Papyrus>: Subscription
 where T.Input == [Output] {
     // Private
