@@ -2,8 +2,6 @@ import Combine
 import XCTest
 @testable import Papyrus
 
-// swiftlint:disable implicitly_unwrapped_optional
-
 final class PapyrusStoreTests: XCTestCase {
     private let fileManager = FileManager.default
     private var store: PapyrusStore!
@@ -20,9 +18,26 @@ final class PapyrusStoreTests: XCTestCase {
         self.store = PapyrusStore(url: self.storeDirectory)
     }
     
+    override func tearDown() {
+        try? self.fileManager.removeItem(at: self.storeDirectory)
+    }
+    
+    // MARK: Reseting
+    
+    func testReset() async {
+        let model = ExampleB(id: "1")
+        await self.store.save(model)
+        
+        var count = await self.store.objects(type: ExampleB.self).execute().count
+        XCTAssertEqual(count, 1)
+        self.store.reset()
+        count = await self.store.objects(type: ExampleB.self).execute().count
+        XCTAssertEqual(count, 0)
+    }
+    
     // MARK: Saving
     
-    func testDirectoriesAndFilesAreCreated() async throws {
+    func testDirectoriesAndFilesAreCreated() async {
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
         await self.store.save(objectB)
