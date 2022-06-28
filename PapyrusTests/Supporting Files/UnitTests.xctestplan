@@ -14,6 +14,9 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "PerformanceTests"
+      ],
       "target" : {
         "containerPath" : "container:Papyrus.xcodeproj",
         "identifier" : "A4C9E6AD2589D73E00476A7E",

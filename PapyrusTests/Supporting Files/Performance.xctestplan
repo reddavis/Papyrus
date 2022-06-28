@@ -13,10 +13,20 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "CollectionObserverPublisherTests",
+        "CollectionQueryTests",
+        "DirectoryObserverTests",
+        "ObjectCollectionObserverTests",
+        "ObjectObserverPublisherTests",
+        "ObjectObserverTests",
+        "ObjectQueryTests",
+        "PapyrusStoreTests"
+      ],
       "target" : {
         "containerPath" : "container:Papyrus.xcodeproj",
-        "identifier" : "A47AD40B26A577A70075439D",
-        "name" : "PerformanceTests"
+        "identifier" : "A4C9E6AD2589D73E00476A7E",
+        "name" : "PapyrusTests"
       }
     }
   ],

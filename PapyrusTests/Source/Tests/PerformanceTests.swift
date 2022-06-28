@@ -1,7 +1,6 @@
 import XCTest
 @testable import Papyrus
 
-
 class PerformanceTests: XCTestCase {
     private let fileManager = FileManager.default
     // swiftlint:disable:next implicitly_unwrapped_optional
