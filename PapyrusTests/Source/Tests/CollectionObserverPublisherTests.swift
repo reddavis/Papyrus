@@ -2,8 +2,6 @@ import Combine
 import XCTest
 @testable import Papyrus
 
-// swiftlint:disable implicitly_unwrapped_optional
-
 final class CollectionObserverPublisherTests: XCTestCase {
     private var storeDirectory: URL!
     private let numberOfDummyObjects = 10

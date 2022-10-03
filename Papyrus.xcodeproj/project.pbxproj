@@ -25,6 +25,7 @@
 		A496DE4A286B455000D11351 /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A47AD40E26A577A70075439D /* PerformanceTests.swift */; };
 		A49F483D2655248700B5A04F /* Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483C2655248600B5A04F /* Migration.swift */; };
 		A49F483F26569B7400B5A04F /* ExampleD.swift in Sources */ = {isa = PBXBuildFile; fileRef = A49F483E26569B7400B5A04F /* ExampleD.swift */; };
+		A4B06C6628EB2009009D0A94 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B06C6528EB2009009D0A94 /* Atomic.swift */; };
 		A4C9E6AF2589D73E00476A7E /* Papyrus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C9E6A52589D73D00476A7E /* Papyrus.framework */; };
 		A4C9E6B42589D73E00476A7E /* PapyrusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C9E6B32589D73E00476A7E /* PapyrusStoreTests.swift */; };
 		A4C9E6B62589D73E00476A7E /* Papyrus.h in Headers */ = {isa = PBXBuildFile; fileRef = A4C9E6A82589D73D00476A7E /* Papyrus.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -78,6 +79,7 @@
 		A496DE48286B3AC600D11351 /* Performance.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Performance.xctestplan; sourceTree = "<group>"; };
 		A49F483C2655248600B5A04F /* Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migration.swift; sourceTree = "<group>"; };
 		A49F483E26569B7400B5A04F /* ExampleD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleD.swift; sourceTree = "<group>"; };
+		A4B06C6528EB2009009D0A94 /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		A4C9E6A52589D73D00476A7E /* Papyrus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Papyrus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4C9E6A82589D73D00476A7E /* Papyrus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Papyrus.h; sourceTree = "<group>"; };
 		A4C9E6AE2589D73E00476A7E /* PapyrusTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -253,6 +255,7 @@
 				A4EE68B725935EB60056B386 /* Publishers */,
 				A4EA238A262DE1E1006B62FA /* Queries */,
 				A4EA2381262DDF48006B62FA /* Relationships */,
+				A4B06C6528EB2009009D0A94 /* Atomic.swift */,
 				A4645456258B3485005C0FBB /* Logger.swift */,
 				A49F483C2655248600B5A04F /* Migration.swift */,
 				A444CC022589DFC90067F4B0 /* Papyrus.swift */,
@@ -390,7 +393,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1220;
+				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					A4C9E6A42589D73D00476A7E = {
 						CreatedOnToolsVersion = 12.2;
@@ -462,6 +465,7 @@
 				A4645452258B3391005C0FBB /* PapyrusEncodingWrapper.swift in Sources */,
 				A494438726A04590008A8493 /* ObjectObserver.swift in Sources */,
 				A4645457258B3485005C0FBB /* Logger.swift in Sources */,
+				A4B06C6628EB2009009D0A94 /* Atomic.swift in Sources */,
 				A4EA2387262DDF68006B62FA /* HasMany.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -626,6 +630,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -634,12 +639,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reddavis.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -647,6 +653,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "macosx iphoneos appletvos watchos appletvsimulator iphonesimulator watchsimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -657,6 +664,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -665,18 +673,20 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reddavis.Papyrus;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "macosx iphoneos appletvos watchos appletvsimulator iphonesimulator watchsimulator";
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -687,6 +697,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "PapyrusTests/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -708,6 +719,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "PapyrusTests/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -3,9 +3,7 @@ import XCTest
 
 class PerformanceTests: XCTestCase {
     private let fileManager = FileManager.default
-    // swiftlint:disable:next implicitly_unwrapped_optional
     private var store: PapyrusStore!
-    // swiftlint:disable:next implicitly_unwrapped_optional
     private var directory: URL!
     
     // MARK: Setup
@@ -28,7 +26,7 @@ class PerformanceTests: XCTestCase {
     // MARK: Tests
     
     func testSimpleObjectWrites() throws {
-        let objects = (0..<1000).map { _ in
+        let objects = (0..<2000).map { _ in
             ExampleB(id: UUID().uuidString)
         }
         
@@ -46,7 +44,7 @@ class PerformanceTests: XCTestCase {
     }
     
     func testComplexObjectWrites() throws {
-        let objects = (0..<1000).map { _ in
+        let objects = (0..<2000).map { _ in
             ExampleA(
                 id: UUID().uuidString,
                 test: ExampleB(id: UUID().uuidString)
@@ -67,19 +65,19 @@ class PerformanceTests: XCTestCase {
     }
     
 
-    #if !os(iOS)
-    func testObjectDeletion() async throws {
-        let objects = (0..<1000).map { _ in
+    func testObjectDeletion() async {
+        let objects = (0..<2000).map { _ in
             ExampleB(id: UUID().uuidString)
         }
-        
-        await self.store.save(objects: objects)
         
         self.measure {
             let group = DispatchGroup()
             group.enter()
             
             Task {
+                // There is no way to run setup code for each measurement iteration(?)
+                // Therefore we will also need to create the objects in the measure loop.
+                await self.store.save(objects: objects)
                 await self.store.delete(objects: objects)
                 group.leave()
             }
@@ -87,5 +85,4 @@ class PerformanceTests: XCTestCase {
             group.wait()
         }
     }
-    #endif
 }

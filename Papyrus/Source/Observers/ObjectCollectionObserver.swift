@@ -1,11 +1,11 @@
 import Foundation
 
-final class ObjectCollectionObserver<Output: Papyrus> {
-    private let fileManager = FileManager.default
+final class ObjectCollectionObserver<Output: Papyrus>: @unchecked Sendable {
+    private var fileManager: FileManager { .default }
     private let url: URL
     private let decoder: JSONDecoder
 
-    private var directoryObserver: DirectoryObserver?
+    @Atomic private var directoryObserver: DirectoryObserver?
     private let onChange: (_ objects: [Output]) -> Void
     
     // MARK: Initialization

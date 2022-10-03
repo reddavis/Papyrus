@@ -5,8 +5,7 @@ import Foundation
 ///
 /// `PapyrusStore` aims to hit the sweet spot between saving raw API responses to the file system
 /// and a fully fledged database like Realm.
-public final class PapyrusStore {
-    
+public struct PapyrusStore: Sendable {
     /// The verboseness of the logger.
     public var logLevel: LogLevel {
         get { self.logger.logLevel }
@@ -14,8 +13,10 @@ public final class PapyrusStore {
     }
     
     // Private
-    private let fileManager = FileManager.default
-    private var cancellables: Set<AnyCancellable> = []
+    private var fileManager: FileManager {
+        FileManager.default
+    }
+    
     private let url: URL
     private let logger: Logger
     
@@ -50,7 +51,7 @@ public final class PapyrusStore {
     ///
     /// The default Papyrus Store will persist it's data to a
     /// directory inside Application Support.
-    public convenience init() {
+    public init() {
         let url = FileManager.default.urls(
             for: .applicationSupportDirectory,
             in: .userDomainMask
@@ -145,7 +146,7 @@ public final class PapyrusStore {
     
     /// Saves all objects to the store.
     /// - Parameter objects: An array of objects to add to the store.
-    public func save<T: Papyrus>(objects: [T]) async {
+    public func save<T: Papyrus>(objects: [T]) async where T: Sendable {
         await withTaskGroup(of: Void.self, body: { group in
             for object in objects {
                 group.addTask {
@@ -200,7 +201,10 @@ public final class PapyrusStore {
     /// - Parameters:
     ///   - id: The `id` of the object to be deleted.
     ///   - type: The `type` of the object to be deleted.
-    public func delete<T: Papyrus, ID: LosslessStringConvertible & Hashable>(id: ID, of type: T.Type) async {
+    public func delete<T: Papyrus, ID>(
+        id: ID,
+        of type: T.Type
+    ) async where ID: LosslessStringConvertible & Hashable & Sendable {
         await self.delete(objectIdentifiers: [id: type])
     }
 
@@ -219,7 +223,9 @@ public final class PapyrusStore {
         await self.delete(objectIdentifiers: identifiers)
     }
     
-    private func delete<ID: LosslessStringConvertible, T: Papyrus>(objectIdentifiers: [ID: T.Type]) async {
+    private func delete<ID, T: Papyrus>(
+        objectIdentifiers: [ID: T.Type]
+    ) async where ID: LosslessStringConvertible & Sendable {
         await withTaskGroup(of: Void.self, body: { group in
             let touchedDirectories = Set(objectIdentifiers.map {
                 self.directoryURL(for: $0.value)
@@ -255,7 +261,9 @@ public final class PapyrusStore {
     ///   - Create objects that do not exist in the store and exist in `objects`.
     ///   - Delete objects that exist in the store but do not exist in `objects`.
     /// - Parameter objects: An array of objects to merge.
-    public func merge<T: Papyrus>(with objects: [T]) async {
+    public func merge<T: Papyrus>(
+        with objects: [T]
+    ) async where T: Sendable {
         let objectIDs = objects.map(\.id)
         let objectsToDelete = await self.objects(type: T.self)
             .filter { !objectIDs.contains($0.id) }
@@ -283,7 +291,10 @@ public final class PapyrusStore {
     ///   - objects: An array of objects to merge.
     ///   - filter: The filter to be applied when calculating the subset
     ///   of stored objects to merge into.
-    public func merge<T: Papyrus>(objects: [T], into filter: @escaping (_ object: T) -> Bool) async {
+    public func merge<T: Papyrus>(
+        objects: [T],
+        into filter: @escaping (_ object: T) -> Bool
+    ) async where T: Sendable {
         let objectIDs = objects.map(\.id)
         let objectsToDelete = await self.objects(type: T.self)
             .filter { !objectIDs.contains($0.id) && filter($0) }

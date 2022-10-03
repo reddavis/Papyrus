@@ -2,8 +2,6 @@ import Combine
 import XCTest
 @testable import Papyrus
 
-// swiftlint:disable implicitly_unwrapped_optional
-
 final class ObjectQueryTests: XCTestCase {
     private let fileManager = FileManager.default
     private var storeDirectory: URL!

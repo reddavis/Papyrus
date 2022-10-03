@@ -1,10 +1,10 @@
 import Foundation
 
-final class ObjectObserver<Output: Papyrus> {
-    private let fileManager = FileManager.default
+final class ObjectObserver<Output: Papyrus>: @unchecked Sendable {
+    private var fileManager: FileManager { .default }
     private let filename: String
     private let directoryURL: URL
-    private var previousFetch: Result<Output, PapyrusStore.QueryError>?
+    @Atomic private var previousFetch: Result<Output, PapyrusStore.QueryError>?
     private let decoder: JSONDecoder
     
     private var directoryObserver: DirectoryObserver?
