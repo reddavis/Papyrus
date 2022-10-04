@@ -2,8 +2,6 @@ import Combine
 import XCTest
 @testable import Papyrus
 
-// swiftlint:disable implicitly_unwrapped_optional
-
 final class ObjectObserverPublisherTests: XCTestCase {
     private var id: String!
     private var storeDirectory: URL!

@@ -1,8 +1,6 @@
 import XCTest
 @testable import Papyrus
 
-// swiftlint:disable implicitly_unwrapped_optional
-
 class DirectoryObserverTests: XCTestCase {
     private var directory: URL!
     private let fileManager = FileManager.default

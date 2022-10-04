@@ -1,8 +1,8 @@
 import Foundation
 import os.log
 
-final class Logger {
-    var logLevel: LogLevel = .info
+final class Logger: @unchecked Sendable {
+    @Atomic var logLevel: LogLevel = .info
     
     // Private
     private let log: OSLog

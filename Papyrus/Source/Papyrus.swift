@@ -6,7 +6,7 @@ import Foundation
 /// - `Codable`
 /// - `Equatable`
 /// - `Identifiable where ID: LosslessStringConvertible`
-public protocol Papyrus: Codable, Equatable, Identifiable where ID: LosslessStringConvertible { }
+public protocol Papyrus: Codable, Equatable, Identifiable where ID: LosslessStringConvertible & Sendable { }
 
 // MARK: Helpers
 
