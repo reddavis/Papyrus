@@ -65,7 +65,7 @@ class PerformanceTests: XCTestCase {
     }
     
 
-    func testObjectDeletion() async {
+    func testObjectCreationAndDeletionDeletion() async {
         let objects = (0..<2000).map { _ in
             ExampleB(id: UUID().uuidString)
         }
