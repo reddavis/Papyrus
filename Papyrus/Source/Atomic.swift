@@ -1,3 +1,5 @@
+import Foundation
+
 @propertyWrapper
 struct Atomic<Value> {
     private let lock = NSLock()
