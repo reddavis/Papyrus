@@ -1,30 +1,31 @@
-// swift-tools-version:5.3
+// swift-tools-version: 5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
-
 let package = Package(
     name: "Papyrus",
     platforms: [
-        .iOS("15.0"),
-        .macOS("12.0")
+        .iOS(.v15),
+        .macOS(.v12),
+        .watchOS(.v6),
+        .tvOS(.v15)
     ],
     products: [
         .library(
             name: "Papyrus",
-            targets: ["Papyrus"]
-        )
+            targets: ["Papyrus"]),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/reddavis/Asynchrone", from: "0.21.0"),
     ],
     targets: [
         .target(
             name: "Papyrus",
-            path: "Papyrus"
-        ),
+            dependencies: []),
         .testTarget(
             name: "PapyrusTests",
-            dependencies: ["Papyrus"],
-            path: "PapyrusTests"
-        )
+            dependencies: ["Papyrus", "Asynchrone"]
+        ),
     ]
 )
