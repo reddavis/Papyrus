@@ -1,0 +1,329 @@
+import Foundation
+
+/// A `PapyrusStore` is a data store for `Papyrus` conforming objects.
+///
+/// `PapyrusStore` aims to hit the sweet spot between saving raw API responses to the file system
+/// and a fully fledged database like Realm.
+public struct PapyrusStore: Sendable {
+    /// The verboseness of the logger.
+    public var logLevel: LogLevel {
+        get { self.logger.logLevel }
+        set { self.logger.logLevel = newValue }
+    }
+    
+    // Private
+    private var fileManager: FileManager {
+        FileManager.default
+    }
+    
+    private let url: URL
+    private let logger: Logger
+    
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
+    
+    // MARK: Initialization
+    
+    /// Initialize a new `PapyrusStore` instance persisted at the provided `URL`.
+    /// - Parameter url: The `URL` to persist data to.
+    /// - Parameter encoder: A custom JSON encoder for encoding persisted data.
+    /// Defaults to the standard JSON encoder.
+    /// - Parameter decoder: A custom JSON decoder for decoding persisted data.
+    /// Defaults to the standard JSON decoder.
+    public init(
+        url: URL,
+        encoder: JSONEncoder = JSONEncoder(),
+        decoder: JSONDecoder = JSONDecoder()
+    ) {
+        self.url = url
+        self.logger = Logger(
+            subsystem: "com.reddavis.PapyrusStore",
+            category: "PapyrusStore"
+        )
+        self.encoder = encoder
+        self.decoder = decoder
+        self.setupDataDirectory()
+    }
+    
+    /// Initialize a new `PapyrusStore` instance with the default
+    /// storage directory.
+    ///
+    /// The default Papyrus Store will persist it's data to a
+    /// directory inside Application Support.
+    public init() {
+        let url = FileManager.default.urls(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask
+        )[0].appendingPathComponent("Papyrus", isDirectory: true)
+        self.init(url: url)
+    }
+    
+    // MARK: Store management
+    
+    private func setupDataDirectory() {
+        do {
+            try self.createDirectoryIfNeeded(at: self.url)
+        } catch {
+            self.logger.fault("Unable to create store directory: \(error)")
+        }
+    }
+    
+    /// Reset the store.
+    ///
+    /// This will destroy and then rebuild the store's directory.
+    public func reset() {
+        do {
+            try self.fileManager.removeItem(at: self.url)
+            self.setupDataDirectory()
+        } catch {
+            self.logger.fault("Unable to reset store: \(error)")
+        }
+    }
+    
+    // MARK: File management
+    
+    private func fileURL<ID: LosslessStringConvertible>(for typeDescription: String, id: ID) -> URL {
+        self.fileURL(for: typeDescription, filename: String(id))
+    }
+    
+    private func fileURL(for typeDescription: String, filename: String) -> URL {
+        self.directoryURL(for: typeDescription).appendingPathComponent(filename)
+    }
+    
+    private func directoryURL<T>(for type: T.Type) -> URL {
+        self.directoryURL(for: String(describing: type))
+    }
+    
+    private func directoryURL(for typeDescription: String) -> URL {
+        self.url.appendingPathComponent(typeDescription, isDirectory: true)
+    }
+    
+    private func createDirectoryIfNeeded(for typeDescription: String) throws {
+        try self.createDirectoryIfNeeded(at: self.directoryURL(for: typeDescription))
+    }
+    
+    private func createDirectoryIfNeeded(at url: URL) throws {
+        var isDirectory = ObjCBool(false)
+        let exists = self.fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory)
+        
+        // All good - directory already exists.
+        if isDirectory.boolValue && exists { return }
+        
+        // A file already exists where we want to create our directory.
+        else if !isDirectory.boolValue && exists { throw SetupError.fileExistsInDirectoryURL(url) }
+        
+        // Create directory
+        try self.fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+        self.logger.debug("Created directory: \(url.absoluteString)")
+    }
+    
+    // MARK: Saving
+    
+    /// Saves the object to the store.
+    /// - Parameter object: The object to save.
+    public func save<T: Papyrus>(_ object: T) async {
+        // Write to file system
+        var touchedDirectories = Set([self.directoryURL(for: T.self)])
+        
+        let root = PapyrusEncodingWrapper(object: object)
+        self.save(root, filename: root.filename)
+        
+        // Store any Papyrus relationships.
+        Mirror.reflectProperties(of: object, matchingType: PapyrusEncodingWrapper.self, recursively: true) {
+            self.save($0, filename: $0.filename)
+            touchedDirectories.insert(self.directoryURL(for: $0.typeDescription))
+        }
+        
+        // Touch all changed directories
+        self.logger.debug("Touching directories: \(touchedDirectories)")
+        
+        let now = Date()
+        touchedDirectories.forEach {
+            try? self.fileManager.setAttributes([.modificationDate: now], ofItemAtPath: $0.path)
+        }
+    }
+    
+    /// Saves all objects to the store.
+    /// - Parameter objects: An array of objects to add to the store.
+    public func save<T: Papyrus>(objects: [T]) async where T: Sendable {
+        await withTaskGroup(of: Void.self, body: { group in
+            for object in objects {
+                group.addTask {
+                    await self.save(object)
+                }
+            }
+        })
+    }
+    
+    private func save(_ object: PapyrusEncodingWrapper, filename: String) {
+        do {
+            try self.createDirectoryIfNeeded(for: object.typeDescription)
+            let data = try self.encoder.encode(object)
+            try data.write(to: self.fileURL(for: object.typeDescription, filename: filename))
+            self.logger.debug("Saved: \(object.typeDescription) [Filename: \(filename)]")
+        } catch {
+            self.logger.fault("Failed to save: \(error)")
+        }
+    }
+    
+    // MARK: Fetching
+    
+    /// Creates a `ObjectQuery<T>` instance for an object of the
+    /// type inferred and id provided.
+    /// - Parameter id: The `id` of the object.
+    /// - Returns: A `ObjectQuery<T>` instance.
+    public func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID) -> ObjectQuery<T> {
+        ObjectQuery(id: id, directoryURL: self.directoryURL(for: T.self))
+    }
+    
+    /// Creates a `ObjectQuery<T>` instance for an object of the
+    /// type and id provided.
+    /// - Parameters:
+    ///   - id: The `id` of the object.
+    ///   - type: The `type` of the object.
+    /// - Returns: A `ObjectQuery<T>` instance.
+    public func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID, of type: T.Type) -> ObjectQuery<T> {
+        ObjectQuery(id: id, directoryURL: self.directoryURL(for: T.self))
+    }
+    
+    /// Returns a `PapyrusCollection<T>` instance of all objects of
+    /// the given type.
+    /// - Parameter type: The type of objects to fetch.
+    /// - Returns: A `AnyPublisher<[T], Error>` instance.
+    public func objects<T: Papyrus>(type: T.Type) -> CollectionQuery<T> {
+        CollectionQuery(directoryURL: self.directoryURL(for: T.self))
+    }
+    
+    // MARK: Deleting
+    
+    /// Deletes an object with `id` and of `type` from the store.
+    /// - Parameters:
+    ///   - id: The `id` of the object to be deleted.
+    ///   - type: The `type` of the object to be deleted.
+    public func delete<T: Papyrus, ID>(
+        id: ID,
+        of type: T.Type
+    ) async where ID: LosslessStringConvertible & Hashable & Sendable {
+        await self.delete(objectIdentifiers: [id: type])
+    }
+
+    /// Deletes an object from the store.
+    /// - Parameter object: The object to delete.
+    public func delete<T: Papyrus>(_ object: T) async {
+        await self.delete(objectIdentifiers: [object.id: T.self])
+    }
+    
+    /// Deletes an array of objects.
+    /// - Parameter objects: An array of objects to delete.
+    public func delete<T: Papyrus, ID>(objects: [T]) async where ID == T.ID {
+        let identifiers = objects.reduce(into: [ID: T.Type]()) {
+            $0[$1.id] = T.self
+        }
+        await self.delete(objectIdentifiers: identifiers)
+    }
+    
+    private func delete<ID, T: Papyrus>(
+        objectIdentifiers: [ID: T.Type]
+    ) async where ID: LosslessStringConvertible & Sendable {
+        await withTaskGroup(of: Void.self, body: { group in
+            let touchedDirectories = Set(objectIdentifiers.map {
+                self.directoryURL(for: $0.value)
+            })
+            
+            for (id, type) in objectIdentifiers {
+                group.addTask {
+                    let url = self.fileURL(for: String(describing: type), id: id)
+                    try? self.fileManager.removeItem(at: url)
+                    self.logger.debug("Deleted: \(url)")
+                }
+            }
+            
+            // Touch all changed directories
+            self.logger.debug("Touching directories: \(touchedDirectories)")
+            
+            let now = Date()
+            for url in touchedDirectories {
+                group.addTask {
+                    try? self.fileManager.setAttributes([.modificationDate: now], ofItemAtPath: url.path)
+                }
+            }
+        })
+    }
+    
+    // MARK: Merging
+    
+    /// Merge new data with old data.
+    ///
+    /// Useful when syncing with an API.
+    /// The merge will:
+    ///   - Update objects that exist in the store and exist in `objects`.
+    ///   - Create objects that do not exist in the store and exist in `objects`.
+    ///   - Delete objects that exist in the store but do not exist in `objects`.
+    /// - Parameter objects: An array of objects to merge.
+    public func merge<T: Papyrus>(
+        with objects: [T]
+    ) async where T: Sendable {
+        let objectIDs = objects.map(\.id)
+        let objectsToDelete = await self.objects(type: T.self)
+            .filter { !objectIDs.contains($0.id) }
+            .execute()
+        
+        await withTaskGroup(of: Void.self, body: { group in
+            group.addTask {
+                await self.delete(objects: objectsToDelete)
+            }
+            
+            group.addTask {
+                await self.save(objects: objects)
+            }
+        })
+    }
+    
+    /// Merge new data with a subset of old data.
+    ///
+    /// Useful when syncing with an API.
+    /// The merge will:
+    ///   - Update objects that exist in the filtered store and exist in `objects`.
+    ///   - Create objects that do not exist in the filtered store and exist in `objects`.
+    ///   - Delete objects that exist in the filtered store but do not exist in `objects`.
+    /// - Parameters:
+    ///   - objects: An array of objects to merge.
+    ///   - filter: The filter to be applied when calculating the subset
+    ///   of stored objects to merge into.
+    public func merge<T: Papyrus>(
+        objects: [T],
+        into filter: @escaping (_ object: T) -> Bool
+    ) async where T: Sendable {
+        let objectIDs = objects.map(\.id)
+        let objectsToDelete = await self.objects(type: T.self)
+            .filter { !objectIDs.contains($0.id) && filter($0) }
+            .execute()
+        
+        await withTaskGroup(of: Void.self, body: { group in
+            group.addTask {
+                await self.delete(objects: objectsToDelete)
+            }
+            
+            group.addTask {
+                await self.save(objects: objects)
+            }
+        })
+    }
+    
+    // MARK: Migrations
+    
+    /// Register a data migration.
+    ///
+    /// The migration will be executed as soon as it is registered.
+    /// - Parameter migration: A `Migration` instance.
+    public func register<FromObject: Papyrus, ToObject: Papyrus>(migration: Migration<FromObject, ToObject>) async {
+        let objects = await self.objects(type: FromObject.self)
+            .execute()
+        
+        for object in objects {
+            let toObject = migration.onMigrate(object)
+            await self.save(toObject)
+            await self.delete(object)
+        }
+    }
+}

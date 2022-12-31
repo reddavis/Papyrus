@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "asynchrone",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/reddavis/Asynchrone",
+      "state" : {
+        "revision" : "29f33b57c4a350d4a58ec89584bd3fa750420fa8",
+        "version" : "0.21.0"
+      }
+    }
+  ],
+  "version" : 2
+}
