@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 /// `PapyrusStore.CollectionQuery<T>` is a mechanism for querying `Papyrus` objects.
@@ -21,28 +20,33 @@ public class CollectionQuery<T> where T: Papyrus {
     }
     
     // MARK: API
-    
+     
     /// Executes the query. If filter or sort parameters are
     /// set, they will be applied to the results.
     /// - Returns: The results of the query.
     public func execute() async -> [T] {
-        guard let directoryNames = try? self.fileManager.contentsOfDirectory(atPath: self.directoryURL.path) else { return [] }
+        guard let filenames = try? self.fileManager.contentsOfDirectory(atPath: self.directoryURL.path)
+        else { return [] }
+        
+        var results: [(Date, T)] = []
+        for filename in filenames {
+            let url = self.directoryURL.appendingPathComponent(filename)
+            do {
+                let data = try Data(contentsOf: url)
+                let model = try decoder.decode(T.self, from: data)
+                let modifiedDate = try self.fileManager.attributesOfItem(
+                    atPath: url.path
+                )[.modificationDate] as? Date ?? .now
+                results.append((modifiedDate, model))
+            } catch {
+                continue
+            }
+        }
         
         do {
-            return try directoryNames
-                .map { self.directoryURL.appendingPathComponent($0) }
-                .compactMap {
-                    do
-                    {
-                        let data = try Data(contentsOf: $0)
-                        return try decoder.decode(T.self, from: data)
-                    }
-                    catch
-                    {
-                        // TODO: Log error.
-                        return nil
-                    }
-                }
+            return try results
+                .sorted { $0.0 < $1.0 }
+                .map(\.1)
                 .filter(self.filter)
                 .sorted(by: self.sort)
         } catch {
