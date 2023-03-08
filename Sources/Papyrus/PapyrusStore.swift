@@ -327,3 +327,28 @@ public struct PapyrusStore: Sendable {
         }
     }
 }
+
+// MARK: Setup error
+
+extension PapyrusStore {
+    /// Information about errors during `PapyrusStore` setup.
+    public enum SetupError: Error {
+        /// Unable to create directory.
+        /// A file already exists at the provided location.
+        case fileExistsInDirectoryURL(URL)
+    }
+}
+
+// MARK: Query error
+
+extension PapyrusStore {
+    /// `PapyrusStore` query error.
+    public enum QueryError: Error {
+        
+        /// Object not found
+        case notFound
+        
+        /// Invalid schema
+        case invalidSchema(details: Error)
+    }
+}
