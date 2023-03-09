@@ -146,13 +146,9 @@ public struct PapyrusStore: Sendable {
     /// Saves all objects to the store.
     /// - Parameter objects: An array of objects to add to the store.
     public func save<T: Papyrus>(objects: [T]) async where T: Sendable {
-        await withTaskGroup(of: Void.self, body: { group in
-            for object in objects {
-                group.addTask {
-                    await self.save(object)
-                }
-            }
-        })
+        for object in objects {
+            await self.save(object)
+        }
     }
     
     private func save(_ object: PapyrusEncodingWrapper, filename: String) {
@@ -161,6 +157,7 @@ public struct PapyrusStore: Sendable {
             let data = try self.encoder.encode(object)
             let url = self.fileURL(for: object.typeDescription, filename: filename)
             try data.write(to: url)
+            try self.fileManager.setAttributes([.modificationDate: Date.now], ofItemAtPath: url.path)
             self.logger.debug("Saved: \(object.typeDescription) [Filename: \(filename)]")
         } catch {
             self.logger.fault("Failed to save: \(error)")
@@ -277,7 +274,6 @@ public struct PapyrusStore: Sendable {
             group.addTask {
                 await self.delete(objects: objectsToDelete)
             }
-            
             group.addTask {
                 await self.save(objects: objects)
             }
@@ -308,7 +304,6 @@ public struct PapyrusStore: Sendable {
             group.addTask {
                 await self.delete(objects: objectsToDelete)
             }
-            
             group.addTask {
                 await self.save(objects: objects)
             }

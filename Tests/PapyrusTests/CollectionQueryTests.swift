@@ -26,14 +26,15 @@ final class CollectionQueryTests: XCTestCase {
     
     // MARK: Tests
     
-    func testFetchingAll() async throws {
+    func test_fetchingAll() async throws {
         let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
-        let results = await query.execute().count
+        let results = await query.execute()
         
-        XCTAssertEqual(results, self.numberOfDummyObjects)
+        XCTAssertEqual(results.count, self.numberOfDummyObjects)
+        XCTAssertEqual(results.map(\.integerValue), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     }
     
-    func testFiltering() async throws {
+    func test_filter() async throws {
         let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .filter { $0.integerValue > 5 }
         let results = await query.execute().count
@@ -41,7 +42,7 @@ final class CollectionQueryTests: XCTestCase {
         XCTAssertEqual(results, 5)
     }
     
-    func testSorting() async throws {
+    func test_sort() async throws {
         let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .sort { $0.integerValue > $1.integerValue }
         let results = await query.execute()
@@ -49,7 +50,7 @@ final class CollectionQueryTests: XCTestCase {
         XCTAssertEqual(results.first?.integerValue, 10)
     }
     
-    func testFiltersAppliedToObserverPublisher() async throws {
+    func test_filter_whenAppliedToStream() async throws {
         let collection = try await CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .filter { $0.integerValue > 5 }
             .stream()
@@ -58,7 +59,7 @@ final class CollectionQueryTests: XCTestCase {
         XCTAssertEqual(collection?.count, 5)
     }
     
-    func testSortAppliedToStream() async throws {
+    func test_sort_whenAppliedToStream() async throws {
         let collection = try await CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .sort { $0.integerValue > $1.integerValue }
             .stream()
