@@ -159,7 +159,8 @@ public struct PapyrusStore: Sendable {
         do {
             try self.createDirectoryIfNeeded(for: object.typeDescription)
             let data = try self.encoder.encode(object)
-            try data.write(to: self.fileURL(for: object.typeDescription, filename: filename))
+            let url = self.fileURL(for: object.typeDescription, filename: filename)
+            try data.write(to: url)
             self.logger.debug("Saved: \(object.typeDescription) [Filename: \(filename)]")
         } catch {
             self.logger.fault("Failed to save: \(error)")
@@ -220,6 +221,10 @@ public struct PapyrusStore: Sendable {
             $0[$1.id] = T.self
         }
         await self.delete(objectIdentifiers: identifiers)
+    }
+    
+    public func deleteAll<T: Papyrus>(_ type: T.Type) async throws {
+        try self.fileManager.removeItem(at: self.directoryURL(for: type))
     }
     
     private func delete<ID, T: Papyrus>(
@@ -325,5 +330,30 @@ public struct PapyrusStore: Sendable {
             await self.save(toObject)
             await self.delete(object)
         }
+    }
+}
+
+// MARK: Setup error
+
+extension PapyrusStore {
+    /// Information about errors during `PapyrusStore` setup.
+    public enum SetupError: Error {
+        /// Unable to create directory.
+        /// A file already exists at the provided location.
+        case fileExistsInDirectoryURL(URL)
+    }
+}
+
+// MARK: Query error
+
+extension PapyrusStore {
+    /// `PapyrusStore` query error.
+    public enum QueryError: Error {
+        
+        /// Object not found
+        case notFound
+        
+        /// Invalid schema
+        case invalidSchema(details: Error)
     }
 }
