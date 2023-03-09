@@ -161,6 +161,7 @@ public struct PapyrusStore: Sendable {
             let data = try self.encoder.encode(object)
             let url = self.fileURL(for: object.typeDescription, filename: filename)
             try data.write(to: url)
+            try self.fileManager.setAttributes([.modificationDate: Date.now], ofItemAtPath: url.path)
             self.logger.debug("Saved: \(object.typeDescription) [Filename: \(filename)]")
         } catch {
             self.logger.fault("Failed to save: \(error)")
