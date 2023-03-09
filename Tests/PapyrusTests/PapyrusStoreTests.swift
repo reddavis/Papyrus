@@ -205,21 +205,14 @@ final class PapyrusStoreTests: XCTestCase {
         } catch { }
     }
     
-//    func testUpdatesReceivedOnDeleting() async {
-//        let expectation = self.expectation(description: "Received values")
-//        expectation.expectedFulfillmentCount = 3
-//
-//        self.store.objects(type: ExampleB.self)
-//            .publisher()
-//            .sink { _ in expectation.fulfill() }
-//            .store(in: &self.cancellables)
-//
-//        let object = ExampleB(id: UUID().uuidString)
-//        await self.store.save(object)
-//        await self.store.delete(object)
-//
-//        await self.waitForExpectations(timeout: 5.0)
-//    }
+    func test_deleteAll() async throws {
+        await self.store.save(ExampleB(id: "1"))
+        await self.store.save(ExampleB(id: "2"))
+        try await store.deleteAll(ExampleB.self)
+        
+        let results = await self.store.objects(type: ExampleB.self).execute()
+        XCTAssertTrue(results.isEmpty)
+    }
     
     // MARK: Merging
     
