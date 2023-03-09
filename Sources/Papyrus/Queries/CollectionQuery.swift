@@ -36,7 +36,7 @@ public class CollectionQuery<T> where T: Papyrus {
                 let model = try decoder.decode(T.self, from: data)
                 let modifiedDate = try self.fileManager.attributesOfItem(
                     atPath: url.path
-                )[.creationDate] as? Date ?? .now
+                )[.modificationDate] as? Date ?? .now
                 results.append((modifiedDate, model))
             } catch {
                 continue
