@@ -21,26 +21,22 @@ class DirectoryObserverTests: XCTestCase {
     
     // MARK: Tests
     
-    func testObservingChanges() throws {
+    func test_observer() async throws {
+        let observer = try DirectoryObserver(url: self.directory)
+        let taskStartedExpectation = self.expectation(description: "taskStartedExpectation")
         let expectation = self.expectation(description: "Change detected")
         
-        let observer = DirectoryObserver(
-            url: self.directory,
-            onChange: { [weak self] url in
-                XCTAssertEqual(url, self?.directory)
+        Task {
+            taskStartedExpectation.fulfill()
+            for await _ in observer.observe() {
                 expectation.fulfill()
             }
-        )
-        observer.start()
+        }
         
-        // Assert the observer creates directory if it doesn't exist
+        await self.fulfillment(of: [taskStartedExpectation], timeout: 0.1)
+        try FileManager.default.poke(self.directory)
+        
+        await self.fulfillment(of: [expectation], timeout: 0.1)
         XCTAssert(self.fileManager.fileExists(atPath: self.directory.path))
-        
-        try self.fileManager.setAttributes(
-            [.modificationDate: Date.now],
-            ofItemAtPath: self.directory.path
-        )
-        
-        self.waitForExpectations(timeout: 5.0, handler: nil)
     }
 }

@@ -1,52 +1,39 @@
 import Foundation
 
-final class DirectoryObserver {
-    private let fileManager = FileManager.default
+struct DirectoryObserver: Sendable {
     private let url: URL
-    
-    private let directoryObserverDispatchQueue = DispatchQueue(
-        label: "com.reddavis.DirectoryObserver.directoryObserverDispatchQueue.\(UUID())",
-        qos: .utility
-    )
-    private var directoryObserver: DispatchSourceFileSystemObject?
-    private let onChange: (_ directoryURL: URL) -> Void
     
     // MARK: Initialization
     
-    init(
-        url: URL,
-        onChange: @escaping (_ url: URL) -> Void
-    ) {
+    init(url: URL) throws {
         self.url = url
-        self.onChange = onChange
+        
+        if !FileManager.default.fileExists(atPath: self.url.path) {
+            try FileManager.default.createDirectory(at: self.url, withIntermediateDirectories: true)
+        }
     }
     
     // MARK: Setup
     
-    func start() {
-        if !self.fileManager.fileExists(atPath: self.url.path) {
-            try? self.fileManager.createDirectory(at: self.url, withIntermediateDirectories: true)
+    func observe() -> AsyncStream<Void> {
+        AsyncStream { [url] continuation in
+            let queue = DispatchQueue(
+                label: "com.reddavis.DirectoryObserver.directoryObserverDispatchQueue.\(UUID())",
+                qos: .default
+            )
+            let fileDesciptor = open(url.path, O_EVTONLY)
+            let directoryObserver = DispatchSource.makeFileSystemObjectSource(
+                fileDescriptor: fileDesciptor,
+                eventMask: [.attrib],
+                queue: queue
+            )
+            directoryObserver.setEventHandler {
+                continuation.yield()
+            }
+            continuation.onTermination = { _ in
+                directoryObserver.cancel()
+            }
+            directoryObserver.resume()
         }
-        
-        let fileDesciptor = open(self.url.path, O_EVTONLY)
-        self.directoryObserver = DispatchSource.makeFileSystemObjectSource(
-            fileDescriptor: fileDesciptor,
-            eventMask: [.attrib],
-            queue: self.directoryObserverDispatchQueue
-        )
-        
-        self.directoryObserver?.setEventHandler { [weak self] in
-            guard let self = self else { return }
-            self.onChange(self.url)
-        }
-        
-        self.directoryObserver?.resume()
-    }
-    
-    // MARK: Subscriber
-    
-    func cancel() {
-        self.directoryObserver?.cancel()
-        self.directoryObserver = nil
     }
 }

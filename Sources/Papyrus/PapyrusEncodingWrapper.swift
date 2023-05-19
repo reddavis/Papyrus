@@ -9,7 +9,7 @@ struct PapyrusEncodingWrapper: Encodable {
     
     // MARK: Initializer
     
-    init<T: Papyrus>(object: T) {
+    init<T: Papyrus>(_ object: T) {
         self.filename = object.filename
         self._encode = object.encode
         self.typeDescription = String(describing: type(of: object))

@@ -1,17 +1,13 @@
-import Combine
 import XCTest
 @testable import Papyrus
 
 final class ObjectQueryTests: XCTestCase {
     private let fileManager = FileManager.default
     private var storeDirectory: URL!
-    private var cancellables: Set<AnyCancellable>!
     
     // MARK: Setup
     
     override func setUpWithError() throws {
-        self.cancellables = []
-        
         let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
         
@@ -24,7 +20,7 @@ final class ObjectQueryTests: XCTestCase {
     
     // MARK: Tests
     
-    func testFetchingObject() async throws {
+    func test_execute() throws {
         let id = UUID().uuidString
         let object = ExampleB(id: id)
         try object.write(to: self.storeDirectory)
@@ -34,23 +30,26 @@ final class ObjectQueryTests: XCTestCase {
             directoryURL: self.storeDirectory
         )
         
-        let result = try await query.execute()
+        let result = try query.execute()
         XCTAssertEqual(result, object)
     }
     
-    func testFetchingNonExistentObject() async throws {
+    func test_execute_whenNonExistentObject() async throws {
         let id = UUID().uuidString
         let query = ObjectQuery<ExampleB>(
             id: id,
             directoryURL: self.storeDirectory
         )
         
-        await XCTAssertAsyncThrowsError({
-            _ = try await query.execute()
-        })
+        XCTAssertThrowsError(_ = try query.execute()) { error in
+            guard case PapyrusStore.QueryError.notFound = error else {
+                XCTFail()
+                return
+            }
+        }
     }
     
-    func testStreamingObjectChanges() async throws {
+    func test_observe() async throws {
         let id = UUID().uuidString
         let object = ExampleB(id: id)
         try object.write(to: self.storeDirectory)
@@ -60,38 +59,21 @@ final class ObjectQueryTests: XCTestCase {
             directoryURL: self.storeDirectory
         )
         
-        var iterator = query.stream().makeAsyncIterator()
-        
-        // Initial object
-        var value = try await iterator.next()
-        XCTAssertEqual(value, object)
+        var iterator = query.observe().makeAsyncIterator()
         
         // Update
         let updatedObject = ExampleB(id: id, value: UUID().uuidString)
         try updatedObject.write(to: self.storeDirectory)
-        try self.updateDirectoryModificationDate(directoryURL: self.storeDirectory)
+        try FileManager.default.poke(self.storeDirectory)
         
-        value = try await iterator.next()
-        XCTAssertEqual(value, updatedObject)
-        
-        // Not found
+        var value = try await iterator.next()
+        XCTAssertEqual(value, .changed(updatedObject))
+
+        // Deleted
         try self.fileManager.removeItem(at: self.storeDirectory.appendingPathComponent(id))
-        try self.updateDirectoryModificationDate(directoryURL: self.storeDirectory)
-        
-        await XCTAssertAsyncThrowsError {
-            _ = try await iterator.next()
-        }
-    }
-}
+        try FileManager.default.poke(self.storeDirectory)
 
-
-// MARK: Helpers
-
-extension ObjectQueryTests {
-    func updateDirectoryModificationDate(directoryURL: URL) throws {
-        try FileManager.default.setAttributes(
-            [.modificationDate: Date.now],
-            ofItemAtPath: directoryURL.path
-        )
+        value = try await iterator.next()
+        XCTAssertEqual(value, .deleted)
     }
 }

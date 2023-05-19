@@ -6,16 +6,16 @@ extension Mirror {
         of target: Any,
         matchingType type: T.Type = T.self,
         recursively: Bool = false,
-        using closure: (T) -> Void
-    ) {
+        using closure: (T) throws -> Void
+    ) rethrows {
         let mirror = Mirror(reflecting: target)
-        mirror.children.forEach {
-            ($0.value as? T).map(closure)
+        for child in mirror.children {
+            try (child.value as? T).map(closure)
             
             guard recursively else { return }
             
-            Mirror.reflectProperties(
-                of: $0.value,
+            try Mirror.reflectProperties(
+                of: child.value,
                 recursively: true,
                 using: closure
             )

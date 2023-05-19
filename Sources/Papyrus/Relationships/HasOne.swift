@@ -4,7 +4,7 @@ import Foundation
 public struct HasOne<T: Papyrus>: Codable {
     public var wrappedValue: T {
         didSet {
-            self.encodingWrapper = PapyrusEncodingWrapper(object: self.wrappedValue)
+            self.encodingWrapper = PapyrusEncodingWrapper(self.wrappedValue)
         }
     }
     
@@ -15,12 +15,12 @@ public struct HasOne<T: Papyrus>: Codable {
     
     public init(wrappedValue: T) {
         self.wrappedValue = wrappedValue
-        self.encodingWrapper = PapyrusEncodingWrapper(object: self.wrappedValue)
+        self.encodingWrapper = PapyrusEncodingWrapper(self.wrappedValue)
     }
     
     public init(from decoder: Decoder) throws {
         self.wrappedValue = try T.init(from: decoder)
-        self.encodingWrapper = PapyrusEncodingWrapper(object: self.wrappedValue)
+        self.encodingWrapper = PapyrusEncodingWrapper(self.wrappedValue)
     }
     
     // MARK: Encodable

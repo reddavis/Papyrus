@@ -1,4 +1,3 @@
-import Asynchrone
 import XCTest
 @testable import Papyrus
 
@@ -26,46 +25,59 @@ final class CollectionQueryTests: XCTestCase {
     
     // MARK: Tests
     
-    func test_fetchingAll() async throws {
+    func test_fetchingAll() throws {
         let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
-        let results = await query.execute()
+        let results = try query.execute()
         
         XCTAssertEqual(results.count, self.numberOfDummyObjects)
         XCTAssertEqual(results.map(\.integerValue), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     }
     
-    func test_filter() async throws {
+    func test_filter() throws {
         let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .filter { $0.integerValue > 5 }
-        let results = await query.execute().count
+        let results = try query.execute().count
         
         XCTAssertEqual(results, 5)
     }
     
-    func test_sort() async throws {
+    func test_sort() throws {
         let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .sort { $0.integerValue > $1.integerValue }
-        let results = await query.execute()
+        let results = try query.execute()
         
         XCTAssertEqual(results.first?.integerValue, 10)
     }
     
     func test_filter_whenAppliedToStream() async throws {
+        Task {
+            try await Task.sleep(for: .milliseconds(10))
+            try FileManager.default.poke(self.storeDirectory)
+        }
+        
         let collection = try await CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .filter { $0.integerValue > 5 }
-            .stream()
+            .observe()
             .first()
-
+        
         XCTAssertEqual(collection?.count, 5)
     }
     
     func test_sort_whenAppliedToStream() async throws {
+        Task {
+            try await Task.sleep(for: .milliseconds(10))
+            try FileManager.default.poke(self.storeDirectory)
+        }
+        
         let collection = try await CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
             .sort { $0.integerValue > $1.integerValue }
-            .stream()
+            .observe()
             .first()
 
         XCTAssertEqual(collection?.count, 10)
         XCTAssertEqual(collection?.first?.integerValue, 10)
     }
 }
+
+
+

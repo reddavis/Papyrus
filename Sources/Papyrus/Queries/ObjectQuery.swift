@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 /// `ObjectQuery<T>` is a mechanism for querying a single `Papyrus` object.
@@ -8,18 +7,16 @@ public class ObjectQuery<T: Papyrus> {
     private let fileManager = FileManager.default
     private let filename: String
     private let directoryURL: URL
-    private let decoder: JSONDecoder
+    private let decoder: JSONDecoder = .init()
     
     // MARK: Initialization
     
     init<ID: LosslessStringConvertible>(
         id: ID,
-        directoryURL: URL,
-        decoder: JSONDecoder = JSONDecoder()
+        directoryURL: URL
     ) {
         self.filename = String(id)
         self.directoryURL = directoryURL
-        self.decoder = decoder
     }
     
     // MARK: API
@@ -27,45 +24,64 @@ public class ObjectQuery<T: Papyrus> {
     /// Executes the query. If filter or sort parameters are
     /// set, they will be applied to the results.
     /// - Returns: The results of the query.
-    public func execute() async throws -> T {
-        let fileURL = self.directoryURL.appendingPathComponent(self.filename)
-        guard self.fileManager.fileExists(atPath: fileURL.path) else { throw PapyrusStore.QueryError.notFound }
+    public func execute() throws -> T {
+        switch self.fetchObject() {
+        case .success(let object):
+            return object
+        case .failure(let error):
+            throw error
+        }
+    }
         
+    /// Observe changes to the query via an async stream.
+    /// - Returns: A `AsyncThrowingStream` instance.
+    public func observe() -> AsyncThrowingStream<ObjectChange<T>, Error> {
+        var previousResult = self.fetchObject()
         do {
-            let data = try Data(contentsOf: fileURL)
-            return try decoder.decode(T.self, from: data)
+            let observer = try DirectoryObserver(url: self.directoryURL)
+            return observer.observe()
+                .compactMap { _ in
+                    let result = self.fetchObject()
+                    defer { previousResult = result }
+                    
+                    switch (previousResult, result) {
+                    case (.success(let previousModel), .success(let model)) where previousModel != model:
+                        return .changed(model)
+                    case (.success, .failure(let error)):
+                        if case PapyrusStore.QueryError.notFound = error {
+                            return .deleted
+                        } else {
+                            throw error
+                        }
+                    case (.failure(let error), .success(let model)):
+                        if case PapyrusStore.QueryError.notFound = error {
+                            return .created(model)
+                        } else {
+                            return nil
+                        }
+                    default:
+                        return nil
+                    }
+                }
+                .eraseToThrowingStream()
         } catch {
-            // Cached data is using an old schema.
-            throw PapyrusStore.QueryError.invalidSchema(details: error)
+            return Fail(error: error)
+                .eraseToThrowingStream()
         }
     }
     
-    /// Observe changes to the query via an async stream.
-    /// - Returns: A `AsyncThrowingStream` instance.
-    public func stream() -> AsyncThrowingStream<T, Error> {
-        let filename = self.filename
-        let directoryURL = self.directoryURL
+    private func fetchObject() -> Result<T, Error> {
+        let fileURL = self.directoryURL.appendingPathComponent(self.filename)
+        guard self.fileManager.fileExists(atPath: fileURL.path) else {
+            return .failure(PapyrusStore.QueryError.notFound)
+        }
         
-        return AsyncThrowingStream { continuation in
-            let observer = ObjectObserver<T>(
-                filename: filename,
-                directoryURL: directoryURL,
-                onChange: { result in
-                    switch result
-                    {
-                    case .success(let object):
-                        continuation.yield(object)
-                    case .failure(let error):
-                        continuation.finish(throwing: error)
-                    }
-                }
-            )
-            
-            continuation.onTermination = { @Sendable _ in
-                observer.cancel()
-            }
-            
-            observer.start()
+        do {
+            let data = try Data(contentsOf: fileURL)
+            return .success(try decoder.decode(T.self, from: data))
+        } catch {
+            // Cached data is using an old schema.
+            return .failure(PapyrusStore.QueryError.invalidSchema(details: error))
         }
     }
 }
