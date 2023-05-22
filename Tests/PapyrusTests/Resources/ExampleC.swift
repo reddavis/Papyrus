@@ -3,5 +3,5 @@ import Foundation
 
 struct ExampleC: Papyrus {
     var id: String
-    @HasMany var children: [ExampleB]
+    var children: [ExampleB]
 }

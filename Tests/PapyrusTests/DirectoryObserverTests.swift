@@ -1,7 +1,7 @@
 import XCTest
 @testable import Papyrus
 
-class DirectoryObserverTests: XCTestCase {
+final class DirectoryObserverTests: XCTestCase {
     private var directory: URL!
     private let fileManager = FileManager.default
     

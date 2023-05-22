@@ -1,15 +1,14 @@
 import Foundation
-import os.log
+@preconcurrency import os
 
-final class Logger: @unchecked Sendable {
-    @Atomic var logLevel: LogLevel = .info
-    
-    // Private
+struct Logger: Sendable {
     private let log: OSLog
+    private let logLevel: LogLevel
     
     // MARK: Initialziation
     
-    required init(subsystem: String, category: String) {
+    init(subsystem: String, category: String, logLevel: LogLevel = .info) {
+        self.logLevel = logLevel
         self.log = OSLog(subsystem: subsystem, category: category)
     }
     
@@ -43,7 +42,7 @@ final class Logger: @unchecked Sendable {
 
 // MARK: Log level
 
-public enum LogLevel: Int {
+public enum LogLevel: Int, Sendable {
     case info
     case debug
     case error

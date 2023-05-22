@@ -65,7 +65,7 @@ public class CollectionQuery<T> where T: Papyrus {
             return try filenames.reduce(into: [(Date, T)]()) { result, filename in
                 let url = self.directoryURL.appendingPathComponent(filename)
                 let data = try Data(contentsOf: url)
-                let model = try decoder.decode(T.self, from: data)
+                let model = try self.decoder.decode(T.self, from: data)
                 let modifiedDate = try self.fileManager.attributesOfItem(
                     atPath: url.path
                 )[.creationDate] as? Date ?? .now
@@ -80,5 +80,19 @@ public class CollectionQuery<T> where T: Papyrus {
         } catch {
             throw error
         }
+    }
+}
+
+// MARK: Sequence
+
+extension Sequence {
+    fileprivate func filter(_ isIncluded: ((Element) throws -> Bool)?) rethrows -> [Element] {
+        guard let isIncluded = isIncluded else { return Array(self) }
+        return try self.filter { try isIncluded($0) }
+    }
+    
+    fileprivate func sorted(by areInIncreasingOrder: ((Element, Element) throws -> Bool)?) rethrows -> [Element] {
+        guard let areInIncreasingOrder = areInIncreasingOrder else { return Array(self) }
+        return try self.sorted { try areInIncreasingOrder($0, $1) }
     }
 }

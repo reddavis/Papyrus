@@ -5,13 +5,6 @@ import Foundation
 /// `PapyrusStore` aims to hit the sweet spot between saving raw API responses to the file system
 /// and a fully fledged database like Realm.
 public struct PapyrusStore: Sendable {
-    /// The verboseness of the logger.
-    public var logLevel: LogLevel {
-        get { self.logger.logLevel }
-        set { self.logger.logLevel = newValue }
-    }
-    
-    // Private
     private var fileManager: FileManager { .default }
     private let url: URL
     private let logger: Logger
@@ -22,15 +15,12 @@ public struct PapyrusStore: Sendable {
     
     /// Initialize a new `PapyrusStore` instance persisted at the provided `URL`.
     /// - Parameter url: The `URL` to persist data to.
-    /// - Parameter encoder: A custom JSON encoder for encoding persisted data.
-    /// Defaults to the standard JSON encoder.
-    /// - Parameter decoder: A custom JSON decoder for decoding persisted data.
-    /// Defaults to the standard JSON decoder.
-    public init(url: URL) {
+    public init(url: URL, logLevel: LogLevel = .off) {
         self.url = url
         self.logger = Logger(
             subsystem: "com.reddavis.PapyrusStore",
-            category: "PapyrusStore"
+            category: "PapyrusStore",
+            logLevel: logLevel
         )
         self.setupDataDirectory()
     }
@@ -84,6 +74,10 @@ public struct PapyrusStore: Sendable {
         self.url.appendingPathComponent(typeDescription, isDirectory: true)
     }
     
+    private func createDirectoryIfNeeded<T>(for type: T.Type) throws {
+        try self.createDirectoryIfNeeded(for: String(describing: type))
+    }
+    
     private func createDirectoryIfNeeded(for typeDescription: String) throws {
         try self.createDirectoryIfNeeded(at: self.directoryURL(for: typeDescription))
     }
@@ -115,19 +109,10 @@ public struct PapyrusStore: Sendable {
     /// - Parameter objects: An array of objects to add to the store.
     public func save<T: Papyrus>(objects: [T]) async throws where T: Sendable {
         try await withThrowingTaskGroup(of: Void.self) { group in
-            var touchedDirectories = Set([self.directoryURL(for: T.self)])
-            var wrappedObjects = objects.map(PapyrusEncodingWrapper.init)
+            try self.createDirectoryIfNeeded(for: T.self)
             
-            touchedDirectories = objects.reduce(into: touchedDirectories) { partialResult, object in
-                Mirror.reflectProperties(of: object, matchingType: PapyrusEncodingWrapper.self, recursively: true) {
-                    partialResult.insert(self.directoryURL(for: $0.typeDescription))
-                    wrappedObjects.append($0)
-                }
-            }
-            
-            for object in wrappedObjects {
+            for object in objects {
                 group.addTask {
-                    try self.createDirectoryIfNeeded(for: object.typeDescription)
                     let data = try self.encoder.encode(object)
                     let url = self.fileURL(for: object.typeDescription, filename: object.filename)
                     try data.write(to: url)
@@ -136,12 +121,10 @@ public struct PapyrusStore: Sendable {
             }
             
             try await group.waitForAll()
-            for directory in touchedDirectories {
-                group.addTask {
-                    try self.fileManager.setAttributes([.modificationDate: Date.now], ofItemAtPath: directory.path)
-                }
-            }
-            try await group.waitForAll()
+            try self.fileManager.setAttributes(
+                [.modificationDate: Date.now],
+                ofItemAtPath: self.directoryURL(for: T.self).path()
+            )
         }
     }
     
@@ -182,23 +165,23 @@ public struct PapyrusStore: Sendable {
     public func delete<T: Papyrus, ID>(
         id: ID,
         of type: T.Type
-    ) async where ID: LosslessStringConvertible & Hashable & Sendable {
-        await self.delete(objectIdentifiers: [id: type])
+    ) async throws where ID: LosslessStringConvertible & Hashable & Sendable {
+        try await self.delete(objectIdentifiers: [id: type])
     }
 
     /// Deletes an object from the store.
     /// - Parameter object: The object to delete.
-    public func delete<T: Papyrus>(_ object: T) async {
-        await self.delete(objectIdentifiers: [object.id: T.self])
+    public func delete<T: Papyrus>(_ object: T) async throws {
+        try await self.delete(objectIdentifiers: [object.id: T.self])
     }
     
     /// Deletes an array of objects.
     /// - Parameter objects: An array of objects to delete.
-    public func delete<T: Papyrus, ID>(objects: [T]) async where ID == T.ID {
+    public func delete<T: Papyrus, ID>(objects: [T]) async throws where ID == T.ID {
         let identifiers = objects.reduce(into: [ID: T.Type]()) {
             $0[$1.id] = T.self
         }
-        await self.delete(objectIdentifiers: identifiers)
+        try await self.delete(objectIdentifiers: identifiers)
     }
     
     public func deleteAll<T: Papyrus>(_ type: T.Type) throws {
@@ -207,8 +190,8 @@ public struct PapyrusStore: Sendable {
     
     private func delete<ID, T: Papyrus>(
         objectIdentifiers: [ID: T.Type]
-    ) async where ID: LosslessStringConvertible & Sendable {
-        await withTaskGroup(of: Void.self) { group in
+    ) async throws where ID: LosslessStringConvertible & Sendable {
+        try await withThrowingTaskGroup(of: Void.self) { group in
             let touchedDirectories = Set(objectIdentifiers.map {
                 self.directoryURL(for: $0.value)
             })
@@ -216,48 +199,20 @@ public struct PapyrusStore: Sendable {
             for (id, type) in objectIdentifiers {
                 group.addTask {
                     let url = self.fileURL(for: String(describing: type), id: id)
-                    try? self.fileManager.removeItem(at: url)
+                    try self.fileManager.removeItem(at: url)
                     self.logger.debug("Deleted: \(url)")
                 }
             }
+            
+            try await group.waitForAll()
             
             // Touch all changed directories
             self.logger.debug("Touching directories: \(touchedDirectories)")
             
             let now = Date()
             for url in touchedDirectories {
-                group.addTask {
-                    try? self.fileManager.setAttributes([.modificationDate: now], ofItemAtPath: url.path)
-                }
+                try self.fileManager.setAttributes([.modificationDate: now], ofItemAtPath: url.path)
             }
-        }
-    }
-    
-    /// Deletes an object from the store.
-    /// - Parameter object: The object to delete.
-    public func _delete<T: Papyrus>(_ object: T) throws {
-        let wrapper = PapyrusEncodingWrapper(object)
-        let directoryURL = self.directoryURL(for: wrapper.typeDescription)
-        
-        let url = self.fileURL(for: wrapper.typeDescription, filename: wrapper.filename)
-        try self.fileManager.removeItem(at: url)
-        self.logger.debug("Deleted: \(url)")
-        
-        // Touch all changed directories
-        self.logger.debug("Touching directories: \(directoryURL)")
-        try self.fileManager.setAttributes([.modificationDate: Date.now], ofItemAtPath: directoryURL.path)
-    }
-    
-    /// Deletes an array of objects.
-    /// - Parameter objects: An array of objects to delete.
-    public func _delete<T: Papyrus, ID>(objects: [T]) async throws where ID == T.ID {
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for object in objects {
-                group.addTask {
-                    try self._delete(object)
-                }
-            }
-            for try await _ in group {} // So we can throw errors
         }
     }
     
@@ -281,7 +236,7 @@ public struct PapyrusStore: Sendable {
         
         try await withThrowingTaskGroup(of: Void.self, body: { group in
             group.addTask {
-                await self.delete(objects: objectsToDelete)
+                try await self.delete(objects: objectsToDelete)
             }
             group.addTask {
                 try await self.save(objects: objects)
@@ -313,7 +268,7 @@ public struct PapyrusStore: Sendable {
         
         try await withThrowingTaskGroup(of: Void.self, body: { group in
             group.addTask {
-                await self.delete(objects: objectsToDelete)
+                try await self.delete(objects: objectsToDelete)
             }
             group.addTask {
                 try await self.save(objects: objects)

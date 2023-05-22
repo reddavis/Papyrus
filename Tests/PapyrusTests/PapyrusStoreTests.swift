@@ -51,84 +51,6 @@ final class PapyrusStoreTests: XCTestCase {
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
-    func testHasOneRelationshipDirectoriesAndFilesAreCreated() async throws {
-        let idA = UUID().uuidString
-        let idB = UUID().uuidString
-        let objectB = ExampleB(id: idB)
-        let objectA = ExampleA(id: idA, test: objectB)
-        try await self.store.save(objectA)
-        
-        // Object A's type directory created
-        let objectTypeADirectory = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: objectA))
-        )
-        XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeADirectory.path))
-        
-        // Object A's data file created
-        let objectADataFile = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: objectA))
-        ).appendingPathComponent(idA)
-        XCTAssertTrue(self.fileManager.fileExists(atPath: objectADataFile.path))
-        
-        // Object B's type directory created
-        let objectTypeBDirectory = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: objectB))
-        )
-        XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
-        
-        // Object B's data file created
-        let objectBDataFile = objectTypeBDirectory.appendingPathComponent(idB)
-        XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
-    }
-    
-    func testHasManyRelationshipDirectoriesAndFilesAreCreated() async throws {
-        let childAID = UUID().uuidString
-        let childA = ExampleB(id: childAID)
-        
-        let childBID = UUID().uuidString
-        let childB = ExampleB(id: childBID)
-        
-        let parentID = UUID().uuidString
-        let parent = ExampleC(id: parentID, children: [childA, childB])
-        try await self.store.save(parent)
-        
-        // Parent's type directory created
-        let parentDirectory = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: parent))
-        )
-        XCTAssertTrue(self.fileManager.fileExists(atPath: parentDirectory.path))
-        
-        // Parent's data file created
-        let parentDataFile = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: parent))
-        ).appendingPathComponent(parentID)
-        XCTAssertTrue(self.fileManager.fileExists(atPath: parentDataFile.path))
-        
-        // Child A's type directory created
-        let childADirectory = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: childA))
-        )
-        XCTAssertTrue(self.fileManager.fileExists(atPath: childADirectory.path))
-        
-        // Child A's data file created
-        let childADataFile = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: childA))
-        ).appendingPathComponent(childAID)
-        XCTAssertTrue(self.fileManager.fileExists(atPath: childADataFile.path))
-        
-        // Child B's type directory created
-        let childBDirectory = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: childB))
-        )
-        XCTAssertTrue(self.fileManager.fileExists(atPath: childBDirectory.path))
-        
-        // Child B's data file created
-        let childBDataFile = self.storeDirectory.appendingPathComponent(
-            String(describing: type(of: childB))
-        ).appendingPathComponent(childBID)
-        XCTAssertTrue(self.fileManager.fileExists(atPath: childBDataFile.path))
-    }
-    
     func testSavingMultipleObjects() async throws {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
@@ -173,7 +95,7 @@ final class PapyrusStoreTests: XCTestCase {
         try await self.store.save(object)
         
         let fetchedObject = try self.store.object(id: id, of: ExampleB.self).execute()
-        await self.store.delete(fetchedObject)
+        try await self.store.delete(fetchedObject)
         
         do {
             _ = try self.store.object(id: id, of: ExampleB.self).execute()
@@ -192,7 +114,7 @@ final class PapyrusStoreTests: XCTestCase {
         
         let fetchedObjectA: ExampleB = try self.store.object(id: idA).execute()
         let fetchedObjectB: ExampleB = try self.store.object(id: idB).execute()
-        await self.store.delete(objects: [fetchedObjectA, fetchedObjectB])
+        try await self.store.delete(objects: [fetchedObjectA, fetchedObjectB])
         
         do {
             _ = try self.store.object(id: idA, of: ExampleB.self).execute()
@@ -208,7 +130,7 @@ final class PapyrusStoreTests: XCTestCase {
     func test_deleteAll() async throws {
         try await self.store.save(ExampleB(id: "1"))
         try await self.store.save(ExampleB(id: "2"))
-        try await store.deleteAll(ExampleB.self)
+        try store.deleteAll(ExampleB.self)
         
         let results = try self.store.objects(type: ExampleB.self).execute()
         XCTAssertTrue(results.isEmpty)

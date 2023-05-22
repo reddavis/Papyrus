@@ -1,3 +1,4 @@
+// Thanks - https://github.com/pointfreeco/swift-dependencies
 extension AsyncSequence {
     func eraseToStream() -> AsyncStream<Element> {
         AsyncStream(self)

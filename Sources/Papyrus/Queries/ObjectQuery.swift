@@ -2,8 +2,6 @@ import Foundation
 
 /// `ObjectQuery<T>` is a mechanism for querying a single `Papyrus` object.
 public class ObjectQuery<T: Papyrus> {
-    
-    // Private
     private let fileManager = FileManager.default
     private let filename: String
     private let directoryURL: URL

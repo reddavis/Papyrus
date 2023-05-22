@@ -1,5 +1,7 @@
+// Thanks - https://github.com/pointfreeco/swift-dependencies
+
 extension AsyncStream {
-    public init<S: AsyncSequence>(_ sequence: S) where S.Element == Element {
+    init<S: AsyncSequence>(_ sequence: S) where S.Element == Element {
         var iterator: S.AsyncIterator?
         self.init {
             if iterator == nil {

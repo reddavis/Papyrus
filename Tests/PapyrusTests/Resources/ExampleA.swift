@@ -3,5 +3,5 @@ import Foundation
 
 struct ExampleA: Papyrus {
     var id: String
-    @HasOne var test: ExampleB
+    var test: ExampleB
 }
