@@ -4,7 +4,7 @@ import XCTest
 final class PerformanceTests: XCTestCase {
     func test_save() async {
         let objects = (0..<10000).map { _ in
-            ExampleB(id: UUID().uuidString)
+            Model()
         }
         
         self.measure {
@@ -23,7 +23,7 @@ final class PerformanceTests: XCTestCase {
 
     func test_delete() async {
         let objects = (0..<10000).map { _ in
-            ExampleB(id: UUID().uuidString)
+            Model()
         }
         
         self.measure {
@@ -40,4 +40,11 @@ final class PerformanceTests: XCTestCase {
             self.wait(for: [expectation])
         }
     }
+}
+
+// MARK: Model
+
+private struct Model: Papyrus {
+    var id: String = UUID().uuidString
+    var value: String = UUID().uuidString
 }

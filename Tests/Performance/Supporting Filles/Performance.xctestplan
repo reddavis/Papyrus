@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "2130BA18-3BDB-42C5-A3EE-D0AADECD6C70",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "Performance",
+        "name" : "Performance"
+      }
+    }
+  ],
+  "version" : 1
+}

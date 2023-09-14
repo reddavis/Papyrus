@@ -20,7 +20,11 @@ let package = Package(
     targets: [
         .target(name: "Papyrus"),
         .testTarget(
-            name: "PapyrusTests",
+            name: "Unit",
+            dependencies: ["Papyrus"]
+        ),
+        .testTarget(
+            name: "Performance",
             dependencies: ["Papyrus"]
         ),
     ]

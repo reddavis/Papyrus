@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "A324F29C-E63E-490A-BAE2-E422C37D0444",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "Unit",
+        "name" : "Unit"
+      }
+    }
+  ],
+  "version" : 1
+}

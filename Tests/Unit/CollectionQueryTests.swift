@@ -2,31 +2,33 @@ import XCTest
 @testable import Papyrus
 
 final class CollectionQueryTests: XCTestCase {
-    private var storeDirectory: URL!
+    private var directory: URL!
     private let numberOfDummyObjects = 10
     
     // MARK: Setup
     
     override func setUpWithError() throws {
-        let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        
+        self.directory = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(
-            at: self.storeDirectory,
+            at: self.directory,
             withIntermediateDirectories: true,
             attributes: nil
         )
         
         // Dummy data
         try self.numberOfDummyObjects.times { index in
-            try ExampleB(id: UUID().uuidString, integerValue: index).write(to: self.storeDirectory)
+            try ExampleB(id: UUID().uuidString, integerValue: index).write(to: self.directory)
         }
+    }
+    
+    override func tearDown() {
+        try? FileManager.default.removeItem(at: self.directory)
     }
     
     // MARK: Tests
     
     func test_fetchingAll() throws {
-        let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
+        let query = CollectionQuery<ExampleB>(directoryURL: self.directory)
         let results = try query.execute()
         
         XCTAssertEqual(results.count, self.numberOfDummyObjects)
@@ -34,7 +36,7 @@ final class CollectionQueryTests: XCTestCase {
     }
     
     func test_filter() throws {
-        let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
+        let query = CollectionQuery<ExampleB>(directoryURL: self.directory)
             .filter { $0.integerValue > 5 }
         let results = try query.execute().count
         
@@ -42,7 +44,7 @@ final class CollectionQueryTests: XCTestCase {
     }
     
     func test_sort() throws {
-        let query = CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
+        let query = CollectionQuery<ExampleB>(directoryURL: self.directory)
             .sort { $0.integerValue > $1.integerValue }
         let results = try query.execute()
         
@@ -52,10 +54,10 @@ final class CollectionQueryTests: XCTestCase {
     func test_filter_whenAppliedToStream() async throws {
         Task {
             try await Task.sleep(for: .milliseconds(10))
-            try FileManager.default.poke(self.storeDirectory)
+            try FileManager.default.poke(self.directory)
         }
         
-        let collection = try await CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
+        let collection = try await CollectionQuery<ExampleB>(directoryURL: self.directory)
             .filter { $0.integerValue > 5 }
             .observe()
             .first()
@@ -66,10 +68,10 @@ final class CollectionQueryTests: XCTestCase {
     func test_sort_whenAppliedToStream() async throws {
         Task {
             try await Task.sleep(for: .milliseconds(10))
-            try FileManager.default.poke(self.storeDirectory)
+            try FileManager.default.poke(self.directory)
         }
         
-        let collection = try await CollectionQuery<ExampleB>(directoryURL: self.storeDirectory)
+        let collection = try await CollectionQuery<ExampleB>(directoryURL: self.directory)
             .sort { $0.integerValue > $1.integerValue }
             .observe()
             .first()

@@ -8,15 +8,14 @@ final class DirectoryObserverTests: XCTestCase {
     // MARK: Setup
     
     override func setUpWithError() throws {
-        let temporaryDirectoryURL = URL(
-            fileURLWithPath: NSTemporaryDirectory(),
-            isDirectory: true
-        )
-        
-        self.directory = temporaryDirectoryURL.appendingPathComponent(
+        self.directory = URL.temporaryDirectory.appendingPathComponent(
             UUID().uuidString,
             isDirectory: true
         )
+    }
+    
+    override func tearDown() {
+        try? self.fileManager.removeItem(at: self.directory)
     }
     
     // MARK: Tests

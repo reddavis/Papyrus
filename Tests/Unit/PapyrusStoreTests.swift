@@ -4,23 +4,25 @@ import XCTest
 final class PapyrusStoreTests: XCTestCase {
     private let fileManager = FileManager.default
     private var store: PapyrusStore!
-    private var storeDirectory: URL!
+    private var directory: URL!
     
     // MARK: Setup
     
     override func setUpWithError() throws {
-        let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        self.storeDirectory = temporaryDirectoryURL.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        self.store = PapyrusStore(url: self.storeDirectory)
+        self.directory = URL.temporaryDirectory.appendingPathComponent(
+            UUID().uuidString,
+            isDirectory: true
+        )
+        self.store = PapyrusStore(url: self.directory)
     }
     
     override func tearDown() {
-        try? self.fileManager.removeItem(at: self.storeDirectory)
+        try? self.fileManager.removeItem(at: self.directory)
     }
     
     // MARK: Reseting
     
-    func testReset() async throws {
+    func test_reset() async throws {
         let model = ExampleB(id: "1")
         try await self.store.save(model)
         
@@ -33,25 +35,25 @@ final class PapyrusStoreTests: XCTestCase {
     
     // MARK: Saving
     
-    func testDirectoriesAndFilesAreCreated() async throws {
+    func test_directoriesAndFilesAreCreated() async throws {
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
         try await self.store.save(objectB)
         
         // Object B's type directory created
-        let objectTypeBDirectory = self.storeDirectory.appendingPathComponent(
+        let objectTypeBDirectory = self.directory.appendingPathComponent(
             String(describing: type(of: objectB))
         )
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectTypeBDirectory.path))
         
         // Object B's data file created
-        let objectBDataFile = self.storeDirectory.appendingPathComponent(
+        let objectBDataFile = self.directory.appendingPathComponent(
             String(describing: type(of: objectB))
         ).appendingPathComponent(idB)
         XCTAssertTrue(self.fileManager.fileExists(atPath: objectBDataFile.path))
     }
     
-    func testSavingMultipleObjects() async throws {
+    func test_savingMultipleObjects() async throws {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
         
@@ -64,7 +66,7 @@ final class PapyrusStoreTests: XCTestCase {
         XCTAssertNotNil(self.store.object(id: idB, of: ExampleB.self))
     }
     
-    func testUpdatesReceivedOnSaving() async throws {
+    func test_updatesReceivedOnSaving() async throws {
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 1
 
@@ -78,7 +80,7 @@ final class PapyrusStoreTests: XCTestCase {
     
     // MARK: Fetching
     
-    func testFetchingObjectByID() async throws {
+    func test_fetchingObjectByID() async throws {
         let idB = UUID().uuidString
         let objectB = ExampleB(id: idB)
         try await self.store.save(objectB)
@@ -87,9 +89,19 @@ final class PapyrusStoreTests: XCTestCase {
         XCTAssertEqual(fetchedObject.id, objectB.id)
     }
     
+    func test_fetchingObjects() async throws {
+        let objects = (0..<3).map { _ in
+            ExampleD()
+        }
+        try await self.store.save(objects: objects)
+        
+        let fetchedObjects = try self.store.objects(type: ExampleD.self).execute()
+        XCTAssertEqual(fetchedObjects.count, 3)
+    }
+    
     // MARK: Deleting
     
-    func testDeletingObject() async throws {
+    func test_deletingObject() async throws {
         let id = UUID().uuidString
         let object = ExampleB(id: id)
         try await self.store.save(object)
@@ -103,7 +115,7 @@ final class PapyrusStoreTests: XCTestCase {
         } catch { }
     }
     
-    func testDeletingObjects() async throws {
+    func test_deletingObjects() async throws {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
         try await self.store.save(objectA)
@@ -138,7 +150,7 @@ final class PapyrusStoreTests: XCTestCase {
     
     // MARK: Merging
     
-    func testMerging() async throws {
+    func test_merge() async throws {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
         
@@ -163,7 +175,7 @@ final class PapyrusStoreTests: XCTestCase {
         XCTAssertEqual(2, exampleBs.count)
     }
     
-    func testMergingIntoSubset() async throws {
+    func test_merge_withSubset() async throws {
         let idA = UUID().uuidString
         let objectA = ExampleB(id: idA)
         
