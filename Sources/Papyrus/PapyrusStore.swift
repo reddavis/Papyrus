@@ -30,9 +30,9 @@ public struct PapyrusStore: Sendable {
     ///
     /// The default Papyrus Store will persist it's data to a
     /// directory inside Application Support.
-    public init() {
+    public init(logLevel: LogLevel = .off) {
         let url = URL.applicationSupportDirectory.appendingPathComponent("Papyrus", isDirectory: true)
-        self.init(url: url)
+        self.init(url: url, logLevel: logLevel)
     }
     
     // MARK: Store management
