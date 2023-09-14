@@ -31,10 +31,7 @@ public struct PapyrusStore: Sendable {
     /// The default Papyrus Store will persist it's data to a
     /// directory inside Application Support.
     public init() {
-        let url = FileManager.default.urls(
-            for: .applicationSupportDirectory,
-            in: .userDomainMask
-        )[0].appendingPathComponent("Papyrus", isDirectory: true)
+        let url = URL.applicationSupportDirectory.appendingPathComponent("Papyrus", isDirectory: true)
         self.init(url: url)
     }
     
@@ -123,7 +120,7 @@ public struct PapyrusStore: Sendable {
             try await group.waitForAll()
             try self.fileManager.setAttributes(
                 [.modificationDate: Date.now],
-                ofItemAtPath: self.directoryURL(for: T.self).path()
+                ofItemAtPath: self.directoryURL(for: T.self).path
             )
         }
     }
