@@ -188,6 +188,8 @@ public struct PapyrusStore: Sendable {
     private func delete<ID, T: Papyrus>(
         objectIdentifiers: [ID: T.Type]
     ) async throws where ID: LosslessStringConvertible & Sendable {
+        guard !objectIdentifiers.isEmpty else { return }
+        
         try await withThrowingTaskGroup(of: Void.self) { group in
             let touchedDirectories = Set(objectIdentifiers.map {
                 self.directoryURL(for: $0.value)
