@@ -1,7 +1,7 @@
 import Foundation
-@preconcurrency import os
+import os
 
-struct Logger: Sendable {
+struct Logger {
     private let log: OSLog
     private let logLevel: LogLevel
     
@@ -36,7 +36,7 @@ struct Logger: Sendable {
         guard
             level >= self.logLevel,
             let type = level.logType else { return }
-        os_log("%@", log: self.log, type: type, message)
+        os_log("%{public}@", log: self.log, type: type, message)
     }
 }
 
