@@ -2,32 +2,38 @@ import Foundation
 
 /// `ObjectQuery<T>` is a mechanism for querying a single `Papyrus` object.
 public class ObjectQuery<T: Papyrus> {
+    private let decoder: JSONDecoder = .init()
+    private let directoryURL: URL
     private let fileManager = FileManager.default
     private let filename: String
-    private let directoryURL: URL
-    private let decoder: JSONDecoder = .init()
+    private let logger: Logger
     
     // MARK: Initialization
     
     init<ID: LosslessStringConvertible>(
         id: ID,
-        directoryURL: URL
+        directoryURL: URL,
+        logLevel: LogLevel = .off
     ) {
         self.filename = String(id)
         self.directoryURL = directoryURL
+        self.logger = Logger(
+            subsystem: "com.reddavis.PapyrusStore",
+            category: "ObjectQuery",
+            logLevel: logLevel
+        )
     }
     
     // MARK: API
     
-    /// Executes the query. If filter or sort parameters are
-    /// set, they will be applied to the results.
-    /// - Returns: The results of the query.
-    public func execute() throws -> T {
+    /// Executes the query.
+    /// - Returns: The result of the query.
+    public func execute() -> T? {
         switch self.fetchObject() {
         case .success(let object):
             return object
-        case .failure(let error):
-            throw error
+        case .failure:
+            return nil
         }
     }
         
@@ -45,18 +51,10 @@ public class ObjectQuery<T: Papyrus> {
                     switch (previousResult, result) {
                     case (.success(let previousModel), .success(let model)) where previousModel != model:
                         return .changed(model)
-                    case (.success, .failure(let error)):
-                        if case PapyrusStore.QueryError.notFound = error {
-                            return .deleted
-                        } else {
-                            throw error
-                        }
-                    case (.failure(let error), .success(let model)):
-                        if case PapyrusStore.QueryError.notFound = error {
-                            return .created(model)
-                        } else {
-                            return nil
-                        }
+                    case (.success, .failure):
+                        return .deleted
+                    case (.failure, .success(let model)):
+                        return .created(model)
                     default:
                         return nil
                     }
@@ -71,7 +69,8 @@ public class ObjectQuery<T: Papyrus> {
     private func fetchObject() -> Result<T, Error> {
         let fileURL = self.directoryURL.appendingPathComponent(self.filename)
         guard self.fileManager.fileExists(atPath: fileURL.path) else {
-            return .failure(PapyrusStore.QueryError.notFound)
+            self.logger.info("Cached data not found. url: \(fileURL)")
+            return .failure(NotFoundError())
         }
         
         do {
@@ -79,7 +78,25 @@ public class ObjectQuery<T: Papyrus> {
             return .success(try decoder.decode(T.self, from: data))
         } catch {
             // Cached data is using an old schema.
-            return .failure(PapyrusStore.QueryError.invalidSchema(details: error))
+            self.logger.error("Failed to parse cached data. url: \(fileURL)")
+            do {
+                // Delete cached data
+                self.logger.debug("Deleting old cached data. url: \(fileURL)")
+                try self.fileManager.removeItem(at: fileURL)
+            } catch {
+                self.logger.error("Failed deleting old cached data. url: \(fileURL) error: \(error)")
+                return .failure(error)
+            }
+            return .failure(InvalidSchemaError(details: error))
         }
+    }
+}
+
+// MARK: Errors
+
+extension ObjectQuery {
+    private struct NotFoundError: Error {}
+    private struct InvalidSchemaError: Error {
+        var details: Error
     }
 }

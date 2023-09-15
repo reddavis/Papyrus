@@ -36,7 +36,7 @@ final class ObjectQueryTests: XCTestCase {
             directoryURL: self.directory
         )
         
-        let result = try query.execute()
+        let result = query.execute()
         XCTAssertEqual(result, object)
     }
     
@@ -47,12 +47,7 @@ final class ObjectQueryTests: XCTestCase {
             directoryURL: self.directory
         )
         
-        XCTAssertThrowsError(_ = try query.execute()) { error in
-            guard case PapyrusStore.QueryError.notFound = error else {
-                XCTFail()
-                return
-            }
-        }
+        XCTAssertNil(query.execute())
     }
     
     func test_observe() async throws {

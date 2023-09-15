@@ -2,8 +2,10 @@ import Foundation
 import os
 
 struct Logger {
+    let logLevel: LogLevel
+    
+    // Private
     private let log: OSLog
-    private let logLevel: LogLevel
     
     // MARK: Initialziation
     

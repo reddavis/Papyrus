@@ -27,26 +27,26 @@ final class CollectionQueryTests: XCTestCase {
     
     // MARK: Tests
     
-    func test_fetchingAll() throws {
+    func test_fetchingAll() {
         let query = CollectionQuery<ExampleB>(directoryURL: self.directory)
-        let results = try query.execute()
+        let results = query.execute()
         
         XCTAssertEqual(results.count, self.numberOfDummyObjects)
         XCTAssertEqual(results.map(\.integerValue), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     }
     
-    func test_filter() throws {
+    func test_filter() {
         let query = CollectionQuery<ExampleB>(directoryURL: self.directory)
             .filter { $0.integerValue > 5 }
-        let results = try query.execute().count
+        let results = query.execute().count
         
         XCTAssertEqual(results, 5)
     }
     
-    func test_sort() throws {
+    func test_sort() {
         let query = CollectionQuery<ExampleB>(directoryURL: self.directory)
             .sort { $0.integerValue > $1.integerValue }
-        let results = try query.execute()
+        let results = query.execute()
         
         XCTAssertEqual(results.first?.integerValue, 10)
     }
@@ -80,6 +80,3 @@ final class CollectionQueryTests: XCTestCase {
         XCTAssertEqual(collection?.first?.integerValue, 10)
     }
 }
-
-
-

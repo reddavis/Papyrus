@@ -11,7 +11,7 @@ struct Car: Papyrus {
 
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
 let store = PapyrusStore()
-await store.save(car)
+try await store.save(car)
 ```
 
 ## Requirements
@@ -60,50 +60,10 @@ struct Car: Papyrus {
 
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
 let store = PapyrusStore()
-await store.save(car)
+try await store.save(car)
 ```
 
-#### Example B - Relationships
-
-Papyrus also understands relationships. If we continue with our `Car` modelling...Let's imagine we have an app that fetches a list of car manufacturers and their cars.
-
-Our models could look like:
-
-```swift
-struct Manufacturer: Papyrus {
-    let id: String
-    let name: String
-    @HasMany let cars: [Car]
-    @HasOne let address: Address
-}
-
-struct Car: Papyrus {
-    let id: String
-    let model: String
-}
-
-struct Address: Papyrus {
-    let id: UUID
-    let lineOne: String
-    let lineTwo: String?
-}
-
-let modelS = Car(id: "abc...", model: "Model S")
-let address = Address(id: UUID(), lineOne: "blah blah", lineTwo: nil)
-let tesla = Manufacturer(
-    id: "abc...", 
-    name: "Tesla", 
-    cars: [modelS], 
-    address: address
-)
-
-let store = PapyrusStore()
-await store.save(tesla)
-```
-
-Because `Car` and `Address` also conforms to `Papyrus` and the `@HasMany` and `@HasOne` property wrappers have been used, `PapyrusStore` will also persist the cars and the address when it saves the manufacturer. This means that we are able to perform direct queries on `Car`'s and `Address`es. 
-
-#### Example C - Merge
+#### Example B - Merge
 
 A common use case when dealing with API's is to fetch a collection of objects and the merge the results into your local collection.
 
@@ -115,7 +75,7 @@ let carB = Car(id: "def...", model: "Model 3", manufacturer: "Tesla")
 let carC = Car(id: "ghi...", model: "Model X", manufacturer: "Tesla")
 
 let store = PapyrusStore()
-store.save(objects: [carA, carB])
+try store.save(objects: [carA, carB])
 
 await store.merge(with: [carA, carC])
 await store
