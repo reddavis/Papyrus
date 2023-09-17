@@ -298,7 +298,7 @@ public struct PapyrusStore: Sendable {
             .filter { !objectIDs.contains($0.id) && filter($0) }
             .execute()
         
-        try await withThrowingTaskGroup(of: Void.self, body: { group in
+        try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask {
                 try await self.delete(objects: objectsToDelete)
             }
@@ -307,7 +307,7 @@ public struct PapyrusStore: Sendable {
             }
             
             try await group.waitForAll()
-        })
+        }
     }
 }
 
