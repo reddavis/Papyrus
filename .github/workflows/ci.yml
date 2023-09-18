@@ -11,9 +11,9 @@ on:
 jobs:
   test:
     name: Unit Tests
-    runs-on: macOS-12
+    runs-on: macOS-13
     env: 
-      DEVELOPER_DIR: /Applications/Xcode_14.2.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode_15.0.app/Contents/Developer
     steps:
       - uses: actions/checkout@v2
       - name: Run Tests

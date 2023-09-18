@@ -21,11 +21,13 @@ let package = Package(
         .target(name: "Papyrus"),
         .testTarget(
             name: "Unit",
-            dependencies: ["Papyrus"]
+            dependencies: ["Papyrus"],
+            exclude: ["Performance/Supporting Files/Unit.xctestplan"]
         ),
         .testTarget(
             name: "Performance",
-            dependencies: ["Papyrus"]
+            dependencies: ["Papyrus"],
+            exclude: ["Performance/Supporting Files/Performance.xctestplan"]
         ),
     ]
 )
