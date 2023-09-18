@@ -1,6 +1,8 @@
 # Papyrus
 
-Papyrus aims to hit the sweet spot between saving raw API responses to the file system and a fully fledged database like Realm.
+Papyrus enables offline first applications by providing a simple object cache layer.
+
+## Simple example
 
 ```swift
 struct Car: Papyrus {
@@ -12,6 +14,50 @@ struct Car: Papyrus {
 let car = Car(id: "abc...", model: "Model S", manufacturer: "Tesla")
 let store = PapyrusStore()
 try await store.save(car)
+```
+
+## Realworld example
+
+In this example, we're using a `AsyncThrowingStream` to pump through values.
+
+The general concept is that firstly we yield the cached data, perform the API request, yield the new objects and finally 
+merge the new cached objects.
+
+```swift
+import AsyncAlgorithms
+import Papyrus
+
+struct CarProvider {
+    var all: () -> AsyncThrowingStream<[Car], Error>
+}
+
+extension CarProvider {
+    static func live(
+        apiClient: TeslaAPIClient = .live,
+        store: PapyrusStore = .live
+    ) -> Self {
+        .init(
+            all: {
+                AsyncThrowingStream { continuation in
+                    do {
+                        var stores = store.objects(type: Car.self).execute()
+                        continuation.yield(stores)
+                        
+                        let request = FetchCarsRequest()
+                        cars = try await apiClient.execute(request: request)
+                        continuation.yield(cars)
+                        try await store.merge(with: cars)
+                        continuation.finish()
+                    } catch {
+                        continuation.finish(throwing: error)
+                    }
+                }
+                .removeDuplicates()
+                .eraseToThrowingStream()
+            }
+        )
+    }
+}
 ```
 
 ## Requirements
@@ -75,10 +121,10 @@ let carB = Car(id: "def...", model: "Model 3", manufacturer: "Tesla")
 let carC = Car(id: "ghi...", model: "Model X", manufacturer: "Tesla")
 
 let store = PapyrusStore()
-try store.save(objects: [carA, carB])
+try await store.save(objects: [carA, carB])
 
-await store.merge(with: [carA, carC])
-await store
+try await store.merge(with: [carA, carC])
+store
     .objects(type: Car.self)
     .execute()
 // #=> [carA, carC]
@@ -94,30 +140,10 @@ Fetching objects has two forms:
 
 ```swift
 let store = PapyrusStore()
-let tesla = try await store.object(id: "abc...", of: Manufacturer.self).execute()
+let tesla = store.object(id: "abc...", of: Manufacturer.self).execute()
 ```
 
 #### Example B
-
-You also have the option of a Publisher that will fire an event on first fetch and then when the object changes or is deleted. 
-
-When the object doesn't exist a `PapyrusStore.QueryError` error is sent.
-
-```swift
-let store = PapyrusStore()
-let cancellable = store.object(id: "abc...", of: Manufacturer.self)
-    .publisher()
-    .sink(
-        receiveCompletion: { ... },
-        receiveValue: { ... }
-    )
-```
-
-#### Example C
-
-With Swift 5.5 came async/await, which also introduced `AsyncSequence`. 
-
-When the object doesn't exist a `PapyrusStore.QueryError` error is thrown.
 
 ```swift
 let store = PapyrusStore()
@@ -130,7 +156,6 @@ do {
 } catch {
     //.. Do something
 }
-
 ```
 
 ### Fetching collections
@@ -140,7 +165,7 @@ Papryrus gives you the ability to fetch, filter and observe colletions of object
 #### Example A - Simple fetch
 
 ```swift
-let manufacturers = await self.store
+let manufacturers = self.store
     .objects(type: Manufacturer.self)
     .execute()
 ```
@@ -163,41 +188,7 @@ let manufacturers = await self.store
     .execute()
 ```
 
-#### Example D - Observing changes with Combine
-
-Calling `publisher()` on a `PapryrusStore.CollectionQuery` object will return a Combine publisher which will emit the collection of objects. Unless specified the publisher will continue to emit a collection objects whenever a change is detected.
-
-A change constitutes of:
-
-- Addition of an object.
-- Deletion of an object.
-- Update of an object.
-
-```swift
-self.store
-    .objects(type: Manufacturer.self)
-    .publisher()
-    .subscribe(on: DispatchQueue.global())
-    .receive(on: DispatchQueue.main)
-    .sink { self.updateUI(with: $0) }
-    .store(in: &self.cancellables)
-```
-
-#### Example E - All together
-
-```swift
-self.store
-    .objects(type: Manufacturer.self)
-    .filter { $0.name == "Tesla" }
-    .sort { $0.name < $1.name }
-    .publisher()
-    .subscribe(on: DispatchQueue.global())
-    .receive(on: DispatchQueue.main)
-    .sink { self.updateUI(with: $0) }
-    .store(in: &self.cancellables)
-```
-
-#### Example F - Observing changes with a stream
+#### Example D - Observing changes
 
 Calling `stream()` on a `PapryrusStore.CollectionQuery` object will return a `AsyncThrowingStream` which will emit the collection of objects. Unless specified the stream will continue to emit a collection objects whenever a change is detected.
 
@@ -233,14 +224,14 @@ There are several methods for deleting objects.
 ```swift
 let store = PapyrusStore()
 let tesla = store.object(id: "abc...", of: Manufacturer.self)
-await store.delete(tesla)
+try store.delete(tesla)
 ```
 
 #### Example B
 
 ```swift
 let store = PapyrusStore()
-await store.delete(id: "abc...", of: Manufacturer.self)
+try store.delete(id: "abc...", of: Manufacturer.self)
 ```
 
 #### Example C
@@ -249,37 +240,5 @@ await store.delete(id: "abc...", of: Manufacturer.self)
 let store = PapyrusStore()
 let tesla = store.object(id: "abc...", of: Manufacturer.self)
 let ford = store.object(id: "xyz...", of: Manufacturer.self)
-await store.delete(objects: [tesla, ford])
-```
-
-### Migrations (experimental)
-
-If the wish is to keep existing data when introducing schema changes you can register a migration.
-
-#### Example A
-
-```swift
-struct Car: Papyrus {
-    let id: String
-    let model: String
-    let manufacturer: String
-}
-
-struct CarV2: Papyrus {
-    let id: String
-    let model: String
-    let manufacturer: String
-    let year: Int
-}
-
-let migration = Migration<Car, CarV2> { oldObject in
-    CarV2(
-        id: oldObject.id,
-        model: oldObject.model,
-        manufacturer: oldObject.manufacturer,
-        year: 0
-    )
-}
-
-await self.store.register(migration: migration)
+try store.delete(objects: [tesla, ford])
 ```
