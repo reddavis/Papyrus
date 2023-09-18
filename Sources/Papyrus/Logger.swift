@@ -1,15 +1,16 @@
 import Foundation
-import os.log
+import os
 
-final class Logger: @unchecked Sendable {
-    @Atomic var logLevel: LogLevel = .info
+struct Logger {
+    let logLevel: LogLevel
     
     // Private
     private let log: OSLog
     
     // MARK: Initialziation
     
-    required init(subsystem: String, category: String) {
+    init(subsystem: String, category: String, logLevel: LogLevel = .info) {
+        self.logLevel = logLevel
         self.log = OSLog(subsystem: subsystem, category: category)
     }
     
@@ -37,13 +38,13 @@ final class Logger: @unchecked Sendable {
         guard
             level >= self.logLevel,
             let type = level.logType else { return }
-        os_log("%@", log: self.log, type: type, message)
+        os_log("%{public}@", log: self.log, type: type, message)
     }
 }
 
 // MARK: Log level
 
-public enum LogLevel: Int {
+public enum LogLevel: Int, Sendable {
     case info
     case debug
     case error

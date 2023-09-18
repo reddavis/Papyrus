@@ -6,26 +6,28 @@ import PackageDescription
 let package = Package(
     name: "Papyrus",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v12),
-        .watchOS(.v6),
-        .tvOS(.v15)
+        .iOS(.v16),
+        .macOS(.v13),
+        .watchOS(.v7),
+        .tvOS(.v16)
     ],
     products: [
         .library(
             name: "Papyrus",
             targets: ["Papyrus"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/reddavis/Asynchrone", from: "0.21.0"),
-    ],
+    dependencies: [],
     targets: [
-        .target(
-            name: "Papyrus",
-            dependencies: []),
+        .target(name: "Papyrus"),
         .testTarget(
-            name: "PapyrusTests",
-            dependencies: ["Papyrus", "Asynchrone"]
+            name: "Unit",
+            dependencies: ["Papyrus"],
+            exclude: ["Performance/Supporting Files/Unit.xctestplan"]
+        ),
+        .testTarget(
+            name: "Performance",
+            dependencies: ["Papyrus"],
+            exclude: ["Performance/Supporting Files/Performance.xctestplan"]
         ),
     ]
 )
