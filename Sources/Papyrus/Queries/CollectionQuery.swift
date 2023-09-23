@@ -73,10 +73,10 @@ public class CollectionQuery<T> where T: Papyrus {
                     let url = self.directoryURL.appendingPathComponent(filename)
                     let data = try Data(contentsOf: url)
                     let model = try self.decoder.decode(T.self, from: data)
-                    let modifiedDate = try self.fileManager.attributesOfItem(
+                    let creationDate = try self.fileManager.attributesOfItem(
                         atPath: url.path
                     )[.creationDate] as? Date ?? .now
-                    result.append((modifiedDate, model))
+                    result.append((creationDate, model))
                 } catch {
                     self.logger.error("Failed to read cached data. error: \(error)")
                 }
