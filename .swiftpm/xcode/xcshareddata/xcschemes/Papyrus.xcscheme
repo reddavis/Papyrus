@@ -47,7 +47,7 @@
             default = "YES">
          </TestPlanReference>
          <TestPlanReference
-            reference = "container:Tests/Performance/Supporting Filles/Performance.xctestplan">
+            reference = "container:Tests/Performance/Supporting Files/Performance.xctestplan">
          </TestPlanReference>
       </TestPlans>
       <Testables>

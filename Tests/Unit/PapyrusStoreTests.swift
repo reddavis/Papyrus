@@ -90,13 +90,13 @@ final class PapyrusStoreTests: XCTestCase {
     }
     
     func test_fetchingObjects() async throws {
-        let objects = (0..<3).map { _ in
+        let objects = (0..<10).map { _ in
             ExampleD()
         }
         try await self.store.save(objects: objects)
         
         let fetchedObjects = self.store.objects(type: ExampleD.self).execute()
-        XCTAssertEqual(fetchedObjects.count, 3)
+        XCTAssertEqual(fetchedObjects, objects)
     }
     
     // MARK: Deleting

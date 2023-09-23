@@ -94,6 +94,13 @@ public struct PapyrusStore: Sendable {
         self.logger.debug("Created directory: \(url.absoluteString)")
     }
     
+    private func setCreatedAt(_ timestamp: Date, for url: URL) throws {
+        try self.fileManager.setAttributes(
+            [.creationDate: timestamp],
+            ofItemAtPath: url.path
+        )
+    }
+    
     // MARK: Saving
     
     /// Saves the object to the store.
@@ -129,9 +136,22 @@ public struct PapyrusStore: Sendable {
     /// - Parameter objects: An array of objects to add to the store.
     public func save<T: Papyrus>(objects: [T]) async throws where T: Sendable {
         try await withThrowingTaskGroup(of: Void.self) { group in
-            for object in objects {
+            let timestamp = Date.now
+            
+            for (index, object) in objects.enumerated() {
                 group.addTask {
+                    let url = self.fileURL(for: object.typeDescription, filename: object.filename)
+                    let fileAlreadyExists = self.fileManager.fileExists(atPath: url.path)
                     try self.save(object, touchDirectory: false)
+                    
+                    if !fileAlreadyExists {
+                        // Because the aren't guaranteed to happen in order
+                        // we need to manually set the created at timstamp.
+                        try self.setCreatedAt(
+                            timestamp.addingTimeInterval(TimeInterval(index) / 100000.0),
+                            for: url
+                        )
+                    }
                 }
             }
             
