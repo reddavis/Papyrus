@@ -135,6 +135,8 @@ public struct PapyrusStore: Sendable {
     /// Saves all objects to the store.
     /// - Parameter objects: An array of objects to add to the store.
     public func save<T: Papyrus>(objects: [T]) async throws where T: Sendable {
+        guard !objects.isEmpty else { return }
+        
         try await withThrowingTaskGroup(of: Void.self) { group in
             let timestamp = Date.now
             
@@ -227,6 +229,8 @@ public struct PapyrusStore: Sendable {
     /// Deletes an array of objects.
     /// - Parameter objects: An array of objects to delete.
     public func delete<T: Papyrus>(objects: [T]) async throws {
+        guard !objects.isEmpty else { return }
+        
         try await withThrowingTaskGroup(of: Void.self) { group in
             for object in objects {
                 group.addTask {

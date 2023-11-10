@@ -66,6 +66,13 @@ final class PapyrusStoreTests: XCTestCase {
         XCTAssertNotNil(self.store.object(id: idB, of: ExampleB.self))
     }
     
+    func test_savingEmptyObjectsArray() async throws {
+        let objects: [ExampleA] = []
+        await XCTAsyncAssertNoThrow {
+            try await self.store.save(objects: objects)
+        }
+    }
+    
     func test_updatesReceivedOnSaving() async throws {
         let expectation = self.expectation(description: "Received values")
         expectation.expectedFulfillmentCount = 1
@@ -131,6 +138,13 @@ final class PapyrusStoreTests: XCTestCase {
         
         let fetchedObjectB1 = self.store.object(id: idB, of: ExampleB.self).execute()
         XCTAssertNil(fetchedObjectB1)
+    }
+    
+    func test_deletingEmptyObjectsArray() async throws {
+        let objects: [ExampleA] = []
+        await XCTAsyncAssertNoThrow {
+            try await self.store.delete(objects: objects)
+        }
     }
     
     func test_deleteAll() async throws {
