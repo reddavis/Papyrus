@@ -16,7 +16,7 @@ let package = Package(
             targets: ["Papyrus"]
         )
     ],
-    dependencies: [.package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0")],
+    dependencies: [.package(url: "https://github.com/apple/swift-async-algorithms", from: "1.1.1")],
     targets: [
         .target(
             name: "Papyrus",
