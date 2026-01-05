@@ -52,9 +52,9 @@ final class CollectionQueryTests: XCTestCase {
     }
     
     func test_filter_whenAppliedToStream() async throws {
-        Task {
+        Task { [directory] in
             try await Task.sleep(for: .milliseconds(10))
-            try FileManager.default.poke(self.directory)
+            try FileManager.default.poke(directory!)
         }
         
         let collection = try await CollectionQuery<ExampleB>(directoryURL: self.directory)
@@ -66,9 +66,9 @@ final class CollectionQueryTests: XCTestCase {
     }
     
     func test_sort_whenAppliedToStream() async throws {
-        Task {
+        Task { [directory] in
             try await Task.sleep(for: .milliseconds(10))
-            try FileManager.default.poke(self.directory)
+            try FileManager.default.poke(directory!)
         }
         
         let collection = try await CollectionQuery<ExampleB>(directoryURL: self.directory)

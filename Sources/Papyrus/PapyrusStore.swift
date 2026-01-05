@@ -1,4 +1,5 @@
 import Foundation
+import os
 
 /// A `PapyrusStore` is a data store for `Papyrus` conforming objects.
 ///
@@ -15,14 +16,10 @@ public struct PapyrusStore: Sendable {
     
     /// Initialize a new `PapyrusStore` instance persisted at the provided `URL`.
     /// - Parameter url: The `URL` to persist data to.
-    public init(url: URL, logLevel: LogLevel = .off) {
+    public init(url: URL) {
         self.url = url
-        self.logger = Logger(
-            subsystem: "com.reddavis.PapyrusStore",
-            category: "PapyrusStore",
-            logLevel: logLevel
-        )
-        self.setupDataDirectory()
+        self.logger = Logger(subsystem: "com.reddavis.PapyrusStore", category: "PapyrusStore")
+        setupDataDirectory()
     }
     
     /// Initialize a new `PapyrusStore` instance with the default
@@ -30,18 +27,18 @@ public struct PapyrusStore: Sendable {
     ///
     /// The default Papyrus Store will persist it's data to a
     /// directory inside Application Support.
-    public init(logLevel: LogLevel = .off) {
+    public init() {
         let url = URL.applicationSupportDirectory.appendingPathComponent("Papyrus", isDirectory: true)
-        self.init(url: url, logLevel: logLevel)
+        self.init(url: url)
     }
     
     // MARK: Store management
     
     private func setupDataDirectory() {
         do {
-            try self.createDirectoryIfNeeded(at: self.url)
+            try createDirectoryIfNeeded(at: url)
         } catch {
-            self.logger.fault("Unable to create store directory: \(error)")
+            logger.fault("Unable to create store directory: \(error)")
         }
     }
     
@@ -49,39 +46,39 @@ public struct PapyrusStore: Sendable {
     ///
     /// This will destroy and then rebuild the store's directory.
     public func reset() throws {
-        try self.fileManager.removeItem(at: self.url)
-        self.setupDataDirectory()
+        try fileManager.removeItem(at: url)
+        setupDataDirectory()
     }
     
     // MARK: File management
     
     private func fileURL<ID: LosslessStringConvertible>(for typeDescription: String, id: ID) -> URL {
-        self.fileURL(for: typeDescription, filename: String(id))
+        fileURL(for: typeDescription, filename: String(id))
     }
     
     private func fileURL(for typeDescription: String, filename: String) -> URL {
-        self.directoryURL(for: typeDescription).appendingPathComponent(filename)
+        directoryURL(for: typeDescription).appendingPathComponent(filename)
     }
     
     private func directoryURL<T>(for type: T.Type) -> URL {
-        self.directoryURL(for: String(describing: type))
+        directoryURL(for: String(describing: type))
     }
     
     private func directoryURL(for typeDescription: String) -> URL {
-        self.url.appendingPathComponent(typeDescription, isDirectory: true)
+        url.appendingPathComponent(typeDescription, isDirectory: true)
     }
     
     private func createDirectoryIfNeeded<T>(for type: T.Type) throws {
-        try self.createDirectoryIfNeeded(for: String(describing: type))
+        try createDirectoryIfNeeded(for: String(describing: type))
     }
     
     private func createDirectoryIfNeeded(for typeDescription: String) throws {
-        try self.createDirectoryIfNeeded(at: self.directoryURL(for: typeDescription))
+        try createDirectoryIfNeeded(at: directoryURL(for: typeDescription))
     }
     
     private func createDirectoryIfNeeded(at url: URL) throws {
         var isDirectory = ObjCBool(false)
-        let exists = self.fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory)
+        let exists = fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory)
         
         // All good - directory already exists.
         if isDirectory.boolValue && exists { return }
@@ -90,12 +87,12 @@ public struct PapyrusStore: Sendable {
         else if !isDirectory.boolValue && exists { throw SetupError.fileExistsInDirectoryURL(url) }
         
         // Create directory
-        try self.fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
-        self.logger.debug("Created directory: \(url.absoluteString)")
+        try fileManager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+        logger.debug("Created directory: \(url.absoluteString)")
     }
     
     private func setCreatedAt(_ timestamp: Date, for url: URL) throws {
-        try self.fileManager.setAttributes(
+        try fileManager.setAttributes(
             [.creationDate: timestamp],
             ofItemAtPath: url.path
         )
@@ -106,28 +103,28 @@ public struct PapyrusStore: Sendable {
     /// Saves the object to the store.
     /// - Parameter object: The object to save.
     public func save<T: Papyrus>(_ object: T) throws {
-        try self.save(object, touchDirectory: true)
+        try save(object, touchDirectory: true)
     }
     
     private func save<T: Papyrus>(_ object: T, touchDirectory: Bool) throws {
         do {
-            try self.createDirectoryIfNeeded(for: T.self)
+            try createDirectoryIfNeeded(for: T.self)
             
-            let data = try self.encoder.encode(object)
-            let url = self.fileURL(for: object.typeDescription, filename: object.filename)
+            let data = try encoder.encode(object)
+            let url = fileURL(for: object.typeDescription, filename: object.filename)
             try data.write(to: url)
-            self.logger.debug("Saved object \(object.typeDescription). filename: \(object.filename)]")
+            logger.debug("Saved object \(object.typeDescription). filename: \(object.filename)]")
             
             if touchDirectory {
-                let directoryURL = self.directoryURL(for: T.self)
-                self.logger.debug("Touching directory. url: \(directoryURL)")
-                try self.fileManager.setAttributes(
+                let directoryURL = directoryURL(for: T.self)
+                logger.debug("Touching directory. url: \(directoryURL)")
+                try fileManager.setAttributes(
                     [.modificationDate: Date.now],
                     ofItemAtPath: directoryURL.path
                 )
             }
         } catch {
-            self.logger.error("Failed to save. object: \(object.typeDescription) filename: \(object.filename)")
+            logger.error("Failed to save. object: \(object.typeDescription) filename: \(object.filename)")
             throw error
         }
     }
@@ -142,14 +139,14 @@ public struct PapyrusStore: Sendable {
             
             for (index, object) in objects.enumerated() {
                 group.addTask {
-                    let url = self.fileURL(for: object.typeDescription, filename: object.filename)
-                    let fileAlreadyExists = self.fileManager.fileExists(atPath: url.path)
-                    try self.save(object, touchDirectory: false)
+                    let url = fileURL(for: object.typeDescription, filename: object.filename)
+                    let fileAlreadyExists = fileManager.fileExists(atPath: url.path)
+                    try save(object, touchDirectory: false)
                     
                     if !fileAlreadyExists {
                         // Because the aren't guaranteed to happen in order
                         // we need to manually set the created at timstamp.
-                        try self.setCreatedAt(
+                        try setCreatedAt(
                             timestamp.addingTimeInterval(TimeInterval(index) / 100000.0),
                             for: url
                         )
@@ -159,9 +156,9 @@ public struct PapyrusStore: Sendable {
             
             try await group.waitForAll()
             
-            let directoryURL = self.directoryURL(for: T.self)
-            self.logger.debug("Touching directory. url: \(directoryURL)")
-            try self.fileManager.setAttributes(
+            let directoryURL = directoryURL(for: T.self)
+            logger.debug("Touching directory. url: \(directoryURL)")
+            try fileManager.setAttributes(
                 [.modificationDate: Date.now],
                 ofItemAtPath: directoryURL.path
             )
@@ -177,8 +174,7 @@ public struct PapyrusStore: Sendable {
     public func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID) -> ObjectQuery<T> {
         ObjectQuery(
             id: id,
-            directoryURL: self.directoryURL(for: T.self),
-            logLevel: self.logger.logLevel
+            directoryURL: directoryURL(for: T.self)
         )
     }
     
@@ -191,8 +187,7 @@ public struct PapyrusStore: Sendable {
     public func object<T: Papyrus, ID: LosslessStringConvertible>(id: ID, of type: T.Type) -> ObjectQuery<T> {
         ObjectQuery(
             id: id,
-            directoryURL: self.directoryURL(for: T.self),
-            logLevel: self.logger.logLevel
+            directoryURL: directoryURL(for: T.self)
         )
     }
     
@@ -202,8 +197,7 @@ public struct PapyrusStore: Sendable {
     /// - Returns: A `AnyPublisher<[T], Error>` instance.
     public func objects<T: Papyrus>(type: T.Type) -> CollectionQuery<T> {
         CollectionQuery(
-            directoryURL: self.directoryURL(for: T.self),
-            logLevel: self.logger.logLevel
+            directoryURL: directoryURL(for: T.self)
         )
     }
     
@@ -217,13 +211,13 @@ public struct PapyrusStore: Sendable {
         id: T.ID,
         of type: T.Type
     ) throws {
-        try self.delete(id: id, of: type, touchDirectory: true)
+        try delete(id: id, of: type, touchDirectory: true)
     }
 
     /// Deletes an object from the store.
     /// - Parameter object: The object to delete.
     public func delete<T: Papyrus>(_ object: T) throws {
-        try self.delete(id: object.id, of: T.self, touchDirectory: true)
+        try delete(id: object.id, of: T.self, touchDirectory: true)
     }
         
     /// Deletes an array of objects.
@@ -233,16 +227,16 @@ public struct PapyrusStore: Sendable {
         
         try await withThrowingTaskGroup(of: Void.self) { group in
             for object in objects {
-                group.addTask {
-                    try self.delete(id: object.id, of: T.self, touchDirectory: false)
+                group.addTask { [id = object.id] in
+                    try delete(id: id, of: T.self, touchDirectory: false)
                 }
             }
             
             try await group.waitForAll()
             
-            let directoryURL = self.directoryURL(for: T.self)
-            self.logger.debug("Touching directory. url: \(directoryURL)")
-            try self.fileManager.setAttributes(
+            let directoryURL = directoryURL(for: T.self)
+            logger.debug("Touching directory. url: \(directoryURL)")
+            try fileManager.setAttributes(
                 [.modificationDate: Date.now],
                 ofItemAtPath: directoryURL.path
             )
@@ -250,7 +244,7 @@ public struct PapyrusStore: Sendable {
     }
     
     public func deleteAll<T: Papyrus>(_ type: T.Type) throws {
-        try self.fileManager.removeItem(at: self.directoryURL(for: type))
+        try fileManager.removeItem(at: directoryURL(for: type))
     }
     
     private func delete<T: Papyrus, ID>(
@@ -261,11 +255,11 @@ public struct PapyrusStore: Sendable {
         let objectType = String(describing: type)
         
         do {
-            let url = self.fileURL(for: objectType, id: id)
-            try self.fileManager.removeItem(at: url)
-            self.logger.debug("Deleted object \(objectType). id: \(id)")
+            let url = fileURL(for: objectType, id: id)
+            try fileManager.removeItem(at: url)
+            logger.debug("Deleted object \(objectType). id: \(id)")
         } catch {
-            self.logger.error(
+            logger.error(
                 "Failed to delete. object: \(objectType) id: \(id), url: \(url)"
             )
             throw error
@@ -292,10 +286,10 @@ public struct PapyrusStore: Sendable {
         
         try await withThrowingTaskGroup(of: Void.self, body: { group in
             group.addTask {
-                try await self.delete(objects: objectsToDelete)
+                try await delete(objects: objectsToDelete)
             }
             group.addTask {
-                try await self.save(objects: objects)
+                try await save(objects: objects)
             }
             
             for try await _ in group {} // So we can throw errors
@@ -315,7 +309,7 @@ public struct PapyrusStore: Sendable {
     ///   of stored objects to merge into.
     public func merge<T: Papyrus>(
         objects: [T],
-        into filter: @escaping (_ object: T) -> Bool
+        into filter: @Sendable @escaping (T) -> Bool
     ) async throws where T: Sendable {
         let objectIDs = objects.map(\.id)
         let objectsToDelete = self.objects(type: T.self)
@@ -324,10 +318,10 @@ public struct PapyrusStore: Sendable {
         
         try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask {
-                try await self.delete(objects: objectsToDelete)
+                try await delete(objects: objectsToDelete)
             }
             group.addTask {
-                try await self.save(objects: objects)
+                try await save(objects: objects)
             }
             
             try await group.waitForAll()

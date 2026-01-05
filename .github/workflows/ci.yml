@@ -1,21 +1,20 @@
 name: "CI"
 
-on: 
+on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
-    branches: 
+    branches:
       - '*'
 
 jobs:
   test:
     name: Unit Tests
-    runs-on: macOS-13
-    env: 
-      DEVELOPER_DIR: /Applications/Xcode_15.0.app/Contents/Developer
+    runs-on: macOS-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.2.app/Contents/Developer
     steps:
       - uses: actions/checkout@v2
       - name: Run Tests
         run: swift test
-  

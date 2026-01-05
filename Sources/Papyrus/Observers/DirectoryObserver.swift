@@ -1,6 +1,6 @@
 import Foundation
 
-struct DirectoryObserver: Sendable {
+struct DirectoryObserver : Sendable {
     private let url: URL
     
     // MARK: Initialization
@@ -8,8 +8,8 @@ struct DirectoryObserver: Sendable {
     init(url: URL) throws {
         self.url = url
         
-        if !FileManager.default.fileExists(atPath: self.url.path) {
-            try FileManager.default.createDirectory(at: self.url, withIntermediateDirectories: true)
+        if !FileManager.default.fileExists(atPath: url.path) {
+            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         }
     }
     

@@ -1,5 +1,4 @@
-// swift-tools-version: 5.7
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -14,20 +13,26 @@ let package = Package(
     products: [
         .library(
             name: "Papyrus",
-            targets: ["Papyrus"]),
+            targets: ["Papyrus"]
+        )
     ],
-    dependencies: [],
+    dependencies: [.package(url: "https://github.com/apple/swift-async-algorithms", from: "1.1.1")],
     targets: [
-        .target(name: "Papyrus"),
+        .target(
+            name: "Papyrus",
+            dependencies: [
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+            ]
+        ),
         .testTarget(
             name: "Unit",
             dependencies: ["Papyrus"],
-            exclude: ["Performance/Supporting Files/Unit.xctestplan"]
+            exclude: ["Supporting Files/Unit.xctestplan"]
         ),
         .testTarget(
             name: "Performance",
             dependencies: ["Papyrus"],
-            exclude: ["Performance/Supporting Files/Performance.xctestplan"]
-        ),
+            exclude: ["Supporting Files/Performance.xctestplan"]
+        )
     ]
 )

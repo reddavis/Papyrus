@@ -6,11 +6,12 @@ import Foundation
 /// - `Codable`
 /// - `Equatable`
 /// - `Identifiable where ID: LosslessStringConvertible & Sendable`
-public protocol Papyrus: Codable, Equatable, Identifiable where ID: LosslessStringConvertible & Sendable { }
+public protocol Papyrus: Codable, Equatable, Identifiable
+where ID: LosslessStringConvertible & Sendable { }
 
 // MARK: Helpers
 
 extension Papyrus {
-    var filename: String { String(self.id) }
+    var filename: String { String(id) }
     var typeDescription: String { String(describing: type(of: self)) }
 }

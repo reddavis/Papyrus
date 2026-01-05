@@ -1,95 +1,110 @@
+import AsyncAlgorithms
 import Foundation
+import os
 
 /// `PapyrusStore.CollectionQuery<T>` is a mechanism for querying `Papyrus` objects.
-public class CollectionQuery<T> where T: Papyrus {
-    public typealias OnFilter = (T) -> Bool
-    public typealias OnSort = (T, T) -> Bool
-    
+public struct CollectionQuery<T>: Sendable where T: Papyrus {
+    public typealias OnFilter = @Sendable (T) -> Bool
+    public typealias OnSort = @Sendable (T, T) -> Bool
+
     // Private
     private let decoder: JSONDecoder = .init()
     private let directoryURL: URL
-    private let fileManager = FileManager.default
-    private var filter: OnFilter?
+    private let filter: OnFilter?
     private let logger: Logger
-    private var sort: OnSort?
-    
+    private let sort: OnSort?
+
     // MARK: Initialization
-    
-    init(directoryURL: URL, logLevel: LogLevel = .off) {
+
+    init(
+        directoryURL: URL,
+        filter: OnFilter? = nil,
+        sort: OnSort? = nil
+    ) {
         self.directoryURL = directoryURL
-        self.logger = Logger(
-            subsystem: "com.reddavis.PapyrusStore",
-            category: "CollectionQuery",
-            logLevel: logLevel
-        )
+        self.filter = filter
+        self.logger = Logger(subsystem: "com.reddavis.PapyrusStore", category: "CollectionQuery")
+        self.sort = sort
     }
-    
+
     // MARK: API
-     
+
     /// Executes the query. If filter or sort parameters are
     /// set, they will be applied to the results.
     /// - Returns: The results of the query.
     public func execute() -> [T] {
-        self.fetchObjects()
+        fetchObjects()
     }
-    
+
     /// Apply a filter to the query.
     /// - Parameter onFilter: The filter to be applied.
     /// - Returns: The query item.
-    @discardableResult
     public func filter(_ onFilter: @escaping OnFilter) -> Self {
-        self.filter = onFilter
-        return self
+        .init(
+            directoryURL: directoryURL,
+            filter: onFilter,
+            sort: sort
+        )
     }
-    
+
     /// Apply a sort to the query.
     /// - Parameter onSort: The sort to be applied.
     /// - Returns: The query item.
-    @discardableResult
     public func sort(_ onSort: @escaping OnSort) -> Self {
-        self.sort = onSort
-        return self
+        .init(
+            directoryURL: directoryURL,
+            filter: filter,
+            sort: onSort
+        )
     }
-    
+
     /// Observe changes to the query.
     /// - Returns: A `AsyncThrowingStream` instance.
-    public func observe() -> AsyncThrowingStream<[T], Error> {
+    public func observe() -> AsyncThrowingStream<[T], Error> where T: Sendable {
         do {
-            let observer = try DirectoryObserver(url: self.directoryURL)
+            let observer = try DirectoryObserver(url: directoryURL)
             return observer.observe()
-                .map { _ in self.fetchObjects() }
+                .map { _ in fetchObjects() }
                 .eraseToThrowingStream()
         } catch {
             return Fail(error: error)
                 .eraseToThrowingStream()
         }
     }
-    
+
     private func fetchObjects() -> [T] {
         do {
-            let filenames = try self.fileManager.contentsOfDirectory(atPath: self.directoryURL.path)
+            let fileManager = FileManager.default
+            let filenames = try fileManager.contentsOfDirectory(atPath: directoryURL.path)
             return filenames.reduce(into: [(Date, T)]()) { result, filename in
+                let url = directoryURL.appendingPathComponent(filename)
                 do {
-                    let url = self.directoryURL.appendingPathComponent(filename)
                     let data = try Data(contentsOf: url)
-                    let model = try self.decoder.decode(T.self, from: data)
-                    let creationDate = try self.fileManager.attributesOfItem(
+                    let model = try decoder.decode(T.self, from: data)
+                    let creationDate = try fileManager.attributesOfItem(
                         atPath: url.path
                     )[.creationDate] as? Date ?? .now
                     result.append((creationDate, model))
                 } catch {
-                    self.logger.error("Failed to read cached data. error: \(error)")
+                    logger.error("Failed to read cached data. error: \(error)")
+                    do {
+                        // Delete cached data
+                        logger.debug("Deleting old cached data. url: \(url)")
+                        try fileManager.removeItem(at: url)
+                    } catch {
+                        logger.error("Failed deleting old cached data. url: \(url) error: \(error)")
+                    }
                 }
             }
             .sorted { $0.0 < $1.0 }
             .map(\.1)
-            .filter(self.filter)
-            .sorted(by: self.sort)
+            .filter(filter)
+            .sorted(by: sort)
         } catch CocoaError.fileReadNoSuchFile {
-            self.logger.info("Failed to read contents of directory. url: \(self.directoryURL)")
+            logger.info("Failed to read contents of directory. url: \(directoryURL)")
             return []
         } catch {
-            self.logger.fault("Unknown error occured. error: \(error)")
+            logger.fault("Unknown error occured. error: \(error)")
             return []
         }
     }
@@ -100,11 +115,11 @@ public class CollectionQuery<T> where T: Papyrus {
 extension Sequence {
     fileprivate func filter(_ isIncluded: ((Element) -> Bool)?) -> [Element] {
         guard let isIncluded = isIncluded else { return Array(self) }
-        return self.filter { isIncluded($0) }
+        return filter { isIncluded($0) }
     }
-    
+
     fileprivate func sorted(by areInIncreasingOrder: ((Element, Element) -> Bool)?) -> [Element] {
         guard let areInIncreasingOrder = areInIncreasingOrder else { return Array(self) }
-        return self.sorted { areInIncreasingOrder($0, $1) }
+        return sorted { areInIncreasingOrder($0, $1) }
     }
 }

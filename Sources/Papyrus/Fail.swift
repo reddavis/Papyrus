@@ -34,7 +34,7 @@ struct Fail<Element, Failure>: AsyncSequence, Sendable where Failure: Error {
     /// Creates an async iterator that emits elements of this async sequence.
     /// - Returns: An instance that conforms to `AsyncIteratorProtocol`.
     func makeAsyncIterator() -> Self {
-        .init(error: self.error)
+        .init(error: error)
     }
 }
 
@@ -44,9 +44,9 @@ extension Fail: AsyncIteratorProtocol {
     /// Produces the next element in the sequence.
     /// - Returns: The next element or `nil` if the end of the sequence is reached.
     mutating func next() async throws -> Element? {
-        defer { self.hasThownError = true }
-        guard !self.hasThownError else { return nil }
+        defer { hasThownError = true }
+        guard !hasThownError else { return nil }
         
-        throw self.error
+        throw error
     }
 }

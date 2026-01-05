@@ -13,7 +13,7 @@ final class PapyrusStoreTests: XCTestCase {
             UUID().uuidString,
             isDirectory: true
         )
-        self.store = PapyrusStore(url: self.directory, logLevel: .info)
+        self.store = PapyrusStore(url: self.directory)
     }
     
     override func tearDown() {
