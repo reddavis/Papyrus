@@ -6,16 +6,16 @@ import os
 public struct CollectionQuery<T>: Sendable where T: Papyrus {
     public typealias OnFilter = @Sendable (T) -> Bool
     public typealias OnSort = @Sendable (T, T) -> Bool
-    
+
     // Private
     private let decoder: JSONDecoder = .init()
     private let directoryURL: URL
     private let filter: OnFilter?
     private let logger: Logger
     private let sort: OnSort?
-    
+
     // MARK: Initialization
-    
+
     init(
         directoryURL: URL,
         filter: OnFilter? = nil,
@@ -26,16 +26,16 @@ public struct CollectionQuery<T>: Sendable where T: Papyrus {
         self.logger = Logger(subsystem: "com.reddavis.PapyrusStore", category: "CollectionQuery")
         self.sort = sort
     }
-    
+
     // MARK: API
-     
+
     /// Executes the query. If filter or sort parameters are
     /// set, they will be applied to the results.
     /// - Returns: The results of the query.
     public func execute() -> [T] {
         fetchObjects()
     }
-    
+
     /// Apply a filter to the query.
     /// - Parameter onFilter: The filter to be applied.
     /// - Returns: The query item.
@@ -46,7 +46,7 @@ public struct CollectionQuery<T>: Sendable where T: Papyrus {
             sort: sort
         )
     }
-    
+
     /// Apply a sort to the query.
     /// - Parameter onSort: The sort to be applied.
     /// - Returns: The query item.
@@ -57,7 +57,7 @@ public struct CollectionQuery<T>: Sendable where T: Papyrus {
             sort: onSort
         )
     }
-    
+
     /// Observe changes to the query.
     /// - Returns: A `AsyncThrowingStream` instance.
     public func observe() -> AsyncThrowingStream<[T], Error> where T: Sendable {
@@ -71,7 +71,7 @@ public struct CollectionQuery<T>: Sendable where T: Papyrus {
                 .eraseToThrowingStream()
         }
     }
-    
+
     private func fetchObjects() -> [T] {
         do {
             let fileManager = FileManager.default
@@ -117,7 +117,7 @@ extension Sequence {
         guard let isIncluded = isIncluded else { return Array(self) }
         return filter { isIncluded($0) }
     }
-    
+
     fileprivate func sorted(by areInIncreasingOrder: ((Element, Element) -> Bool)?) -> [Element] {
         guard let areInIncreasingOrder = areInIncreasingOrder else { return Array(self) }
         return sorted { areInIncreasingOrder($0, $1) }
