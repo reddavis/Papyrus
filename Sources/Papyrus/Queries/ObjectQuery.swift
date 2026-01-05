@@ -8,9 +8,9 @@ public struct ObjectQuery<T: Papyrus>: Sendable {
     private let directoryURL: URL
     private let filename: String
     private let logger: Logger
-    
+
     // MARK: Initialization
-    
+
     init<ID: LosslessStringConvertible>(
         id: ID,
         directoryURL: URL
@@ -19,9 +19,9 @@ public struct ObjectQuery<T: Papyrus>: Sendable {
         self.directoryURL = directoryURL
         self.logger = Logger(subsystem: "com.reddavis.PapyrusStore", category: "ObjectQuery")
     }
-    
+
     // MARK: API
-    
+
     /// Executes the query.
     /// - Returns: The result of the query.
     public func execute() -> T? {
@@ -32,7 +32,7 @@ public struct ObjectQuery<T: Papyrus>: Sendable {
             return nil
         }
     }
-        
+
     /// Observe changes to the query via an async stream.
     /// - Returns: A `AsyncThrowingStream` instance.
     public func observe() -> AsyncThrowingStream<ObjectChange<T>, Error> where T: Sendable {
@@ -41,13 +41,13 @@ public struct ObjectQuery<T: Papyrus>: Sendable {
             let object = fetchObject()
             let observerSequence = observer.observe()
                 .map { fetchObject() }
-            
+
             return chain(Just(object), observerSequence)
                 .pair()
                 .compactMap { tuple in
                     let previousResult = tuple.0
                     let result = tuple.1
-                    
+
                     switch (previousResult, result) {
                     case (.success(let previousModel), .success(let model)) where previousModel != model:
                         return .changed(model)
@@ -65,7 +65,7 @@ public struct ObjectQuery<T: Papyrus>: Sendable {
                 .eraseToThrowingStream()
         }
     }
-    
+
     private func fetchObject() -> Result<T, Error> {
         let fileManager = FileManager.default
         let fileURL = directoryURL.appendingPathComponent(filename)
@@ -73,7 +73,7 @@ public struct ObjectQuery<T: Papyrus>: Sendable {
             logger.info("Cached data not found. url: \(fileURL)")
             return .failure(NotFoundError())
         }
-        
+
         do {
             let data = try Data(contentsOf: fileURL)
             return .success(try decoder.decode(T.self, from: data))
@@ -102,14 +102,9 @@ extension ObjectQuery {
     }
 }
 
+// MARK: AsyncPairSequence
 
-extension AsyncSequence {
-    func pair() -> AsyncPairSequence<Self> {
-        AsyncPairSequence(base: self)
-    }
-}
-
-struct AsyncPairSequence<Base: AsyncSequence>: AsyncSequence {
+fileprivate struct AsyncPairSequence<Base: AsyncSequence>: AsyncSequence {
     typealias AsyncIterator = Iterator
     typealias Element = (Base.Element, Base.Element)
     var base: Base
@@ -121,10 +116,10 @@ struct AsyncPairSequence<Base: AsyncSequence>: AsyncSequence {
 
 extension AsyncPairSequence: Sendable where Base: Sendable, Element: Sendable {}
 
-// MARK: Iterator
+// MARK: AsyncPairSequence Iterator
 
 extension AsyncPairSequence {
-    struct Iterator: AsyncIteratorProtocol {
+    fileprivate struct Iterator: AsyncIteratorProtocol {
         var base: Base.AsyncIterator
         var lastValue: Base.Element?
 
@@ -132,17 +127,17 @@ extension AsyncPairSequence {
             guard let nextValue = try await base.next() else {
                 return nil
             }
-            
+
             guard let lastValue else {
                 lastValue = nextValue
                 guard let nextNextValue = try await base.next() else {
                     return nil
                 }
-                
+
                 lastValue = nextNextValue
                 return (nextValue, nextNextValue)
             }
-            
+
             defer { self.lastValue = nextValue }
             return (lastValue, nextValue)
         }
@@ -151,3 +146,9 @@ extension AsyncPairSequence {
 
 extension AsyncPairSequence.Iterator: Sendable
 where Base.AsyncIterator: Sendable, Element: Sendable {}
+
+extension AsyncSequence {
+    fileprivate func pair() -> AsyncPairSequence<Self> {
+        AsyncPairSequence(base: self)
+    }
+}
